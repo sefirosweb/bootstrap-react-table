@@ -1,12 +1,10 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { data } from '../../test/mock/Product';
 import { Table } from '../../src';
 import { UseQueryOptions } from '@tanstack/react-query';
 import { CrudOptions, QueryPage, SelectOption } from '../../src/types';
-import { GeneratedData } from '../../test/mock/crudData';
-import { OptionsType, generateOptionsValue } from '../../test/mock/generateOptionsValue';
+import { getFetchOptionsValue, getFetchPage, GeneratedData } from '../../test/mock';
 
 const meta: Meta = {
   title: 'Tables/Table',
@@ -17,20 +15,11 @@ export default meta;
 
 type Story = StoryObj<typeof Table>;
 
+const delay = 1500
+
 const optionsCategory: UseQueryOptions<Array<SelectOption>> = {
   queryKey: ['products'],
-  queryFn: () => {
-    return new Promise((resolve) => {
-      const data = generateOptionsValue().map(p => ({
-        ...p,
-        label: p.name,
-        value: p.uuid
-      }))
-
-      console.log({ data })
-      resolve(data);
-    });
-  }
+  queryFn: () => getFetchOptionsValue(delay)
 }
 
 const columns: Array<ColumnDef<GeneratedData>> = [
@@ -90,30 +79,7 @@ const columns: Array<ColumnDef<GeneratedData>> = [
 
 const useQueryOptions: UseQueryOptions<QueryPage<GeneratedData>> = {
   queryKey: ['products'],
-  queryFn: (params) => {
-    return new Promise((resolve) => {
-      const currentPage = params.meta?.page ?? 1
-      const pageSize = params.meta?.pageSize ?? 10
-
-      const start = currentPage * pageSize - pageSize;
-      const end = start + pageSize;
-
-      const newData = data.slice(start, end);
-      const totalPages = Math.ceil(data.length / pageSize);
-
-      console.log('params', newData)
-      console.log('params', totalPages)
-
-      setTimeout(() => {
-        resolve({
-          results: newData,
-          nextCursor: currentPage < totalPages ? currentPage + 1 : null,
-          pages: totalPages,
-          prevCursor: currentPage > 1 ? currentPage - 1 : null,
-        });
-      }, 400);
-    });
-  },
+  queryFn: (params) => getFetchPage(params, delay)
 }
 
 const crudOptions: CrudOptions<GeneratedData> = {
