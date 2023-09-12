@@ -44,10 +44,18 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     return () => clearTimeout(timeout)
   }, [tableFilters])
 
+  const INITIAL_DATA: QueryPage<any> = {
+    results: [],
+    pages: 0,
+    nextCursor: null,
+    prevCursor: null,
+  }
+
   const useQueryOptions: UseQueryOptions<QueryPage<any>> = {
     staleTime: Infinity,
     initialDataUpdatedAt: 0,
     keepPreviousData: true,
+    initialData: INITIAL_DATA,
     ...props.useQueryOptions,
     queryKey: [props.useQueryOptions.queryKey, pageOptions],
     queryFn: (params) => {
@@ -156,6 +164,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
           >
             <Thead table={table} tableFilters={tableFilters} setTableFilters={setTableFilters} />
             <Tbody table={table} />
+
           </BTable>
 
           <Tfooter

@@ -6,13 +6,15 @@ type Props = {
 }
 
 export const Tbody: React.FC<Props> = (props) => {
+    const { table } = props
+
     return (
         <tbody>
-            {props.table.getRowModel().rows.map((row) => (
+            {table.getRowModel().rows.map((row) => (
                 <tr
                     key={row.id}
                 >
-                    {row.getVisibleCells().filter(row => row.column.columnDef.meta?.visible !== false).map((cell) => (
+                    {row.getVisibleCells().map((cell) => (
                         <td
                             key={cell.id}>
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}

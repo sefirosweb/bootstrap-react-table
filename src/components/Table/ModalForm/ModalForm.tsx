@@ -53,9 +53,6 @@ export const ModalForm: React.FC<Props> = (props) => {
 
     return (
         <>
-            <div>
-                asd
-            </div>
             <Modal
                 onShow={onOpenModal}
                 show={show}
