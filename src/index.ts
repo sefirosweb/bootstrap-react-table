@@ -19,6 +19,7 @@ declare module '@tanstack/table-core' {
         filterable?: boolean;
         type?: FieldType;
         useQueryOptions?: UseQueryOptions<Array<SelectOption>>,
+        addNullOption?: boolean;
     }
 }
 

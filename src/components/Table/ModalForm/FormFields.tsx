@@ -1,6 +1,7 @@
 import { Column, flexRender } from "@tanstack/react-table"
 import { FormDataType } from "../../../types"
 import { Form } from "react-bootstrap"
+import { FormSelect } from "@/components/FormSelect"
 
 type Props = {
     column: Column<any>,
@@ -8,6 +9,7 @@ type Props = {
     formData: FormDataType,
     setFormData: React.Dispatch<React.SetStateAction<FormDataType>>,
 }
+
 
 export const FormFields: React.FC<Props> = (props) => {
     const { column, formData, setFormData, isLoadingModal } = props
@@ -69,10 +71,18 @@ export const FormFields: React.FC<Props> = (props) => {
                 />
             )}
 
-
-
-
-
+            {column.columnDef.meta?.type === 'select' && (
+                <FormSelect
+                    value={formData[column.id] ?? ''}
+                    useQueryOptions={column.columnDef.meta.useQueryOptions}
+                    addNullOption={column.columnDef.meta.addNullOption}
+                    handleChange={(selectedOption) => {
+                        const newFormData = { ...formData }
+                        newFormData[column.id] = selectedOption?.value ?? null
+                        setFormData(newFormData)
+                    }}
+                />
+            )}
 
         </Form.Group>
     )

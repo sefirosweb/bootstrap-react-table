@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { generateRandomString } from "./generateRandomString"
 import { getRandom } from "./getRandom"
-import { generateOptionsValue } from './generateOptionsValue';
+import { OptionsType, generateOptionsValue } from './generateOptionsValue';
 
 export type GeneratedData = {
     uuid: string;
@@ -11,9 +11,8 @@ export type GeneratedData = {
     description: string | null;
     random: string | null;
     price: number;
-    category: any;
-    category_id: any;
-    categories: Array<any>;
+    category: OptionsType;
+    categories: Array<OptionsType>;
     created_at: string;
 }
 
@@ -41,10 +40,11 @@ export const getData = () => {
             description: Math.random() < 0.4 ? faker.commerce.productDescription() : null,
             random: Math.random() < 0.4 ? generateRandomString(10) : null,
             price: parseFloat(faker.commerce.price()) + 0.99,
-            category: category.name,
-            category_id: category.value,
+            category: category,
             created_at: faker.date.recent({ days: 10 }).toISOString(),
             categories: [
+                getRandom(generateOptionsValue()),
+                getRandom(generateOptionsValue()),
                 getRandom(generateOptionsValue()),
                 getRandom(generateOptionsValue())
             ]

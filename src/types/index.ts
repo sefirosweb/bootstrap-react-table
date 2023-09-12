@@ -7,6 +7,11 @@ export type FormDataType = Record<string | number | symbol, any>
 
 export type Filter = Record<string, any>
 
+export type MutationVars = {
+    formData: FormDataType;
+    action: ActionCrud;
+};
+
 export type PageOptions = {
     page: number,
     pageSize: number
@@ -14,7 +19,7 @@ export type PageOptions = {
 }
 
 export type SelectOption = {
-    value: string | number;
+    value: string;
     label: string;
     [key: string]: unknown;
 }

@@ -4,12 +4,15 @@ import { Form } from "react-bootstrap";
 import { SelectOption } from "@/index";
 
 export type Props = React.ComponentProps<typeof Form.Select> & {
-    useQueryOptions: UseQueryOptions<Array<SelectOption>>
+    addNullOption?: boolean
+    useQueryOptions?: UseQueryOptions<Array<SelectOption>>
     handleChange: (option: SelectOption | undefined) => void
 }
 
-export const FormSelect: React.FC<Props> = ({ useQueryOptions: useQueryOptionsProps, handleChange, ...props }) => {
-    const [selectedOption, setSelectedOption] = useState<string | number>("");
+export const FormSelect: React.FC<Props> = ({ addNullOption, value, useQueryOptions: useQueryOptionsProps, handleChange, ...props }) => {
+    const [selectedOption, setSelectedOption] = useState<string>("");
+
+    if (!useQueryOptionsProps) throw new Error("useQueryOptions is required");
 
     const useQueryOptions: UseQueryOptions<Array<SelectOption>> = {
         staleTime: Infinity,
@@ -22,18 +25,31 @@ export const FormSelect: React.FC<Props> = ({ useQueryOptions: useQueryOptionsPr
     const { data: selectData } = useQuery(useQueryOptions)
 
     useEffect(() => {
-        const selectedOptionFilter = selectData?.find(filter => filter.value === selectedOption)
-
-        handleChange(selectedOptionFilter)
-    }, [selectedOption])
-
+        if (value === undefined) {
+            setSelectedOption("");
+        } else if (typeof value === "string") {
+            setSelectedOption(value);
+        } else if (typeof value === "number") {
+            setSelectedOption(value.toString());
+        }
+    }, [value]);
 
     return (
         <Form.Select
             {...props}
             value={selectedOption}
-            onChange={(e) => setSelectedOption(e.target.value)}
+            onChange={(e) => {
+                setSelectedOption(e.target.value)
+                const selectedOptionFilter = selectData?.find(filter => filter.value === e.target.value)
+                handleChange(selectedOptionFilter)
+            }}
         >
+            {addNullOption && (
+                <option key={0} value="">
+                    {""}
+                </option>
+            )}
+
             {
                 selectData?.map((option) => {
                     return (

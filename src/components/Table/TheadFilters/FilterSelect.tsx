@@ -22,7 +22,7 @@ export const FilterSelect: React.FC<Props> = (props) => {
         if (!selectedOption) {
             delete newTableFilters[props.headerId]
         } else {
-            newTableFilters[props.headerId] = selectedOption
+            newTableFilters[props.headerId] = selectedOption.value
         }
 
         props.setTableFilters(newTableFilters)
@@ -32,6 +32,7 @@ export const FilterSelect: React.FC<Props> = (props) => {
         <FormSelect
             useQueryOptions={props.columnDef.meta.useQueryOptions}
             handleChange={(option) => setSelectedOption(option)}
+            addNullOption={true}
         />
     )
 }

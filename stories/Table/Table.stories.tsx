@@ -4,8 +4,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { data } from '../../test/mock/Product';
 import { Table } from '../../src';
 import { UseQueryOptions } from '@tanstack/react-query';
-import { CrudOptions, QueryPage } from '../../src/types';
+import { CrudOptions, QueryPage, SelectOption } from '../../src/types';
 import { GeneratedData } from '../../test/mock/crudData';
+import { OptionsType, generateOptionsValue } from '../../test/mock/generateOptionsValue';
 
 const meta: Meta = {
   title: 'Tables/Table',
@@ -15,6 +16,22 @@ const meta: Meta = {
 export default meta;
 
 type Story = StoryObj<typeof Table>;
+
+const optionsCategory: UseQueryOptions<Array<SelectOption>> = {
+  queryKey: ['products'],
+  queryFn: () => {
+    return new Promise((resolve) => {
+      const data = generateOptionsValue().map(p => ({
+        ...p,
+        label: p.name,
+        value: p.uuid
+      }))
+
+      console.log({ data })
+      resolve(data);
+    });
+  }
+}
 
 const columns: Array<ColumnDef<GeneratedData>> = [
   {
@@ -26,40 +43,10 @@ const columns: Array<ColumnDef<GeneratedData>> = [
   },
   {
     accessorKey: 'name',
-    header: 'Category',
+    header: 'Name',
     meta: {
       filterable: true,
-      type: 'select',
-      useQueryOptions: {
-        queryKey: ['categories'],
-        queryFn: () => {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              resolve([
-                {
-                  value: '',
-                  label: '',
-                },
-                {
-                  value: '1',
-                  label: 'Category 1',
-                  otherValue: '5'
-                },
-                {
-                  value: '2',
-                  label: 'Category 2',
-                  asd: '5'
-                },
-                {
-                  value: '3',
-                  label: 'Category 3',
-                  asd: 'Category 3',
-                },
-              ]);
-            }, 400);
-          });
-        }
-      }
+      editable: true,
     },
   },
   {
@@ -79,11 +66,16 @@ const columns: Array<ColumnDef<GeneratedData>> = [
     },
   },
   {
-    accessorKey: 'category',
-    header: 'Cat.',
+    id: 'id_category',
+    accessorFn: (row) => row.category?.uuid,
+    cell: (props) => <div>{props.row.original.category.name}</div>,
+    header: 'Category',
     meta: {
-      editable: true,
       filterable: true,
+      editable: true,
+      type: 'select',
+      useQueryOptions: optionsCategory,
+      addNullOption: true,
     },
   },
   {
@@ -130,6 +122,12 @@ const crudOptions: CrudOptions<GeneratedData> = {
   create: true,
   edit: true,
   delete: true,
+  onSubmitFn: (data, action) => {
+    console.log('onSubmitFn', data, action)
+    return new Promise((resolve, reject) => {
+      resolve(data)
+    })
+  },
   // editFn: (action) => {
   //   console.log('asd')
   //   action()

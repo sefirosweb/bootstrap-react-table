@@ -1,10 +1,9 @@
 import { faker } from '@faker-js/faker';
 
-type OptionsType = {
-    name: string;
-    category: string;
-    value: string;
+export type OptionsType = {
     uuid: string;
+    name: string;
+    value: string;
     description: string;
 }
 
@@ -17,7 +16,6 @@ export const generateOptionsValue = () => {
         const cat = faker.commerce.department()
         data.push({
             name: cat,
-            category: cat,
             value: i.toString(),
             uuid: faker.string.uuid(),
             description: faker.commerce.productDescription(),
