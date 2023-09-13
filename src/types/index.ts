@@ -27,6 +27,8 @@ export type SelectOption = {
 export type QueryPage<T> = {
     pages: number,
     results: Array<T>
+    totalRows: number,
+    currentPage: number,
     nextCursor: number | null,
     prevCursor: number | null,
 }
