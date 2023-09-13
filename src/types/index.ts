@@ -49,11 +49,11 @@ export type CrudOptions<T> = {
     createButton?: CreateButton,
 
     edit?: boolean,
-    editFn?: (action: () => void) => void,
+    editFn?: (action: () => void, cell: CellContext<T, unknown>) => void,
     editButton?: CellButtons<T>,
 
     delete?: boolean,
-    deleteFn?: (action: () => void) => void,
+    deleteFn?: (action: () => void, cell: CellContext<T, unknown>) => void,
     deleteButton?: CellButtons<T>,
     onDeleteModal?: (cell: CellContext<T, unknown>) => JSX.Element,
 

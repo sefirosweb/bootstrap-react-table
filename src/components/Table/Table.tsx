@@ -94,7 +94,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
       setShow(true)
     }
 
-    props.crudOptions.editFn ? props.crudOptions.editFn(action) : action()
+    props.crudOptions.editFn ? props.crudOptions.editFn(action, cell) : action()
   }
 
   const deleteButtonFn = (cell: CellContext<any, unknown>) => {
@@ -104,7 +104,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
       setShow(true)
     }
 
-    props.crudOptions.deleteFn ? props.crudOptions.deleteFn(action) : action()
+    props.crudOptions.deleteFn ? props.crudOptions.deleteFn(action, cell) : action()
   }
 
   useEffect(() => {
