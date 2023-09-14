@@ -25,12 +25,12 @@ export const FormSelect: React.FC<Props> = ({ addNullOption, value, useQueryOpti
     const { data: selectData } = useQuery(useQueryOptions)
 
     useEffect(() => {
-        if (value === undefined) {
-            setSelectedOption("");
+        if (typeof value === "number") {
+            setSelectedOption(value.toString());
         } else if (typeof value === "string") {
             setSelectedOption(value);
-        } else if (typeof value === "number") {
-            setSelectedOption(value.toString());
+        } else {
+            setSelectedOption("");
         }
     }, [value]);
 
