@@ -12,6 +12,7 @@ export type Props = {
   isFetching: boolean,
 
   isLazy: boolean,
+  pageSizes: Array<number>,
   pageOptions: PageOptions,
   setPageOptions: React.Dispatch<React.SetStateAction<PageOptions>>,
   pages?: number,
@@ -27,21 +28,6 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
   const [action, setAction] = useState<ActionCrud>('create')
   const [show, setShow] = useState(false)
   const [tableFilters, setTableFilters] = useState<Filter>({})
-
-  const { pageOptions, setPageOptions, pages = 1 } = props
-
-  const pageSizes = props.crudOptions.pageSizes ?? [10, 25, 50, 100, 500]
-
-  const INITIAL_PAGE_OPTIONS = (): PageOptions => {
-    const pageSize = props.crudOptions.pageSize ?? pageSizes[0]
-    const filters: Array<Filter> = []
-    return {
-      page: 1,
-      pageSize: pageSize,
-      filters: filters,
-    }
-  }
-
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -124,14 +110,12 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
       getCoreRowModel: getCoreRowModel(),
     });
   } else {
-
-    console.log(pageOptions.pageSize)
     table = useReactTable({
       columns: columns,
       data: props.tableData,
       initialState: {
         pagination: {
-          pageSize: pageOptions.pageSize,
+          pageSize: props.pageOptions.pageSize,
         },
       },
       getCoreRowModel: getCoreRowModel(),
@@ -165,23 +149,23 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
 
       {props.isLazy &&
         <Tfooter
-          pages={pages}
-          currentPage={pageOptions.page}
+          pages={props.pages ?? 1}
+          currentPage={props.pageOptions.page}
 
-          handleFirstPage={() => setPageOptions({ ...pageOptions, page: 1 })}
-          handlePrevPage={() => setPageOptions({ ...pageOptions, page: pageOptions.page - 1 })}
-          handleNextPage={() => setPageOptions({ ...pageOptions, page: pageOptions.page + 1 })}
-          handleLastPage={() => setPageOptions({ ...pageOptions, page: pages ?? 1 })}
+          handleFirstPage={() => props.setPageOptions({ ...props.pageOptions, page: 1 })}
+          handlePrevPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page - 1 })}
+          handleNextPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page + 1 })}
+          handleLastPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pages ?? 1 })}
 
-          firstPageEnabled={pageOptions.page === 1}
-          prevPageEnabled={pageOptions.page === 1}
-          nextPageEnabled={pageOptions.page === pages}
-          lastPageEnabled={pageOptions.page === pages}
+          firstPageEnabled={props.pageOptions.page === 1}
+          prevPageEnabled={props.pageOptions.page === 1}
+          nextPageEnabled={props.pageOptions.page === props.pages}
+          lastPageEnabled={props.pageOptions.page === props.pages}
 
 
-          pageSizes={pageSizes}
-          pageSize={pageOptions.pageSize}
-          setPageSize={(pageSize) => setPageOptions({ ...pageOptions, pageSize: pageSize, page: 1 })}
+          pageSizes={props.pageSizes}
+          pageSize={props.pageOptions.pageSize}
+          setPageSize={(pageSize) => props.setPageOptions({ ...props.pageOptions, pageSize: pageSize, page: 1 })}
         />
       }
 
@@ -201,10 +185,10 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
           lastPageEnabled={!table.getCanNextPage()}
 
 
-          pageSizes={pageSizes}
-          pageSize={pageOptions.pageSize}
+          pageSizes={props.pageSizes}
+          pageSize={props.pageOptions.pageSize}
           setPageSize={(pageSize) => {
-            setPageOptions({ ...pageOptions, pageSize: pageSize })
+            props.setPageOptions({ ...props.pageOptions, pageSize: pageSize })
             table.setPageSize(pageSize)
           }}
         />

@@ -21,6 +21,7 @@ export const TableEagle = forwardRef<PropsRef, Props>((props, ref) => {
         page: 1,
         pageSize: props.crudOptions.pageSize ?? pageSizes[0],
         filters: [],
+        orders: [],
     }
 
     const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)
@@ -67,6 +68,7 @@ export const TableEagle = forwardRef<PropsRef, Props>((props, ref) => {
                 isLazy={false}
                 pageOptions={pageOptions}
                 setPageOptions={setPageOptions}
+                pageSizes={pageSizes}
             />
 
         </div>

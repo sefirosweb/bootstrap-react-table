@@ -17,6 +17,7 @@ export type PageOptions = {
     page: number,
     pageSize: number
     filters: Array<Filter>,
+    orders: Array<Record<string, 'asc' | 'desc'>>,
 }
 
 export type SelectOption = {

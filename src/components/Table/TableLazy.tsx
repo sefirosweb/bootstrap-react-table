@@ -21,6 +21,7 @@ export const TableLazy = forwardRef<PropsRef, Props>((props, ref) => {
         page: 1,
         pageSize: props.crudOptions.pageSize ?? pageSizes[0],
         filters: [],
+        orders: [],
     }
 
     const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)
@@ -52,6 +53,7 @@ export const TableLazy = forwardRef<PropsRef, Props>((props, ref) => {
                 page: pageConfig?.page ?? pageOptions.page,
                 pageSize: pageConfig?.pageSize ?? pageOptions.pageSize,
                 filters: pageConfig?.filters ?? [],
+                orders: pageConfig?.orders ?? [],
             }
 
             return props.useQueryOptions.queryFn(params)
@@ -75,6 +77,7 @@ export const TableLazy = forwardRef<PropsRef, Props>((props, ref) => {
                 pageOptions={pageOptions}
                 setPageOptions={setPageOptions}
                 pages={tableData?.pages ?? 1}
+                pageSizes={pageSizes}
             />
 
 
