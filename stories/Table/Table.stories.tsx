@@ -68,7 +68,7 @@ const columns: Array<ColumnDef<GeneratedData>> = [
     },
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'created_at',
     meta: {
       editable: true,
       filterable: true,

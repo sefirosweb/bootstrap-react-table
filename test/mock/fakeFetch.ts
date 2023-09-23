@@ -36,12 +36,17 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
         console.log('params', params.meta)
 
         setTimeout(() => {
-            resolve({
+            const response: QueryPage<GeneratedData> = {
                 results: newData,
                 nextCursor: currentPage < totalPages ? currentPage + 1 : null,
                 pages: totalPages,
                 prevCursor: currentPage > 1 ? currentPage - 1 : null,
-            });
+                currentPage: currentPage,
+                totalRows: data.length,
+            };
+
+
+            resolve(response);
         }, delay);
     });
 }
