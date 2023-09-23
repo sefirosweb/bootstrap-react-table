@@ -49,6 +49,8 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     pages: 0,
     nextCursor: null,
     prevCursor: null,
+    currentPage: 1,
+    totalRows: 0,
   }
 
   const useQueryOptions: UseQueryOptions<QueryPage<any>> = {
