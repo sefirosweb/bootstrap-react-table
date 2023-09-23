@@ -1,5 +1,5 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
-import { QueryPage, SelectOption } from "../../src";
+import { QueryEagle, QueryPage, SelectOption } from "../../src";
 import { GeneratedData, getData } from "./crudData";
 import { generateOptionsValue } from "./generateOptionsValue";
 
@@ -43,6 +43,20 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
                 prevCursor: currentPage > 1 ? currentPage - 1 : null,
                 currentPage: currentPage,
                 totalRows: data.length,
+            };
+
+
+            resolve(response);
+        }, delay);
+    });
+}
+
+export const getFetchAll = (params: QueryFunctionContext, delay = 30): Promise<QueryEagle<GeneratedData>> => {
+    return new Promise((resolve) => {
+        const data = getData()
+        setTimeout(() => {
+            const response: QueryEagle<GeneratedData> = {
+                results: data,
             };
 
 

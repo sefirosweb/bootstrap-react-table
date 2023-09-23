@@ -1,15 +1,20 @@
-import { forwardRef, Ref, useEffect, useState } from "react";
-import { CellContext, ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import React, { forwardRef, lazy, Ref, useEffect, useState } from "react";
+import { CellContext, ColumnDef, getCoreRowModel, getPaginationRowModel, Table as TableTanStackProp, useReactTable } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { Table as BTable, Col, Row } from "react-bootstrap";
-import { Tfooter, Tbody, Thead, TableToolbar, ModalForm } from "./index";
-import { ActionCrud, CrudOptions, Filter, PageOptions, QueryPage, EditButton, DeleteButton } from "@/index";
+import { Tbody, Thead, TableToolbar, ModalForm, Tfooter } from "./index";
+import { ActionCrud, CrudOptions, Filter, PageOptions, EditButton, DeleteButton } from "@/index";
 
 export type Props = {
-  useQueryOptions: UseQueryOptions<QueryPage<any>>,
   columns: Array<ColumnDef<any>>,
   crudOptions: CrudOptions<any>,
+  tableData: Array<any>,
+  isFetching: boolean,
+
+  isLazy: boolean,
+  pageOptions: PageOptions,
+  setPageOptions: React.Dispatch<React.SetStateAction<PageOptions>>,
+  pages?: number,
 }
 
 export type PropsRef = {
@@ -23,6 +28,8 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
   const [show, setShow] = useState(false)
   const [tableFilters, setTableFilters] = useState<Filter>({})
 
+  const { pageOptions, setPageOptions, pages = 1 } = props
+
   const pageSizes = props.crudOptions.pageSizes ?? [10, 25, 50, 100, 500]
 
   const INITIAL_PAGE_OPTIONS = (): PageOptions => {
@@ -35,7 +42,6 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     }
   }
 
-  const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -44,40 +50,6 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     return () => clearTimeout(timeout)
   }, [tableFilters])
 
-  const INITIAL_DATA: QueryPage<any> = {
-    results: [],
-    pages: 0,
-    nextCursor: null,
-    prevCursor: null,
-    currentPage: 1,
-    totalRows: 0,
-  }
-
-  const useQueryOptions: UseQueryOptions<QueryPage<any>> = {
-    staleTime: Infinity,
-    initialDataUpdatedAt: 0,
-    keepPreviousData: true,
-    initialData: INITIAL_DATA,
-    ...props.useQueryOptions,
-    queryKey: [props.useQueryOptions.queryKey, pageOptions],
-    queryFn: (params) => {
-      if (!props.useQueryOptions.queryFn) {
-        return Promise.reject(new Error('No query function provided'));
-      }
-
-      const pageConfig = params.queryKey[1] as PageOptions
-
-      params.meta = {
-        page: pageConfig?.page ?? pageOptions.page,
-        pageSize: pageConfig?.pageSize ?? pageOptions.pageSize,
-        filters: pageConfig?.filters ?? [],
-      }
-
-      return props.useQueryOptions.queryFn(params)
-    },
-  }
-
-  const { data: tableData, isFetching } = useQuery(useQueryOptions)
 
   const createButtonFn = () => {
     const action = () => {
@@ -143,11 +115,29 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     setColumns(newColumns)
   }, [props.columns])
 
-  const table = useReactTable({
-    columns: columns,
-    data: tableData?.results ?? [],
-    getCoreRowModel: getCoreRowModel(),
-  });
+  let table: TableTanStackProp<any>
+
+  if (props.isLazy) {
+    table = useReactTable({
+      columns: columns,
+      data: props.tableData,
+      getCoreRowModel: getCoreRowModel(),
+    });
+  } else {
+
+    console.log(pageOptions.pageSize)
+    table = useReactTable({
+      columns: columns,
+      data: props.tableData,
+      initialState: {
+        pagination: {
+          pageSize: pageOptions.pageSize,
+        },
+      },
+      getCoreRowModel: getCoreRowModel(),
+      getPaginationRowModel: getPaginationRowModel(),
+    });
+  }
 
   return (
     <>
@@ -165,31 +155,60 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
             responsive
           >
             <Thead table={table} tableFilters={tableFilters} setTableFilters={setTableFilters} />
+            {props.isFetching && <div>Looading</div>}
             <Tbody table={table} />
-
+            {props.isFetching && <div>Looading</div>}
           </BTable>
-
-          <Tfooter
-            pages={tableData?.pages ?? 1}
-            currentPage={pageOptions.page}
-            setCurrentPage={(currentPage: number) => {
-              setPageOptions({
-                ...pageOptions,
-                page: currentPage,
-              })
-            }}
-            pageSizes={pageSizes}
-            pageSize={pageOptions.pageSize}
-            setPageSize={(pageS: number) => {
-              setPageOptions({
-                ...pageOptions,
-                page: 1,
-                pageSize: pageS,
-              })
-            }} />
 
         </Col>
       </Row>
+
+      {props.isLazy &&
+        <Tfooter
+          pages={pages}
+          currentPage={pageOptions.page}
+
+          handleFirstPage={() => setPageOptions({ ...pageOptions, page: 1 })}
+          handlePrevPage={() => setPageOptions({ ...pageOptions, page: pageOptions.page - 1 })}
+          handleNextPage={() => setPageOptions({ ...pageOptions, page: pageOptions.page + 1 })}
+          handleLastPage={() => setPageOptions({ ...pageOptions, page: pages ?? 1 })}
+
+          firstPageEnabled={pageOptions.page === 1}
+          prevPageEnabled={pageOptions.page === 1}
+          nextPageEnabled={pageOptions.page === pages}
+          lastPageEnabled={pageOptions.page === pages}
+
+
+          pageSizes={pageSizes}
+          pageSize={pageOptions.pageSize}
+          setPageSize={(pageSize) => setPageOptions({ ...pageOptions, pageSize: pageSize, page: 1 })}
+        />
+      }
+
+      {!props.isLazy &&
+        <Tfooter
+          pages={table.getPageCount() === 0 ? 1 : table.getPageCount()}
+          currentPage={table.getState().pagination.pageIndex + 1}
+
+          handleFirstPage={() => table.setPageIndex(0)}
+          handlePrevPage={() => table.previousPage()}
+          handleNextPage={() => table.nextPage()}
+          handleLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
+
+          firstPageEnabled={!table.getCanPreviousPage()}
+          prevPageEnabled={!table.getCanPreviousPage()}
+          nextPageEnabled={!table.getCanNextPage()}
+          lastPageEnabled={!table.getCanNextPage()}
+
+
+          pageSizes={pageSizes}
+          pageSize={pageOptions.pageSize}
+          setPageSize={(pageSize) => {
+            setPageOptions({ ...pageOptions, pageSize: pageSize })
+            table.setPageSize(pageSize)
+          }}
+        />
+      }
 
       <ModalForm
         crudOptions={props.crudOptions}

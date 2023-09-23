@@ -3,8 +3,8 @@ import { Meta, StoryObj } from '@storybook/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Table } from '../../src';
 import { UseQueryOptions } from '@tanstack/react-query';
-import { CrudOptions, QueryPage, SelectOption } from '../../src/types';
-import { getFetchOptionsValue, getFetchPage, GeneratedData } from '../../test/mock';
+import { CrudOptions, QueryEagle, QueryPage, SelectOption } from '../../src/types';
+import { getFetchOptionsValue, getFetchPage, GeneratedData, getFetchAll } from '../../test/mock';
 
 const meta: Meta = {
   title: 'Tables/Table',
@@ -77,9 +77,14 @@ const columns: Array<ColumnDef<GeneratedData>> = [
   }
 ];
 
-const useQueryOptions: UseQueryOptions<QueryPage<GeneratedData>> = {
+const useQueryOptionsLazy: UseQueryOptions<QueryPage<GeneratedData>> = {
   queryKey: ['products'],
   queryFn: (params) => getFetchPage(params, delay)
+}
+
+const useQueryOptionsEagle: UseQueryOptions<QueryEagle<GeneratedData>> = {
+  queryKey: ['products_all'],
+  queryFn: (params) => getFetchAll(params, delay)
 }
 
 const crudOptions: CrudOptions<GeneratedData> = {
@@ -94,25 +99,25 @@ const crudOptions: CrudOptions<GeneratedData> = {
       resolve(data)
     })
   },
-  // editFn: (action) => {
-  //   console.log('asd')
-  //   action()
-  // },
-
-  // createButton: (props) => <button onClick={props.onClick}>Create</button>,
-  // createFn: (action) => {
-  //   console.log('asd')
-  //   action()
-  // },
-
-  // editButton: (props) => <div onClick={props.onClick}>{props.cell.row.original.uuid}</div>,
-  // deleteButton: (props) => <div onClick={props.onClick}>{props.cell.row.original.uuid}</div>,
 }
 
-export const Template: Story = {
+export const LazyTemplate: Story = {
   args: {
-    columns,
-    useQueryOptions,
-    crudOptions,
+    tableProps: {
+      useQueryOptions: useQueryOptionsLazy,
+      columns,
+      crudOptions,
+      lazy: true
+    }
+  },
+}
+export const EagleTemplate: Story = {
+  args: {
+    tableProps: {
+      useQueryOptions: useQueryOptionsEagle,
+      columns,
+      crudOptions,
+      lazy: false
+    }
   },
 }

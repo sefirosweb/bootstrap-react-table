@@ -1,4 +1,5 @@
-import { CellContext } from "@tanstack/react-table"
+import { UseQueryOptions } from "@tanstack/react-query"
+import { CellContext, ColumnDef } from "@tanstack/react-table"
 import React from "react"
 export type ActionCrud = 'create' | 'edit' | 'delete'
 export type FieldType = 'text' | 'number' | 'date' | 'datetime' | 'select' | 'checkbox'
@@ -23,6 +24,30 @@ export type SelectOption = {
     label: string;
     [key: string]: unknown;
 }
+
+export type QueryEagle<T> = {
+    results: Array<T>
+}
+
+type Lazy<T> = {
+    lazy: true,
+    useQueryOptions: UseQueryOptions<QueryPage<T>>
+}
+
+type Eagle<T> = {
+    lazy: false,
+    useQueryOptions: UseQueryOptions<QueryEagle<T>>
+}
+
+export type TableProps<T> = {
+    columns: Array<ColumnDef<T>>,
+    crudOptions: CrudOptions<T>,
+    lazy: boolean,
+} & (
+        | Lazy<T>
+        | Eagle<T>
+    )
+
 
 export type QueryPage<T> = {
     pages: number,

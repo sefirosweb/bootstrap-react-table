@@ -5,59 +5,60 @@ import { useTranslation } from "react-i18next";
 type Props = {
     pages: number,
     currentPage: number,
-    setCurrentPage: (currentPage: number) => void,
+
+    handleFirstPage: () => void,
+    handlePrevPage: () => void,
+    handleNextPage: () => void,
+    handleLastPage: () => void,
+
+    firstPageEnabled: boolean,
+    prevPageEnabled: boolean,
+    nextPageEnabled: boolean,
+    lastPageEnabled: boolean,
+
     pageSize: number,
-    setPageSize: (pageS: number) => void,
+    setPageSize: (pageSize: number) => void,
     pageSizes: Array<number>,
 }
 
 export const Tfooter: React.FC<Props> = (props) => {
-    const { currentPage, setCurrentPage, pages, pageSize, pageSizes, setPageSize } = props
     const { t } = useTranslation()
-
-    const prevPage = () => {
-        setCurrentPage(currentPage - 1)
-    }
-
-    const nextPage = () => {
-        setCurrentPage(currentPage + 1)
-    }
 
     return (
         <Row>
             <Col xs="auto">
                 <Pagination>
                     <Pagination.First
-                        onClick={() => setCurrentPage(1)}
-                        disabled={currentPage <= 1}
+                        onClick={props.handleFirstPage}
+                        disabled={props.firstPageEnabled}
                     />
                     <Pagination.Prev
-                        onClick={prevPage}
-                        disabled={currentPage <= 1}
+                        onClick={props.handlePrevPage}
+                        disabled={props.prevPageEnabled}
                     />
                     <Pagination.Item active>
-                        {currentPage} {t('of')}{' '} {pages}
+                        {props.currentPage} {t('of')}{' '} {props.pages}
                     </Pagination.Item>
                     <Pagination.Next
-                        onClick={nextPage}
-                        disabled={currentPage >= pages}
+                        onClick={props.handleNextPage}
+                        disabled={props.nextPageEnabled}
                     />
                     <Pagination.Last
-                        onClick={() => setCurrentPage(pages)}
-                        disabled={currentPage >= pages}
+                        onClick={props.handleLastPage}
+                        disabled={props.lastPageEnabled}
                     />
                 </Pagination>
             </Col>
             <Col xs="auto">
                 <Form.Select
-                    value={pageSize}
+                    value={props.pageSize}
                     onChange={(e) => {
-                        const pageS = parseInt(e.target.value);
-                        if (isNaN(pageS)) return;
-                        setPageSize(pageS);
+                        const pageSize = parseInt(e.target.value);
+                        if (isNaN(pageSize)) return;
+                        props.setPageSize(pageSize);
                     }}
                 >
-                    {pageSizes.map((pageSize) => (
+                    {props.pageSizes.map((pageSize) => (
                         <option key={pageSize} value={pageSize}>
                             {t('Show')} {pageSize}
                         </option>
