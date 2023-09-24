@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 type Props = {
     pages: number,
     currentPage: number,
+    totalRows: number,
 
     handleFirstPage: () => void,
     handlePrevPage: () => void,
@@ -26,8 +27,8 @@ export const Tfooter: React.FC<Props> = (props) => {
 
     return (
         <Row>
-            <Col xs="auto">
-                <Pagination>
+            <Col xs="auto" className="d-flex align-items-center">
+                <Pagination style={{ marginBottom: 0 }}>
                     <Pagination.First
                         onClick={props.handleFirstPage}
                         disabled={props.firstPageEnabled}
@@ -49,7 +50,7 @@ export const Tfooter: React.FC<Props> = (props) => {
                     />
                 </Pagination>
             </Col>
-            <Col xs="auto">
+            <Col xs="auto" className="d-flex align-items-center">
                 <Form.Select
                     value={props.pageSize}
                     onChange={(e) => {
@@ -64,6 +65,9 @@ export const Tfooter: React.FC<Props> = (props) => {
                         </option>
                     ))}
                 </Form.Select>
+            </Col>
+            <Col xs="auto" className="d-flex align-items-center">
+                {t('Total rows')}: {props.totalRows}
             </Col>
         </Row>
     )

@@ -80,6 +80,7 @@
     "xlsx": "^0.18.5"
   },
   "peerDependencies": {
+    "@sefirosweb/react-multiple-search": "^0.0.3",
     "@tanstack/react-query": "^4.33.0",
     "@tanstack/react-query-devtools": "^4.33.0",
     "@tanstack/react-table": "^8.9.3",

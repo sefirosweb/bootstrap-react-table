@@ -93,6 +93,26 @@ const crudOptions: CrudOptions<GeneratedData> = {
   create: true,
   edit: true,
   delete: true,
+  canExport: true,
+  canRefresh: true,
+  globalSearch: true,
+  pageSizes: [10, 25, 50, 100, 500, 1000, 5000, 10000],
+  delayFilter: 500,
+  enableGlobalFilterLabels: [
+    {
+      filter: 'name',
+      label: 'Name',
+    },
+    {
+      filter: 'desc',
+      label: 'Descripction',
+    },
+    {
+      filter: 'category',
+      label: 'Category',
+    },
+  ],
+
   onSubmitFn: (data, action) => {
     console.log('onSubmitFn', data, action)
     return new Promise((resolve, reject) => {

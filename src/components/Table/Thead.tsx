@@ -1,12 +1,13 @@
 import React from "react";
 import { flexRender, Table } from "@tanstack/react-table";
-import { Filter } from "@/index";
-import { FilterText, FilterNumbers, FilterDates, FilterDatesTime, FilterSelect } from "./TheadFilters";
+import { CrudOptions, Filter as FilterType } from "@/index";
+import { Filter } from "./TheadFilters";
 
 type Props = {
     table: Table<any>,
-    tableFilters: Filter,
-    setTableFilters: React.Dispatch<React.SetStateAction<Filter>>,
+    tableFilters: FilterType,
+    setTableFilters: React.Dispatch<React.SetStateAction<FilterType>>,
+    crudOptions: CrudOptions<any>,
 }
 
 export const Thead: React.FC<Props> = (props) => {
@@ -51,46 +52,13 @@ export const Thead: React.FC<Props> = (props) => {
 
                                         {header.column.columnDef.meta?.filterable && (
                                             <>
-                                                {(!header.column.columnDef.meta?.type || header.column.columnDef.meta?.type === 'text') && (
-                                                    <FilterText
-                                                        headerId={header.id}
-                                                        tableFilters={props.tableFilters}
-                                                        setTableFilters={props.setTableFilters}
-                                                    />
-                                                )}
-
-                                                {(header.column.columnDef.meta?.type === 'number') && (
-                                                    <FilterNumbers
-                                                        headerId={header.id}
-                                                        tableFilters={props.tableFilters}
-                                                        setTableFilters={props.setTableFilters}
-                                                    />
-                                                )}
-
-                                                {(header.column.columnDef.meta?.type === 'date') && (
-                                                    <FilterDates
-                                                        headerId={header.id}
-                                                        tableFilters={props.tableFilters}
-                                                        setTableFilters={props.setTableFilters}
-                                                    />
-                                                )}
-
-                                                {(header.column.columnDef.meta?.type === 'datetime') && (
-                                                    <FilterDatesTime
-                                                        headerId={header.id}
-                                                        tableFilters={props.tableFilters}
-                                                        setTableFilters={props.setTableFilters}
-                                                    />
-                                                )}
-
-                                                {(header.column.columnDef.meta?.type === 'select') && (
-                                                    <FilterSelect
-                                                        headerId={header.id}
-                                                        tableFilters={props.tableFilters}
-                                                        setTableFilters={props.setTableFilters}
-                                                        columnDef={header.column.columnDef}
-                                                    />
-                                                )}
+                                                <Filter
+                                                    columnDef={header.column.columnDef}
+                                                    header_id={header.id}
+                                                    tableFilters={props.tableFilters}
+                                                    setTableFilters={props.setTableFilters}
+                                                    crudOptions={props.crudOptions}
+                                                />
                                             </>
                                         )}
                                     </>

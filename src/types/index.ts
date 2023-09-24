@@ -1,3 +1,4 @@
+import { FilterLabel } from "@sefirosweb/react-multiple-search"
 import { UseQueryOptions } from "@tanstack/react-query"
 import { CellContext, ColumnDef } from "@tanstack/react-table"
 import React from "react"
@@ -88,7 +89,12 @@ export type CrudOptions<T> = {
     canRefresh?: boolean,
     onSubmitFn?: (data: Partial<T>, action: ActionCrud) => Promise<Partial<T> | null>,
 
+    canExport?: boolean,
+
     globalSearch?: boolean,
+    enableGlobalFilterLabels?: Array<FilterLabel>
+    delayFilter?: number,
+
     pageSize?: number,
     pageSizes?: Array<number>,
     customButtons?: JSX.Element

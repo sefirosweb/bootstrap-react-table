@@ -17,15 +17,21 @@ export type GeneratedData = {
 }
 
 const generatedData: Array<GeneratedData> = []
+type Options = {
+    minValue?: number;
+    maxValue?: number;
+}
 
-export const getData = () => {
+export const getData = (options?: Options) => {
+    const { maxValue = 300, minValue = 40 } = options ?? {}
+
     if (generatedData.length > 0) {
         generatedData.sort((a, b) => (new Date(b.created_at)).getTime() - (new Date(a.created_at)).getTime())
         return generatedData
     }
 
     console.log('Generating mok data.. "generateData"')
-    const random = Math.floor(Math.random() * 200) + 40
+    const random = Math.floor(Math.random() * maxValue) + minValue
     const data: Array<GeneratedData> = []
     for (var i = 0; i < random; i++) {
 

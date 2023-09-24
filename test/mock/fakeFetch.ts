@@ -53,7 +53,12 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
 
 export const getFetchAll = (params: QueryFunctionContext, delay = 30): Promise<QueryEagle<GeneratedData>> => {
     return new Promise((resolve) => {
-        const data = getData()
+        const data = getData(
+            {
+                minValue: 10000,
+                maxValue: 15000
+            }
+        )
         setTimeout(() => {
             const response: QueryEagle<GeneratedData> = {
                 results: data,

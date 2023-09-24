@@ -1,8 +1,12 @@
-import React from "react"
-import { Button, Col, Row } from "react-bootstrap"
+import React, { useState } from "react"
+import { Button, ButtonGroup, Col, Row } from "react-bootstrap"
 import { useTranslation } from "react-i18next"
 import { flexRender } from "@tanstack/react-table"
 import { CrudOptions } from "@/index"
+import InputSearch, { Filters } from "@sefirosweb/react-multiple-search"
+import { FaFileExport } from "react-icons/fa"
+import { RefreshButton } from "../buttons/RefreshButton"
+import { DebouncedInput } from "./DebouncedInput"
 
 type Props = {
     crudOptions: CrudOptions<any>
@@ -12,6 +16,9 @@ type Props = {
 export const TableToolbar: React.FC<Props> = (props) => {
     const { create, customButtons } = props.crudOptions
     const { t } = useTranslation()
+
+    const [filter, setFilter] = useState("");
+    const [filters, setFilters] = useState<Array<Filters>>([]);
 
     return (
         <Row>
@@ -29,42 +36,43 @@ export const TableToolbar: React.FC<Props> = (props) => {
 
                 {customButtons}
             </Col>
-            {/* 
+
             <Col lg={6} md={6} xs={12} className="mb-3 align-self-end">
                 <div className="d-flex justify-content-end">
-
-                    {globalSearch && typeof enableGlobalFilterLabels === 'undefined' && (
+                    {props.crudOptions.globalSearch && typeof props.crudOptions.enableGlobalFilterLabels === 'undefined' && (
                         <DebouncedInput
-                            type="text"
+                            delayFilter={props.crudOptions.delayFilter}
                             value={filter}
-                            onChange={(value) => setFilter(String(value))}
-                            placeholder={t('Search') as string}
+                            onChange={(value) => setFilter(value)}
+                            placeholder={t('Search')}
                             className="form-control"
                         />
                     )}
 
-                    {globalSearch && enableGlobalFilterLabels && (
+                    {props.crudOptions.globalSearch && props.crudOptions.enableGlobalFilterLabels && (
                         <div className="w-100">
                             <InputSearch
                                 filters={filters}
                                 setFilters={setFilters}
-                                filterLabels={enableGlobalFilterLabels}
+                                filterLabels={props.crudOptions.enableGlobalFilterLabels}
                             />
                         </div>
                     )}
 
-                    {(canRefresh || canExport) && (
+                    {(props.crudOptions.canRefresh || props.crudOptions.canExport) && (
                         <div>
                             <ButtonGroup className="ms-2">
-                                {canRefresh && (
+                                {props.crudOptions.canRefresh && (
                                     <RefreshButton
-                                        disabled={isLoading}
-                                        onClick={() => refreshTable()}
+                                    // disabled={isLoading}
+                                    // onClick={() => refreshTable()}
                                     />
                                 )}
 
-                                {canExport &&
-                                    <Button onClick={() => generateExcel(exportName + Date.now())}>
+                                {props.crudOptions.canExport &&
+                                    <Button
+                                    // onClick={() => generateExcel(exportName + Date.now())}
+                                    >
                                         <FaFileExport size={18} />
                                     </Button>
                                 }
@@ -73,7 +81,7 @@ export const TableToolbar: React.FC<Props> = (props) => {
                     )}
 
                 </div>
-            </Col> */}
+            </Col>
         </Row>
     )
 }

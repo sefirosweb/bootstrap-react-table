@@ -1,4 +1,4 @@
-import React, { forwardRef, lazy, Ref, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { CellContext, ColumnDef, getCoreRowModel, getPaginationRowModel, Table as TableTanStackProp, useReactTable } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { Table as BTable, Col, Row } from "react-bootstrap";
@@ -16,6 +16,7 @@ export type Props = {
   pageOptions: PageOptions,
   setPageOptions: React.Dispatch<React.SetStateAction<PageOptions>>,
   pages?: number,
+  totalRows?: number,
 }
 
 export type PropsRef = {
@@ -30,10 +31,21 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
   const [tableFilters, setTableFilters] = useState<Filter>({})
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log('filters', tableFilters)
-    }, 230)
-    return () => clearTimeout(timeout)
+
+    if (props.isLazy) {
+      const filters = []
+      for (const key in tableFilters) {
+        filters.push({
+          filter: key,
+          text: tableFilters[key],
+        })
+      }
+
+      props.setPageOptions({ ...props.pageOptions, filters: filters })
+    }
+
+    console.log('filters', tableFilters)
+
   }, [tableFilters])
 
 
@@ -138,7 +150,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
             bordered
             responsive
           >
-            <Thead table={table} tableFilters={tableFilters} setTableFilters={setTableFilters} />
+            <Thead table={table} tableFilters={tableFilters} setTableFilters={setTableFilters} crudOptions={props.crudOptions} />
             {props.isFetching && <div>Looading</div>}
             <Tbody table={table} />
             {props.isFetching && <div>Looading</div>}
@@ -151,6 +163,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
         <Tfooter
           pages={props.pages ?? 1}
           currentPage={props.pageOptions.page}
+          totalRows={props.totalRows ?? 0}
 
           handleFirstPage={() => props.setPageOptions({ ...props.pageOptions, page: 1 })}
           handlePrevPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page - 1 })}
@@ -173,6 +186,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
         <Tfooter
           pages={table.getPageCount() === 0 ? 1 : table.getPageCount()}
           currentPage={table.getState().pagination.pageIndex + 1}
+          totalRows={props.tableData.length}
 
           handleFirstPage={() => table.setPageIndex(0)}
           handlePrevPage={() => table.previousPage()}

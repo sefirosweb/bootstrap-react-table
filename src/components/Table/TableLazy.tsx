@@ -78,6 +78,7 @@ export const TableLazy = forwardRef<PropsRef, Props>((props, ref) => {
                 setPageOptions={setPageOptions}
                 pages={tableData?.pages ?? 1}
                 pageSizes={pageSizes}
+                totalRows={tableData?.totalRows ?? 0}
             />
 
 
