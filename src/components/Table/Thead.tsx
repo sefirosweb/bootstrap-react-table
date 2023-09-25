@@ -62,6 +62,7 @@ export const Thead: React.FC<Props> = (props) => {
                                         {header.column.columnDef.meta?.filterable && (
                                             <>
                                                 <Filter
+                                                    type={header.column.columnDef.meta?.type}
                                                     columnDef={header.column.columnDef}
                                                     header_id={header.id}
                                                     tableFilters={tableFilters}

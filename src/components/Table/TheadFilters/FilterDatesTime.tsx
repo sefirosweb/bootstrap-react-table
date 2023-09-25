@@ -22,14 +22,11 @@ export const FilterDatesTime: React.FC<Props> = (props) => {
             return
         }
 
-        let min = values.min
-        let max = values.max
+        let min = values.min === '' ? null : DateTime.fromISO(values.min).toMillis()
+        let max = values.max === '' ? null : DateTime.fromISO(values.max).toMillis()
 
-        if (min !== '' && max !== '') {
-            const minNumber = DateTime.fromISO(min).toMillis();
-            const maxNumber = DateTime.fromISO(max).toMillis();
-
-            if (minNumber > maxNumber) {
+        if (min !== null && max !== null) {
+            if (min > max) {
                 let temp = min
                 min = max
                 max = temp
@@ -37,8 +34,8 @@ export const FilterDatesTime: React.FC<Props> = (props) => {
         }
 
         newFilters[headerId] = {
-            min: min !== '' ? min : null,
-            max: max !== '' ? max : null,
+            min,
+            max,
         }
 
         setTableFilters(newFilters)

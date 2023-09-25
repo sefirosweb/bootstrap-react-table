@@ -1,10 +1,11 @@
 import React, { forwardRef, useEffect, useState } from "react";
-import { CellContext, ColumnDef, getCoreRowModel, getPaginationRowModel, Table as TableTanStackProp, useReactTable } from "@tanstack/react-table";
+import { CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, Table as TableTanStackProp, useReactTable } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { Table as BTable, Col, Row } from "react-bootstrap";
 import { Tbody, Thead, TableToolbar, ModalForm, Tfooter } from "./index";
 import { ActionCrud, CrudOptions, Filter, PageOptions, EditButton, DeleteButton } from "@/index";
 import { Filters } from "@sefirosweb/react-multiple-search";
+import { filterFn, textFilterFn } from "@/lib";
 
 export type Props = {
   columns: Array<ColumnDef<any>>,
@@ -32,34 +33,51 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
 
   const [tableFilters, setTableFilters] = useState<Filter>({})
   const [dynamicFilters, setDynamicFilters] = useState<Array<Filters>>([]);
+
+  // Tan stack types
   const [globalFilter, setGlobalFilter] = useState("");
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   useEffect(() => {
+    if (!props.isLazy) return
 
-    if (props.isLazy) {
-      const filters: Array<Filters> = [...dynamicFilters];
+    const filters: Array<Filters> = [...dynamicFilters];
 
-      for (const key in tableFilters) {
-        filters.push({
-          filter: key,
-          label: key,
-          text: tableFilters[key],
-        })
-      }
-
-      if (globalFilter !== '') {
-        filters.push({
-          filter: 'globalFilter',
-          label: 'globalFilter',
-          text: globalFilter,
-        })
-      }
-
-      props.setPageOptions({ ...props.pageOptions, filters: filters })
+    for (const key in tableFilters) {
+      filters.push({
+        filter: key,
+        label: key,
+        text: tableFilters[key],
+      })
     }
 
+    if (globalFilter !== '') {
+      filters.push({
+        filter: 'globalFilter',
+        label: 'globalFilter',
+        text: globalFilter,
+      })
+    }
+
+    props.setPageOptions({ ...props.pageOptions, filters: filters })
 
   }, [tableFilters, dynamicFilters, globalFilter])
+
+  useEffect(() => {
+    if (props.isLazy) return
+
+    const newColumnFilters: ColumnFiltersState = []
+
+    for (const key in tableFilters) {
+      newColumnFilters.push({
+        id: key,
+        value: tableFilters[key],
+      })
+    }
+
+    console.log({ newColumnFilters })
+    setColumnFilters(newColumnFilters)
+  }, [tableFilters])
 
 
   const createButtonFn = () => {
@@ -94,6 +112,10 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
 
   useEffect(() => {
     const newColumns = [...props.columns]
+
+    newColumns.forEach((column) => {
+      column.filterFn = filterFn(column.meta?.type)
+    })
 
     if (props.crudOptions.edit) {
       const NewEditButton = props.crudOptions.editButton ? props.crudOptions.editButton : EditButton
@@ -138,13 +160,27 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     table = useReactTable({
       columns: columns,
       data: props.tableData,
+
       initialState: {
         pagination: {
           pageSize: props.pageOptions.pageSize,
         },
       },
+
       getCoreRowModel: getCoreRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
+
+      enableColumnFilters: true,
+      state: {
+        globalFilter,
+        columnFilters,
+      },
+
+      onColumnFiltersChange: setColumnFilters,
+      getFilteredRowModel: getFilteredRowModel(),
+      globalFilterFn: textFilterFn,
+      getColumnCanGlobalFilter: () => true,
+      onGlobalFilterChange: setGlobalFilter,
     });
   }
 

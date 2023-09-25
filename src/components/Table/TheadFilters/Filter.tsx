@@ -4,11 +4,11 @@ import { FilterDatesTime } from "./FilterDatesTime"
 import { FilterNumbers } from "./FilterNumbers"
 import { FilterSelect } from "./FilterSelect"
 import { FilterText } from "./FilterText"
-import { CrudOptions, Filter as FilterType } from "@/types"
+import { FieldType, Filter as FilterType } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 
 type Props = {
-    type?: 'text' | 'number' | 'date' | 'datetime' | 'select'
+    type?: FieldType
     header_id: string
     tableFilters: FilterType,
     setTableFilters: React.Dispatch<React.SetStateAction<FilterType>>,

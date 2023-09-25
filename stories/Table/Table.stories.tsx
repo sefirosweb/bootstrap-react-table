@@ -5,6 +5,7 @@ import { Table } from '../../src';
 import { UseQueryOptions } from '@tanstack/react-query';
 import { CrudOptions, QueryEagle, QueryPage, SelectOption } from '../../src/types';
 import { getFetchOptionsValue, getFetchPage, GeneratedData, getFetchAll } from '../../test/mock';
+import { DateTime } from 'luxon';
 
 const meta: Meta = {
   title: 'Tables/Table',
@@ -68,7 +69,19 @@ const columns: Array<ColumnDef<GeneratedData>> = [
     },
   },
   {
-    accessorKey: 'created_at',
+    id: 'created_at',
+    accessorFn: (row) => DateTime.fromISO(row.created_at).toMillis(),
+    cell: (props) => DateTime.fromISO(props.row.original.created_at).toISODate(),
+    meta: {
+      editable: true,
+      filterable: true,
+      type: 'date',
+    }
+  },
+  {
+    id: 'created_at_time',
+    accessorFn: (row) => DateTime.fromISO(row.created_at).toMillis(),
+    cell: (props) => DateTime.fromISO(props.row.original.created_at).toFormat('yyyy-MM-dd HH:mm:ss'),
     meta: {
       editable: true,
       filterable: true,
