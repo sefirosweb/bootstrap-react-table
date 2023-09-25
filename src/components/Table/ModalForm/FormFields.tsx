@@ -1,7 +1,9 @@
 import { Column, flexRender } from "@tanstack/react-table"
-import { FormDataType } from "../../../types"
+import { FormDataType } from "@/index"
 import { Form } from "react-bootstrap"
 import { FormSelect } from "@/components/FormSelect"
+import { DateForm } from "./DateForm"
+import { DateTimeForm } from "./DateTimeForm"
 
 type Props = {
     column: Column<any>,
@@ -48,24 +50,22 @@ export const FormFields: React.FC<Props> = (props) => {
             )}
 
             {column.columnDef.meta?.type === 'date' && (
-                <Form.Control
-                    type="date"
+                <DateForm
                     value={formData[column.id] ?? ''}
-                    onChange={(e) => {
+                    onOhange={(value) => {
                         const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
+                        newFormData[column.id] = value
                         setFormData(newFormData)
                     }}
                 />
             )}
 
             {column.columnDef.meta?.type === 'datetime' && (
-                <Form.Control
-                    type="datetime-local"
+                <DateTimeForm
                     value={formData[column.id] ?? ''}
-                    onChange={(e) => {
+                    onOhange={(value) => {
                         const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
+                        newFormData[column.id] = value
                         setFormData(newFormData)
                     }}
                 />

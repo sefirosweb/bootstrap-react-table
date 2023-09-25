@@ -1,9 +1,8 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Table } from '../../src';
+import { Table, CrudOptions, QueryEagle, QueryPage, SelectOption } from '../../src';
 import { UseQueryOptions } from '@tanstack/react-query';
-import { CrudOptions, QueryEagle, QueryPage, SelectOption } from '../../src/types';
 import { getFetchOptionsValue, getFetchPage, GeneratedData, getFetchAll } from '../../test/mock';
 import { DateTime } from 'luxon';
 
