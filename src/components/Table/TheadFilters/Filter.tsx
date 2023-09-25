@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { FilterDates } from "./FilterDates"
 import { FilterDatesTime } from "./FilterDatesTime"
 import { FilterNumbers } from "./FilterNumbers"
@@ -13,22 +13,10 @@ type Props = {
     tableFilters: FilterType,
     setTableFilters: React.Dispatch<React.SetStateAction<FilterType>>,
     columnDef: ColumnDef<any>,
-    crudOptions: CrudOptions<any>,
 }
 
 export const Filter: React.FC<Props> = (props) => {
-    const { type, header_id, columnDef, crudOptions } = props
-    const { delayFilter = 230 } = crudOptions
-
-    const [tableFilters, setTableFilters] = useState<FilterType>(props.tableFilters)
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            props.setTableFilters(tableFilters)
-        }, delayFilter);
-
-        return () => clearTimeout(timeout);
-    }, [tableFilters]);
+    const { type, header_id, columnDef, tableFilters, setTableFilters } = props
 
     return (
         <>

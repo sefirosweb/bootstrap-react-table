@@ -121,6 +121,8 @@ const crudOptions: CrudOptions<GeneratedData> = {
   },
 }
 
+const crudOptions2 = { ...crudOptions, enableGlobalFilterLabels: undefined }
+
 export const LazyTemplate: Story = {
   args: {
     tableProps: {
@@ -131,12 +133,35 @@ export const LazyTemplate: Story = {
     }
   },
 }
+
+export const LazyTemplateGlobal: Story = {
+  args: {
+    tableProps: {
+      useQueryOptions: useQueryOptionsLazy,
+      columns,
+      crudOptions: crudOptions2,
+      lazy: true
+    }
+  },
+}
+
 export const EagleTemplate: Story = {
   args: {
     tableProps: {
       useQueryOptions: useQueryOptionsEagle,
       columns,
       crudOptions,
+      lazy: false
+    }
+  },
+}
+
+export const EagleTemplateGlobal: Story = {
+  args: {
+    tableProps: {
+      useQueryOptions: useQueryOptionsEagle,
+      columns,
+      crudOptions: crudOptions2,
       lazy: false
     }
   },

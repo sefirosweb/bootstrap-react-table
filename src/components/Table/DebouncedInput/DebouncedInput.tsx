@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useEffect, useState } from 'react';
+import React, { InputHTMLAttributes, useEffect, useState } from 'react';
 
 interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   value?: string;
@@ -6,7 +6,7 @@ interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> 
   delayFilter?: number;
 }
 
-export const DebouncedInput = (props: Props) => {
+export const DebouncedInput: React.FC<Props> = (props) => {
   const { value, onChange, delayFilter = 230 } = props;
   const [currentValue, setCurrentValue] = useState('');
 

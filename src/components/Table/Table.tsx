@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Table as BTable, Col, Row } from "react-bootstrap";
 import { Tbody, Thead, TableToolbar, ModalForm, Tfooter } from "./index";
 import { ActionCrud, CrudOptions, Filter, PageOptions, EditButton, DeleteButton } from "@/index";
+import { Filters } from "@sefirosweb/react-multiple-search";
 
 export type Props = {
   columns: Array<ColumnDef<any>>,
@@ -28,25 +29,37 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
   const [cellSelected, setCellSelected] = useState<CellContext<any, unknown> | null>(null)
   const [action, setAction] = useState<ActionCrud>('create')
   const [show, setShow] = useState(false)
+
   const [tableFilters, setTableFilters] = useState<Filter>({})
+  const [dynamicFilters, setDynamicFilters] = useState<Array<Filters>>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
 
   useEffect(() => {
 
     if (props.isLazy) {
-      const filters = []
+      const filters: Array<Filters> = [...dynamicFilters];
+
       for (const key in tableFilters) {
         filters.push({
           filter: key,
+          label: key,
           text: tableFilters[key],
+        })
+      }
+
+      if (globalFilter !== '') {
+        filters.push({
+          filter: 'globalFilter',
+          label: 'globalFilter',
+          text: globalFilter,
         })
       }
 
       props.setPageOptions({ ...props.pageOptions, filters: filters })
     }
 
-    console.log('filters', tableFilters)
 
-  }, [tableFilters])
+  }, [tableFilters, dynamicFilters, globalFilter])
 
 
   const createButtonFn = () => {
@@ -139,7 +152,12 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     <>
       <Row>
         <Col>
-          <TableToolbar crudOptions={props.crudOptions} createButtonFn={createButtonFn} />
+          <TableToolbar
+            crudOptions={props.crudOptions}
+            createButtonFn={createButtonFn}
+            setDynamicFilters={setDynamicFilters}
+            setGlobalFilter={setGlobalFilter}
+          />
         </Col>
       </Row>
       <Row>

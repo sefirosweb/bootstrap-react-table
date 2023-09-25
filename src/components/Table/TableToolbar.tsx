@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, ButtonGroup, Col, Row } from "react-bootstrap"
 import { useTranslation } from "react-i18next"
 import { flexRender } from "@tanstack/react-table"
@@ -11,6 +11,8 @@ import { DebouncedInput } from "./DebouncedInput"
 type Props = {
     crudOptions: CrudOptions<any>
     createButtonFn: () => void
+    setDynamicFilters: React.Dispatch<React.SetStateAction<Array<Filters>>>
+    setGlobalFilter: React.Dispatch<React.SetStateAction<string>>
 }
 
 export const TableToolbar: React.FC<Props> = (props) => {
@@ -19,6 +21,14 @@ export const TableToolbar: React.FC<Props> = (props) => {
 
     const [filter, setFilter] = useState("");
     const [filters, setFilters] = useState<Array<Filters>>([]);
+
+    useEffect(() => {
+        props.setDynamicFilters(filters);
+    }, [filters]);
+
+    useEffect(() => {
+        props.setGlobalFilter(filter);
+    }, [filter])
 
     return (
         <Row>
@@ -41,11 +51,11 @@ export const TableToolbar: React.FC<Props> = (props) => {
                 <div className="d-flex justify-content-end">
                     {props.crudOptions.globalSearch && typeof props.crudOptions.enableGlobalFilterLabels === 'undefined' && (
                         <DebouncedInput
-                            delayFilter={props.crudOptions.delayFilter}
                             value={filter}
                             onChange={(value) => setFilter(value)}
                             placeholder={t('Search')}
                             className="form-control"
+                            delayFilter={300}
                         />
                     )}
 

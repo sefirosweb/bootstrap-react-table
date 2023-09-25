@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { flexRender, Table } from "@tanstack/react-table";
 import { CrudOptions, Filter as FilterType } from "@/index";
 import { Filter } from "./TheadFilters";
@@ -11,6 +11,15 @@ type Props = {
 }
 
 export const Thead: React.FC<Props> = (props) => {
+    const [tableFilters, setTableFilters] = useState<FilterType>({})
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            props.setTableFilters(tableFilters)
+        }, props.crudOptions.delayFilter ?? 230);
+
+        return () => clearTimeout(timeout);
+    }, [tableFilters]);
 
     return (
         <thead>
@@ -55,9 +64,8 @@ export const Thead: React.FC<Props> = (props) => {
                                                 <Filter
                                                     columnDef={header.column.columnDef}
                                                     header_id={header.id}
-                                                    tableFilters={props.tableFilters}
-                                                    setTableFilters={props.setTableFilters}
-                                                    crudOptions={props.crudOptions}
+                                                    tableFilters={tableFilters}
+                                                    setTableFilters={setTableFilters}
                                                 />
                                             </>
                                         )}
