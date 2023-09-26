@@ -1,8 +1,9 @@
 import { CrudOptions, Filter, PageOptions, QueryEagle } from "@/types";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
-import { forwardRef, useState } from "react";
-import { Table } from "./Table";
+import { UseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
+import { TableRef } from ".";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,
@@ -10,11 +11,10 @@ export type Props = {
     useQueryOptions: UseQueryOptions<QueryEagle<any>>,
 }
 
-export type PropsRef = {
+export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
+    const queryClient = useQueryClient()
+    const refTable = useRef<PropsRef>(null)
 
-}
-
-export const TableEagle = forwardRef<PropsRef, Props>((props, ref) => {
     const pageSizes = props.crudOptions.pageSizes ?? [10, 25, 50, 100, 500]
 
     const INITIAL_PAGE_OPTIONS: PageOptions = {
@@ -54,24 +54,29 @@ export const TableEagle = forwardRef<PropsRef, Props>((props, ref) => {
 
     const { data: tableData, isFetching } = useQuery(useQueryOptions)
 
+    const refreshTable = () => {
+        queryClient.invalidateQueries([props.useQueryOptions.queryKey])
+    }
+
+    useImperativeHandle(ref, () => ({
+        refreshTable,
+        setShowModal: (show: boolean) => refTable.current?.setShowModal(show),
+        setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading)
+    }));
+
     return (
-        <div>
-            <div>
-                This is eagle
-            </div>
-
-            <Table
-                columns={props.columns}
-                crudOptions={props.crudOptions}
-                tableData={tableData?.results ?? []}
-                isFetching={isFetching}
-                isLazy={false}
-                pageOptions={pageOptions}
-                setPageOptions={setPageOptions}
-                pageSizes={pageSizes}
-            />
-
-        </div>
+        <Table
+            columns={props.columns}
+            crudOptions={props.crudOptions}
+            tableData={tableData?.results ?? []}
+            isFetching={isFetching}
+            isLazy={false}
+            pageOptions={pageOptions}
+            setPageOptions={setPageOptions}
+            pageSizes={pageSizes}
+            refreshTable={refreshTable}
+            ref={refTable}
+        />
     )
 
 })

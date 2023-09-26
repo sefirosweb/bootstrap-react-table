@@ -1,8 +1,9 @@
 import { CrudOptions, Filter, PageOptions, QueryPage } from "@/types";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
-import { forwardRef, useState } from "react";
-import { Table } from "./Table";
+import { UseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
+import { TableRef } from ".";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,
@@ -10,11 +11,10 @@ export type Props = {
     useQueryOptions: UseQueryOptions<QueryPage<any>>,
 }
 
-export type PropsRef = {
+export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
+    const queryClient = useQueryClient()
+    const refTable = useRef<PropsRef>(null)
 
-}
-
-export const TableLazy = forwardRef<PropsRef, Props>((props, ref) => {
     const pageSizes = props.crudOptions.pageSizes ?? [10, 25, 50, 100, 500]
 
     const INITIAL_PAGE_OPTIONS: PageOptions = {
@@ -62,27 +62,31 @@ export const TableLazy = forwardRef<PropsRef, Props>((props, ref) => {
 
     const { data: tableData, isFetching } = useQuery(useQueryOptions)
 
+    const refreshTable = () => {
+        queryClient.invalidateQueries([props.useQueryOptions.queryKey])
+    }
+
+    useImperativeHandle(ref, () => ({
+        refreshTable,
+        setShowModal: (show: boolean) => refTable.current?.setShowModal(show),
+        setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading)
+    }));
+
     return (
-        <div>
-            <div>
-                This is lazy
-            </div>
-
-            <Table
-                columns={props.columns}
-                crudOptions={props.crudOptions}
-                tableData={tableData?.results ?? []}
-                isFetching={isFetching}
-                isLazy={true}
-                pageOptions={pageOptions}
-                setPageOptions={setPageOptions}
-                pages={tableData?.pages ?? 1}
-                pageSizes={pageSizes}
-                totalRows={tableData?.totalRows ?? 0}
-            />
-
-
-        </div>
+        <Table
+            columns={props.columns}
+            crudOptions={props.crudOptions}
+            tableData={tableData?.results ?? []}
+            isFetching={isFetching}
+            isLazy={true}
+            pageOptions={pageOptions}
+            setPageOptions={setPageOptions}
+            pages={tableData?.pages ?? 1}
+            pageSizes={pageSizes}
+            totalRows={tableData?.totalRows ?? 0}
+            refreshTable={refreshTable}
+            ref={refTable}
+        />
     )
 
 })

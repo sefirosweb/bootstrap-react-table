@@ -8,18 +8,18 @@ import { t } from "i18next"
 
 type Props = {
     crudOptions: CrudOptions<any>,
-    show: boolean,
-    setShow: React.Dispatch<React.SetStateAction<boolean>>,
+    showModal: boolean,
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
     action: ActionCrud
     cell: CellContext<any, unknown> | null
     table: Table<any>
+    isLoadingModal: boolean
 }
 
 export const ModalForm: React.FC<Props> = (props) => {
-    const { show, setShow, action, cell, table, crudOptions } = props
+    const { action, cell, table, crudOptions } = props
 
     const [formData, setFormData] = useState<FormDataType>({})
-    const [isLoadingModal, setIsLoadingModal] = useState(false)
 
     const onOpenModal = () => {
         if (action === 'create') {
@@ -99,11 +99,12 @@ export const ModalForm: React.FC<Props> = (props) => {
         <>
             <Modal
                 onShow={onOpenModal}
-                show={show}
-                setShow={setShow}
+                show={props.showModal}
+                setShow={props.setShowModal}
                 title={action}
                 accept={t('Accept')}
                 handleAccept={onSubmitForm}
+                isLoading={props.isLoadingModal}
                 body={
                     <>
                         {action === 'delete' && <div>Estas seguro de borrar??</div>}
@@ -112,7 +113,7 @@ export const ModalForm: React.FC<Props> = (props) => {
                             .getAllFlatColumns()
                             .filter(column => column.columnDef.meta?.editable === true && column.id !== crudOptions.primaryKey)
                             .map(column => (
-                                <FormFields key={column.id} column={column} formData={formData} setFormData={setFormData} isLoadingModal={isLoadingModal} />
+                                <FormFields key={column.id} column={column} formData={formData} setFormData={setFormData} isLoadingModal={props.isLoadingModal} />
                             ))}
                     </>
                 }

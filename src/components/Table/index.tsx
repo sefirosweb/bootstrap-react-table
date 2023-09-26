@@ -3,13 +3,19 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { useGetQueryClient } from "../../lib/useGetQueryClient"
 import { TableProps } from "@/types"
 import { TableEagle } from "./TableEagle"
-import { TableLazy, PropsRef } from "./TableLazy"
+import { TableLazy } from "./TableLazy"
 
 export type Props = {
     tableProps: TableProps<any>
 }
 
-export const Table = forwardRef<PropsRef, Props>((props, ref) => {
+export type TableRef = {
+    refreshTable: () => void
+    setShowModal: (show: boolean) => void
+    setIsLoadingModal: (isLoading: boolean) => void
+}
+
+export const Table = forwardRef<TableRef, Props>((props, ref) => {
     const { columns, crudOptions, lazy, useQueryOptions } = props.tableProps
     const queryClient = useGetQueryClient()
 

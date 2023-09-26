@@ -62,7 +62,36 @@ export const getData = (options?: Options) => {
     return generatedData
 }
 
-export const updateData = (data: Array<GeneratedData>) => {
-    generatedData.splice(0, generatedData.length)
-    generatedData.push(...data)
+export const updateData = (data: Partial<GeneratedData>, delay = 150): Promise<Partial<GeneratedData>> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const findData = generatedData.find((item) => item.uuid === data.uuid)
+            if (!findData) return
+            Object.assign(findData, data)
+            resolve(data)
+        }, delay)
+    })
+}
+export const createData = (data: GeneratedData, delay = 150): Promise<GeneratedData> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const uuid = faker.string.uuid()
+            data.uuid = uuid
+            data.value = uuid
+            generatedData.push(data)
+            resolve(data)
+        }, delay)
+    })
+}
+
+export const deleteData = (uuid: string, delay = 150): Promise<string> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const findData = generatedData.find((item) => item.uuid === uuid)
+            if (!findData) return
+            const index = generatedData.indexOf(findData)
+            generatedData.splice(index, 1)
+            resolve(uuid)
+        }, delay);
+    })
 }

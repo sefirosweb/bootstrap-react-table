@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, Table as TableTanStackProp, useReactTable } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { Table as BTable, Col, Row } from "react-bootstrap";
@@ -19,9 +19,12 @@ export type Props = {
   setPageOptions: React.Dispatch<React.SetStateAction<PageOptions>>,
   pages?: number,
   totalRows?: number,
+  refreshTable: () => void,
 }
 
 export type PropsRef = {
+  setShowModal: (show: boolean) => void
+  setIsLoadingModal: (isLoading: boolean) => void
 };
 
 export const Table = forwardRef<PropsRef, Props>((props, ref) => {
@@ -29,10 +32,11 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
   const [columns, setColumns] = useState<Array<ColumnDef<any>>>([])
   const [cellSelected, setCellSelected] = useState<CellContext<any, unknown> | null>(null)
   const [action, setAction] = useState<ActionCrud>('create')
-  const [show, setShow] = useState(false)
+  const [showModal, setShowModal] = useState(false)
 
   const [tableFilters, setTableFilters] = useState<Filter>({})
   const [dynamicFilters, setDynamicFilters] = useState<Array<Filters>>([]);
+  const [isLoadingModal, setIsLoadingModal] = useState(false)
 
   // Tan stack types
   const [globalFilter, setGlobalFilter] = useState("");
@@ -84,7 +88,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     const action = () => {
       setCellSelected(null)
       setAction('create')
-      setShow(true)
+      setShowModal(true)
     }
 
     props.crudOptions.createFn ? props.crudOptions.createFn(action) : action()
@@ -94,7 +98,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     const action = () => {
       setCellSelected(cell)
       setAction('edit')
-      setShow(true)
+      setShowModal(true)
     }
 
     props.crudOptions.editFn ? props.crudOptions.editFn(action, cell) : action()
@@ -104,7 +108,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     const action = () => {
       setCellSelected(cell)
       setAction('delete')
-      setShow(true)
+      setShowModal(true)
     }
 
     props.crudOptions.deleteFn ? props.crudOptions.deleteFn(action, cell) : action()
@@ -184,6 +188,12 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
     });
   }
 
+  useImperativeHandle(ref, () => ({
+    setShowModal,
+    setIsLoadingModal,
+  }));
+
+
   return (
     <>
       <Row>
@@ -193,6 +203,8 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
             createButtonFn={createButtonFn}
             setDynamicFilters={setDynamicFilters}
             setGlobalFilter={setGlobalFilter}
+            refreshTable={props.refreshTable}
+            isLoading={props.isFetching}
           />
         </Col>
       </Row>
@@ -265,10 +277,11 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
       <ModalForm
         crudOptions={props.crudOptions}
         action={action}
-        show={show}
-        setShow={setShow}
+        showModal={showModal}
+        setShowModal={setShowModal}
         cell={cellSelected}
         table={table}
+        isLoadingModal={isLoadingModal}
       />
 
     </>

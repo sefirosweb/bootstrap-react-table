@@ -13,6 +13,8 @@ type Props = {
     createButtonFn: () => void
     setDynamicFilters: React.Dispatch<React.SetStateAction<Array<Filters>>>
     setGlobalFilter: React.Dispatch<React.SetStateAction<string>>
+    refreshTable: () => void,
+    isLoading: boolean,
 }
 
 export const TableToolbar: React.FC<Props> = (props) => {
@@ -74,14 +76,15 @@ export const TableToolbar: React.FC<Props> = (props) => {
                             <ButtonGroup className="ms-2">
                                 {props.crudOptions.canRefresh && (
                                     <RefreshButton
-                                    // disabled={isLoading}
-                                    // onClick={() => refreshTable()}
+                                        disabled={props.isLoading}
+                                        onClick={() => props.refreshTable()}
                                     />
                                 )}
 
                                 {props.crudOptions.canExport &&
                                     <Button
-                                    // onClick={() => generateExcel(exportName + Date.now())}
+                                        // onClick={() => generateExcel(exportName + Date.now())}
+                                        disabled={props.isLoading}
                                     >
                                         <FaFileExport size={18} />
                                     </Button>
