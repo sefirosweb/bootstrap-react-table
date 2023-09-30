@@ -96,10 +96,12 @@ export const getFetchAll = (params: QueryFunctionContext, delay = 30): Promise<Q
     return new Promise((resolve) => {
         const data = getData(
             {
-                minValue: 100,
-                maxValue: 200
+                minValue: 500,
+                maxValue: 1000
             }
-        )
+        ).sort((a, b) => a.uuid.localeCompare(b.uuid))
+
+
         setTimeout(() => {
             const response: QueryEagle<GeneratedData> = {
                 results: data,

@@ -79,7 +79,6 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
       })
     }
 
-    console.log({ newColumnFilters })
     setColumnFilters(newColumnFilters)
   }, [tableFilters])
 

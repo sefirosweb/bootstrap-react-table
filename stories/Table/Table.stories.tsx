@@ -84,7 +84,7 @@ export const EagleTemplate: Story = {
     return (
       <div>
         <div>
-          This is Lazy load template
+          This is Eagle load template
         </div>
         <div className='mt-3'>
           <Table {...props} ref={tableRef} />
@@ -111,7 +111,7 @@ export const EagleTemplateGlobal: Story = {
     return (
       <div>
         <div>
-          This is Lazy load template
+          This is Eagle load template
         </div>
         <div className='mt-3'>
           <Table {...props} ref={tableRef} />

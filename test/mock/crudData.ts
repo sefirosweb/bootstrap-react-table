@@ -26,7 +26,6 @@ export const getData = (options?: Options) => {
     const { maxValue = 300, minValue = 40 } = options ?? {}
 
     if (generatedData.length > 0) {
-        generatedData.sort((a, b) => (new Date(b.created_at)).getTime() - (new Date(a.created_at)).getTime())
         return generatedData
     }
 
@@ -62,16 +61,7 @@ export const getData = (options?: Options) => {
     return generatedData
 }
 
-export const updateData = (data: Partial<GeneratedData>, delay = 150): Promise<Partial<GeneratedData>> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const findData = generatedData.find((item) => item.uuid === data.uuid)
-            if (!findData) return
-            Object.assign(findData, data)
-            resolve(data)
-        }, delay)
-    })
-}
+
 export const createData = (data: GeneratedData, delay = 150): Promise<GeneratedData> => {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -80,6 +70,19 @@ export const createData = (data: GeneratedData, delay = 150): Promise<GeneratedD
             data.value = uuid
             generatedData.push(data)
             resolve(data)
+        }, delay)
+    })
+}
+
+export const updateData = (data: Partial<GeneratedData>, delay = 150): Promise<Partial<GeneratedData>> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const findData = generatedData.find((item) => item.uuid === data.uuid)
+            if (!findData) return
+            console.log('updating', { data })
+            const index = generatedData.indexOf(findData)
+            generatedData[index] = { ...findData, ...data }
+            resolve(generatedData[index])
         }, delay)
     })
 }
