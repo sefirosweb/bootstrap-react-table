@@ -22,6 +22,26 @@ type Options = {
     maxValue?: number;
 }
 
+export const fakeData = (uuid: string, category: OptionsType): GeneratedData => {
+    return {
+        uuid: uuid,
+        value: uuid,
+        ean: faker.number.int({ min: 8437002848521, max: 9000000000000 }),
+        name: faker.commerce.product(),
+        description: Math.random() < 0.4 ? faker.commerce.productDescription() : null,
+        random: Math.random() < 0.4 ? generateRandomString(10) : null,
+        price: parseFloat(faker.commerce.price()) + 0.99,
+        category: category,
+        created_at: faker.date.recent({ days: 10 }).toISOString(),
+        categories: [
+            getRandom(generateOptionsValue()),
+            getRandom(generateOptionsValue()),
+            getRandom(generateOptionsValue()),
+            getRandom(generateOptionsValue())
+        ]
+    }
+}
+
 export const getData = (options?: Options) => {
     const { maxValue = 300, minValue = 40 } = options ?? {}
 
@@ -37,23 +57,7 @@ export const getData = (options?: Options) => {
         const category = getRandom(generateOptionsValue())
 
         const uuid = faker.string.uuid()
-        data.push({
-            uuid: uuid,
-            value: uuid,
-            ean: faker.number.int({ min: 8437002848521, max: 9000000000000 }),
-            name: faker.commerce.product(),
-            description: Math.random() < 0.4 ? faker.commerce.productDescription() : null,
-            random: Math.random() < 0.4 ? generateRandomString(10) : null,
-            price: parseFloat(faker.commerce.price()) + 0.99,
-            category: category,
-            created_at: faker.date.recent({ days: 10 }).toISOString(),
-            categories: [
-                getRandom(generateOptionsValue()),
-                getRandom(generateOptionsValue()),
-                getRandom(generateOptionsValue()),
-                getRandom(generateOptionsValue())
-            ]
-        })
+        data.push(fakeData(uuid, category))
     }
 
     generatedData.push(...data)
@@ -62,14 +66,17 @@ export const getData = (options?: Options) => {
 }
 
 
-export const createData = (data: GeneratedData, delay = 150): Promise<GeneratedData> => {
+export const createData = (data: Omit<GeneratedData, 'uuid'>, delay = 150): Promise<GeneratedData> => {
+    const dataWitId: GeneratedData = {
+        ...data,
+        uuid: faker.string.uuid(),
+        value: faker.string.uuid()
+    }
+
     return new Promise((resolve) => {
         setTimeout(() => {
-            const uuid = faker.string.uuid()
-            data.uuid = uuid
-            data.value = uuid
-            generatedData.push(data)
-            resolve(data)
+            generatedData.push(dataWitId)
+            resolve(dataWitId)
         }, delay)
     })
 }

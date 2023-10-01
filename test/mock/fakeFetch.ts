@@ -99,7 +99,7 @@ export const getFetchAll = (params: QueryFunctionContext, delay = 30): Promise<Q
                 minValue: 500,
                 maxValue: 1000
             }
-        ).sort((a, b) => a.uuid.localeCompare(b.uuid))
+        )
 
 
         setTimeout(() => {

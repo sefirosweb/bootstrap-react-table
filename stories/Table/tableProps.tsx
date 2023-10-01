@@ -1,9 +1,11 @@
 import React from "react";
 import { UseQueryOptions } from "@tanstack/react-query";
 import { ActionCrud, CrudOptions, QueryEagle, QueryPage, SelectOption, TableRef } from "../../src";
-import { GeneratedData, deleteData, getFetchAll, getFetchOptionsValue, getFetchPage, updateData } from "../../test/mock";
+import { GeneratedData, createData, deleteData, fakeData, generateRandomString, getFetchAll, getFetchOptionsValue, getFetchPage, getRandom, updateData } from "../../test/mock";
 import { ColumnDef } from "@tanstack/react-table";
 import { DateTime } from "luxon";
+import { generateOptionsValue } from "../../test/mock/generateOptionsValue";
+import { faker } from "@faker-js/faker";
 
 const delay = 800
 
@@ -123,6 +125,16 @@ export const onSubmitFn = (data: Partial<any>, action: ActionCrud, tableRef: Tab
         tableRef?.setIsLoadingModal(true)
 
         const actionFn = () => {
+
+            if (action === 'create') {
+                const uuid = faker.string.uuid()
+                const category = getRandom(generateOptionsValue())
+
+                const newData = fakeData(uuid, category)
+                return createData({ ...newData, ...data }, 1500)
+            }
+
+
             if (action === 'edit') {
                 return updateData({
                     uuid: data.uuid,
@@ -141,10 +153,12 @@ export const onSubmitFn = (data: Partial<any>, action: ActionCrud, tableRef: Tab
 
         actionFn()
             .then(() => {
-                tableRef?.setIsLoadingModal(false)
                 tableRef?.setShowModal(false)
                 tableRef?.refreshTable()
                 resolve(data)
+            })
+            .finally(() => {
+                tableRef?.setIsLoadingModal(false)
             })
 
     })
