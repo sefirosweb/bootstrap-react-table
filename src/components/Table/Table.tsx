@@ -216,9 +216,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
             responsive
           >
             <Thead table={table} tableFilters={tableFilters} setTableFilters={setTableFilters} crudOptions={props.crudOptions} />
-            {props.isFetching && <div>Looading</div>}
-            <Tbody table={table} />
-            {props.isFetching && <div>Looading</div>}
+            <Tbody table={table} isLoading={props.isFetching} />
           </BTable>
 
         </Col>
