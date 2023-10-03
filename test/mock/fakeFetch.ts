@@ -25,8 +25,8 @@ export const getFetchOptionsValue = (delay = 30): Promise<Array<SelectOption>> =
 export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<QueryPage<GeneratedData>> => {
     return new Promise((resolve) => {
         let data = getData({
-            minValue: 10000,
-            maxValue: 50000
+            minValue: 100,
+            maxValue: 500
         })
 
         const currentPage = params.meta?.page ?? 1
@@ -46,11 +46,11 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
                 }
 
                 if (p.filter === 'created_at') {
-                    return inRangeDate(DateTime.fromISO(d.created_at).toMillis(), p.text.min, p.text.max)
+                    return inRangeDate(DateTime.fromISO(d.created_at).toMillis(), DateTime.fromISO(p.text.min).toMillis(), DateTime.fromISO(p.text.max).toMillis())
                 }
 
                 if (p.filter === 'created_at_time') {
-                    return inRangeDateTime(DateTime.fromISO(d.created_at).toMillis(), p.text.min, p.text.max)
+                    return inRangeDateTime(DateTime.fromISO(d.created_at).toMillis(), DateTime.fromISO(p.text.min).toMillis(), DateTime.fromISO(p.text.max).toMillis())
                 }
 
                 if (p.filter === 'price') {

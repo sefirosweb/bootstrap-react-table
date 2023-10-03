@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 import { generateOptionsValue } from "../../test/mock/generateOptionsValue";
 import { faker } from "@faker-js/faker";
 
-const delay = 800
+const delay = 230
 
 export const optionsCategory: UseQueryOptions<Array<SelectOption>> = {
     queryKey: ['products'],
@@ -71,8 +71,7 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
     },
     {
         id: 'created_at',
-        accessorFn: (row) => DateTime.fromISO(row.created_at).toMillis(),
-        cell: (props) => DateTime.fromISO(props.row.original.created_at).toISODate(),
+        accessorFn: (row) => DateTime.fromISO(row.created_at).toISODate(),
         meta: {
             editable: true,
             filterable: true,
@@ -81,7 +80,7 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
     },
     {
         id: 'created_at_time',
-        accessorFn: (row) => DateTime.fromISO(row.created_at).toMillis(),
+        accessorFn: (row) => DateTime.fromISO(row.created_at).toISO(),
         cell: (props) => DateTime.fromISO(props.row.original.created_at).toFormat('yyyy-MM-dd HH:mm:ss'),
         meta: {
             editable: true,

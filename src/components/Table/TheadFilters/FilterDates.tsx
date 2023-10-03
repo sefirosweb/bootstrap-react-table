@@ -22,8 +22,8 @@ export const FilterDates: React.FC<Props> = (props) => {
             return
         }
 
-        let min = values.min === '' ? null : DateTime.fromISO(values.min).toMillis()
-        let max = values.max === '' ? null : DateTime.fromISO(values.max).toMillis()
+        let min = values.min === '' ? null : DateTime.fromISO(values.min)
+        let max = values.max === '' ? null : DateTime.fromISO(values.max)
 
         if (min !== null && max !== null) {
             if (min > max) {
@@ -34,8 +34,8 @@ export const FilterDates: React.FC<Props> = (props) => {
         }
 
         newFilters[headerId] = {
-            min,
-            max,
+            min: min?.toISODate(),
+            max: max?.toISODate(),
         }
 
         setTableFilters(newFilters)
@@ -52,6 +52,7 @@ export const FilterDates: React.FC<Props> = (props) => {
                 value={values.min}
                 onChange={(e) => setValues({ ...values, min: e.target.value })}
             />
+
             <Form.Control
                 id={`filter_${headerId}_max`}
                 name={`filter_${headerId}_max`}
