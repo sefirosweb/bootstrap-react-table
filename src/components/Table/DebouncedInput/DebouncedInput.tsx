@@ -1,17 +1,18 @@
 import React, { InputHTMLAttributes, useEffect, useState } from 'react';
 
-interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
   value?: string;
   onChange?: (value: string) => void;
-  delayFilter?: number;
+  delayFilter: number;
 }
 
 export const DebouncedInput: React.FC<Props> = (props) => {
-  const { value, onChange, delayFilter = 230 } = props;
+  const { value, onChange, delayFilter, ...inputProps } = props;
   const [currentValue, setCurrentValue] = useState('');
 
   useEffect(() => {
     if (typeof value !== 'string') return;
+
     setCurrentValue(value);
   }, [value]);
 
@@ -26,7 +27,7 @@ export const DebouncedInput: React.FC<Props> = (props) => {
 
   return (
     <input
-      {...props}
+      {...inputProps}
       value={currentValue}
       onChange={(e) => setCurrentValue(e.target.value)}
     />

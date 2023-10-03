@@ -57,7 +57,7 @@ export const TableToolbar: React.FC<Props> = (props) => {
                             onChange={(value) => setFilter(value)}
                             placeholder={t('Search')}
                             className="form-control"
-                            delayFilter={300}
+                            delayFilter={props.crudOptions.delayFilter ?? 230}
                         />
                     )}
 
