@@ -9,9 +9,5 @@ export const filterFn = (fieldType?: FieldType): FilterFn<any> => {
     if (fieldType === 'number') return inRangeNumberFilterFn;
     if (fieldType === 'date') return inRangeDateFilterFn;
     if (fieldType === 'datetime') return inRangeDateTimeFilterFn;
-
-
     return textFilterFn;
 }
-
-export { textFilterFn } from './textFilterFn'

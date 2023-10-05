@@ -5,8 +5,9 @@ import { Table as BTable, Col, Row } from "react-bootstrap";
 import { Tbody, Thead, TableToolbar, ModalForm, Tfooter } from "./index";
 import { ActionCrud, CrudOptions, Filter, PageOptions, EditButton, DeleteButton } from "@/index";
 import { Filters } from "@sefirosweb/react-multiple-search";
-import { filterFn, textFilterFn } from "@/lib";
+import { filterFn } from "@/lib";
 import { QueryKey } from "@tanstack/react-query";
+import { globalFilterFn } from "@/lib/filterFn/globalFilterFn";
 
 export type Props = {
   columns: Array<ColumnDef<any>>,
@@ -24,6 +25,11 @@ export type Props = {
   queryKey: QueryKey
 }
 
+type CustomColumnFiltersState = Array<{
+  id: string,
+  value: Array<unknown>
+}>
+
 export type PropsRef = {
   setShowModal: (show: boolean) => void
   setIsLoadingModal: (isLoading: boolean) => void
@@ -36,12 +42,13 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
   const [action, setAction] = useState<ActionCrud>('create')
   const [showModal, setShowModal] = useState(false)
 
+
   const [tableFilters, setTableFilters] = useState<Filter>({})
   const [dynamicFilters, setDynamicFilters] = useState<Array<Filters>>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+
   const [isLoadingModal, setIsLoadingModal] = useState(false)
 
-  // Tan stack types
-  const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   useEffect(() => {
@@ -72,17 +79,33 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
   useEffect(() => {
     if (props.isLazy) return
 
-    const newColumnFilters: ColumnFiltersState = []
+    const newColumnFilters: CustomColumnFiltersState = []
 
     for (const key in tableFilters) {
       newColumnFilters.push({
         id: key,
-        value: tableFilters[key],
+        value: [tableFilters[key]],
       })
     }
 
+    if (dynamicFilters) {
+      dynamicFilters.forEach((filter) => {
+        const columnFilter = newColumnFilters.find((columnFilter) => columnFilter.id === filter.filter)
+        if (columnFilter) {
+          columnFilter.value.push(filter.text)
+        } else {
+          newColumnFilters.push({
+            id: filter.filter,
+            value: [filter.text]
+          })
+        }
+      })
+    }
+
+    console.log('newColumnFilters', newColumnFilters)
+
     setColumnFilters(newColumnFilters)
-  }, [tableFilters])
+  }, [tableFilters, dynamicFilters])
 
 
   const createButtonFn = () => {
@@ -183,7 +206,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
 
       onColumnFiltersChange: setColumnFilters,
       getFilteredRowModel: getFilteredRowModel(),
-      globalFilterFn: textFilterFn,
+      globalFilterFn: globalFilterFn,
       getColumnCanGlobalFilter: () => true,
       onGlobalFilterChange: setGlobalFilter,
       autoResetPageIndex: false,

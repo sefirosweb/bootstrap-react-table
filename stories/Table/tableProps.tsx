@@ -70,6 +70,13 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
         },
     },
     {
+        id: 'category',
+        accessorFn: (row) => row.category?.name,
+        meta: {
+            visible: false,
+        },
+    },
+    {
         id: 'created_at_date',
         accessorFn: (row) => DateTime.fromISO(row.created_at).toISODate(),
         meta: {
@@ -81,7 +88,7 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
     {
         id: 'created_at',
         accessorFn: (row) => DateTime.fromISO(row.created_at).toISO(),
-        cell: (props) => DateTime.fromISO(props.row.original.created_at).toFormat('yyyy-MM-dd HH:mm:ss'),
+        cell: (props) => DateTime.fromISO(props.row.original.created_at).toLocaleString(DateTime.DATETIME_SHORT),
         meta: {
             editable: true,
             filterable: true,
@@ -107,12 +114,16 @@ export const crudOptions: CrudOptions<GeneratedData> = {
             label: 'Name',
         },
         {
-            filter: 'desc',
+            filter: 'description',
             label: 'Descripction',
         },
         {
             filter: 'category',
             label: 'Category',
+        },
+        {
+            filter: 'uuid',
+            label: 'UUID',
         },
     ],
 }

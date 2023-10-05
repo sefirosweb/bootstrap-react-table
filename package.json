@@ -34,7 +34,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build": "vite build",
-    "pack": "npm run build && rm -f sefirosweb-react-crud-* && npm pack && mv sefirosweb-react-crud-* sefirosweb-react-crud-$(date +%Y%m%d-%H%M%S).tgz"
+    "pack": "npm run build && rm -f sefirosweb-bootstrap-react-table-* && npm pack && mv sefirosweb-bootstrap-react-table-* sefirosweb-bootstrap-react-table-$(date +%Y%m%d-%H%M%S).tgz"
   },
   "repository": {
     "type": "git",
@@ -60,8 +60,8 @@
     "@tanstack/react-table": "^8.10.3",
     "@types/luxon": "^3.3.2",
     "@types/node": "^20.8.2",
-    "@types/react": "^18.2.24",
-    "@types/react-dom": "^18.2.9",
+    "@types/react": "^18.2.25",
+    "@types/react-dom": "^18.2.10",
     "@types/toastr": "^2.1.41",
     "@vitejs/plugin-react-swc": "^3.4.0",
     "bootstrap": "^5.3.2",

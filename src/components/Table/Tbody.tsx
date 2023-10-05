@@ -30,12 +30,14 @@ export const Tbody: React.FC<Props> = (props) => {
                 <tr
                     key={row.id}
                 >
-                    {row.getVisibleCells().map((cell) => (
-                        <td
-                            key={cell.id}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                    ))}
+                    {row.getVisibleCells()
+                        .filter(cell => cell.column.columnDef.meta?.visible !== false)
+                        .map((cell) => (
+                            <td
+                                key={cell.id}>
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </td>
+                        ))}
                 </tr>
             ))}
 

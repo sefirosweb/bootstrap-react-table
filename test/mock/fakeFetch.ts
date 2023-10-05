@@ -25,8 +25,8 @@ export const getFetchOptionsValue = (delay = 30): Promise<Array<SelectOption>> =
 export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<QueryPage<GeneratedData>> => {
     return new Promise((resolve) => {
         let data = getData({
-            minValue: 1,
-            maxValue: 5
+            minValue: 1000,
+            maxValue: 5000
         })
 
         const currentPage = params.meta?.page ?? 1
@@ -45,11 +45,11 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
                     return matchString(d.name, p.text)
                 }
 
-                if (p.filter === 'created_at') {
+                if (p.filter === 'created_at_date') {
                     return inRangeDate(DateTime.fromISO(d.created_at).toMillis(), DateTime.fromISO(p.text.min).toMillis(), DateTime.fromISO(p.text.max).toMillis())
                 }
 
-                if (p.filter === 'created_at_time') {
+                if (p.filter === 'created_at') {
                     return inRangeDateTime(DateTime.fromISO(d.created_at).toMillis(), DateTime.fromISO(p.text.min).toMillis(), DateTime.fromISO(p.text.max).toMillis())
                 }
 
@@ -57,16 +57,20 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
                     return inRangeNumber(d.price, p.text.min, p.text.max)
                 }
 
-                if (p.filter === 'desc') {
+                if (p.filter === 'description') {
                     return matchString(d.description, p.text)
+                }
+
+                if (p.filter === 'uuid') {
+                    return matchString(d.uuid, p.text)
                 }
 
                 if (p.filter === 'category' && d.category) {
                     return matchString(d.category.name, p.text)
                 }
 
-                if (p.filter === 'globalFilter' && d.category) {
-                    return matchString(d.name, p.text) || matchString(d.category.name, p.text) || matchString(d.description, p.text) || matchString(d.uuid, p.text)
+                if (p.filter === 'globalFilter') {
+                    return matchString(d.name, p.text) || matchString(d.category?.name ?? '', p.text) || matchString(d.description, p.text) || matchString(d.uuid, p.text)
                 }
             })
         })
@@ -96,8 +100,8 @@ export const getFetchAll = (params: QueryFunctionContext, delay = 30): Promise<Q
     return new Promise((resolve) => {
         const data = getData(
             {
-                minValue: 1,
-                maxValue: 5
+                minValue: 1000,
+                maxValue: 5000
             }
         )
 
