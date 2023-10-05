@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { Table, TableRef } from '../../src';
-import { columns, crudOptions, onSubmitFn, useQueryOptionsEagle, useQueryOptionsLazy } from './tableProps';
+import { columns, crudOptions, onSubmitFn, onSubmitFnWoRefresh, useQueryOptionsEagle, useQueryOptionsLazy } from './tableProps';
 
 const meta: Meta = {
   title: 'Tables/Table',
@@ -79,7 +79,7 @@ export const EagleTemplate: Story = {
   },
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
-    crudOptions.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
+    crudOptions.onSubmitFn = (data, action) => onSubmitFnWoRefresh(data, action, tableRef.current)
 
     return (
       <div>
@@ -106,7 +106,7 @@ export const EagleTemplateGlobal: Story = {
   },
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
-    crudOptions2.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
+    crudOptions2.onSubmitFn = (data, action) => onSubmitFnWoRefresh(data, action, tableRef.current)
 
     return (
       <div>

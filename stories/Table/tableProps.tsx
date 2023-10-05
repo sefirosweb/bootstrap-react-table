@@ -10,17 +10,17 @@ import { faker } from "@faker-js/faker";
 const delay = 230
 
 export const optionsCategory: UseQueryOptions<Array<SelectOption>> = {
-    queryKey: ['products'],
+    queryKey: ['optionsCategory'],
     queryFn: () => getFetchOptionsValue(delay)
 }
 
 export const useQueryOptionsLazy: UseQueryOptions<QueryPage<GeneratedData>> = {
-    queryKey: ['products'],
+    queryKey: ['useQueryOptionsLazy'],
     queryFn: (params) => getFetchPage(params, delay)
 }
 
 export const useQueryOptionsEagle: UseQueryOptions<QueryEagle<GeneratedData>> = {
-    queryKey: ['products_all'],
+    queryKey: ['useQueryOptionsEagle'],
     queryFn: (params) => getFetchAll(params, delay)
 }
 
@@ -59,7 +59,7 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
     {
         id: 'id_category',
         accessorFn: (row) => row.category?.uuid,
-        cell: (props) => <div>{props.row.original.category.name}</div>,
+        cell: (props) => <div>{props.row.original.category?.name}</div>,
         header: 'Category',
         meta: {
             filterable: true,
@@ -70,16 +70,16 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
         },
     },
     {
-        id: 'created_at',
+        id: 'created_at_date',
         accessorFn: (row) => DateTime.fromISO(row.created_at).toISODate(),
         meta: {
-            editable: true,
+            editable: false,
             filterable: true,
             type: 'date',
         }
     },
     {
-        id: 'created_at_time',
+        id: 'created_at',
         accessorFn: (row) => DateTime.fromISO(row.created_at).toISO(),
         cell: (props) => DateTime.fromISO(props.row.original.created_at).toFormat('yyyy-MM-dd HH:mm:ss'),
         meta: {
@@ -130,21 +130,17 @@ export const onSubmitFn = (data: Partial<any>, action: ActionCrud, tableRef: Tab
                 const category = getRandom(generateOptionsValue())
 
                 const newData = fakeData(uuid, category)
-                return createData({ ...newData, ...data }, 1500)
+                return createData({ ...newData, ...data }, 230)
             }
 
 
             if (action === 'edit') {
-                return updateData({
-                    uuid: data.uuid,
-                    name: data.name,
-                    description: data.description,
-                }, 1500)
+                return updateData(data, 230)
             }
 
             if (action === 'delete') {
                 if (!data.uuid) return Promise.reject('uuid is required')
-                return deleteData(data.uuid, 1500)
+                return deleteData(data.uuid, 230)
             }
 
             return Promise.reject('Action not found')
@@ -155,6 +151,47 @@ export const onSubmitFn = (data: Partial<any>, action: ActionCrud, tableRef: Tab
                 tableRef?.setShowModal(false)
                 tableRef?.refreshTable()
                 resolve(data)
+            })
+            .finally(() => {
+                tableRef?.setIsLoadingModal(false)
+            })
+
+    })
+}
+
+export const onSubmitFnWoRefresh = (data: Partial<GeneratedData>, action: ActionCrud, tableRef: TableRef | null): Promise<Partial<GeneratedData> | null> => {
+    console.log('onSubmitFn-data', data)
+    console.log('onSubmitFn-action', action)
+    return new Promise((resolve, reject) => {
+        tableRef?.setIsLoadingModal(true)
+
+        const actionFn = () => {
+
+            if (action === 'create') {
+                const uuid = faker.string.uuid()
+                const category = getRandom(generateOptionsValue())
+
+                const newData = fakeData(uuid, category)
+                return createData({ ...newData, ...data }, 230)
+            }
+
+
+            if (action === 'edit') {
+                return updateData(data, 230)
+            }
+
+            if (action === 'delete') {
+                if (!data.uuid) return Promise.reject('uuid is required')
+                return deleteData(data.uuid, 230)
+            }
+
+            return Promise.reject('Action not found')
+        }
+
+        actionFn()
+            .then((newData) => {
+                tableRef?.setShowModal(false)
+                resolve(newData)
             })
             .finally(() => {
                 tableRef?.setIsLoadingModal(false)

@@ -1,6 +1,6 @@
-import { CrudOptions, Filter, PageOptions, QueryPage } from "@/types";
+import { CrudOptions, PageOptions, QueryPage } from "@/types";
 import { UseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
@@ -26,6 +26,12 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
 
     const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)
 
+    const [queryKey, setQueryKey] = useState([props.useQueryOptions.queryKey, pageOptions])
+
+    useEffect(() => {
+        setQueryKey([props.useQueryOptions.queryKey, pageOptions])
+    }, [props.useQueryOptions.queryKey, pageOptions])
+
     const INITIAL_DATA: QueryPage<any> = {
         results: [],
         pages: 1,
@@ -41,7 +47,7 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
         keepPreviousData: true,
         initialData: INITIAL_DATA,
         ...props.useQueryOptions,
-        queryKey: [props.useQueryOptions.queryKey, pageOptions],
+        queryKey,
         queryFn: (params) => {
             if (!props.useQueryOptions.queryFn) {
                 return Promise.reject(new Error('No query function provided'));
@@ -85,6 +91,7 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
             pageSizes={pageSizes}
             totalRows={tableData?.totalRows ?? 0}
             refreshTable={refreshTable}
+            queryKey={queryKey}
             ref={refTable}
         />
     )

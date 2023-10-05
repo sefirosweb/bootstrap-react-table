@@ -11,7 +11,7 @@ export type GeneratedData = {
     description: string | null;
     random: string | null;
     price: number;
-    category: OptionsType;
+    category?: OptionsType;
     categories: Array<OptionsType>;
     created_at: string;
 }
@@ -66,12 +66,15 @@ export const getData = (options?: Options) => {
 }
 
 
-export const createData = (data: Omit<GeneratedData, 'uuid'>, delay = 150): Promise<GeneratedData> => {
+export const createData = (data: Omit<GeneratedData, 'uuid'> & { id_category?: string }, delay = 150): Promise<GeneratedData> => {
     const dataWitId: GeneratedData = {
         ...data,
         uuid: faker.string.uuid(),
         value: faker.string.uuid()
     }
+
+    const category = generateOptionsValue().find(p => data.id_category && p.uuid === data.id_category)
+    dataWitId.category = category
 
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -81,12 +84,15 @@ export const createData = (data: Omit<GeneratedData, 'uuid'>, delay = 150): Prom
     })
 }
 
-export const updateData = (data: Partial<GeneratedData>, delay = 150): Promise<Partial<GeneratedData>> => {
+export const updateData = (data: Partial<GeneratedData & { id_category?: string }>, delay = 150): Promise<Partial<GeneratedData>> => {
     return new Promise((resolve) => {
         setTimeout(() => {
             const findData = generatedData.find((item) => item.uuid === data.uuid)
-            if (!findData) return
-            console.log('updating', { data })
+            if (!findData) return resolve(data)
+
+            const category = generateOptionsValue().find(p => data.id_category && p.uuid === data.id_category)
+            data.category = category
+
             const index = generatedData.indexOf(findData)
             generatedData[index] = { ...findData, ...data }
             resolve(generatedData[index])
@@ -98,7 +104,7 @@ export const deleteData = (uuid: string, delay = 150): Promise<string> => {
     return new Promise((resolve) => {
         setTimeout(() => {
             const findData = generatedData.find((item) => item.uuid === uuid)
-            if (!findData) return
+            if (!findData) return resolve(uuid)
             const index = generatedData.indexOf(findData)
             generatedData.splice(index, 1)
             resolve(uuid)

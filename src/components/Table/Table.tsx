@@ -6,6 +6,7 @@ import { Tbody, Thead, TableToolbar, ModalForm, Tfooter } from "./index";
 import { ActionCrud, CrudOptions, Filter, PageOptions, EditButton, DeleteButton } from "@/index";
 import { Filters } from "@sefirosweb/react-multiple-search";
 import { filterFn, textFilterFn } from "@/lib";
+import { QueryKey } from "@tanstack/react-query";
 
 export type Props = {
   columns: Array<ColumnDef<any>>,
@@ -20,6 +21,7 @@ export type Props = {
   pages?: number,
   totalRows?: number,
   refreshTable: () => void,
+  queryKey: QueryKey
 }
 
 export type PropsRef = {
@@ -184,6 +186,7 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
       globalFilterFn: textFilterFn,
       getColumnCanGlobalFilter: () => true,
       onGlobalFilterChange: setGlobalFilter,
+      autoResetPageIndex: false,
     });
   }
 
@@ -279,6 +282,8 @@ export const Table = forwardRef<PropsRef, Props>((props, ref) => {
         cell={cellSelected}
         table={table}
         isLoadingModal={isLoadingModal}
+        queryKey={props.queryKey}
+        isLazy={props.isLazy}
       />
 
     </>

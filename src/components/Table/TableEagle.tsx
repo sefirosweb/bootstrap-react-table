@@ -1,6 +1,6 @@
-import { CrudOptions, Filter, PageOptions, QueryEagle } from "@/types";
+import { CrudOptions, PageOptions, QueryEagle } from "@/types";
 import { UseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
@@ -26,6 +26,12 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
 
     const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)
 
+    const [queryKey, setQueryKey] = useState([props.useQueryOptions.queryKey])
+
+    useEffect(() => {
+        setQueryKey([props.useQueryOptions.queryKey])
+    }, [props.useQueryOptions.queryKey])
+
     const INITIAL_DATA: QueryEagle<any> = {
         results: [],
     }
@@ -36,7 +42,7 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
         keepPreviousData: true,
         initialData: INITIAL_DATA,
         ...props.useQueryOptions,
-        queryKey: [props.useQueryOptions.queryKey],
+        queryKey,
         queryFn: (params) => {
             if (!props.useQueryOptions.queryFn) {
                 return Promise.reject(new Error('No query function provided'));
@@ -75,6 +81,7 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
             setPageOptions={setPageOptions}
             pageSizes={pageSizes}
             refreshTable={refreshTable}
+            queryKey={queryKey}
             ref={refTable}
         />
     )
