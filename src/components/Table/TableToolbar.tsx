@@ -1,21 +1,23 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Button, ButtonGroup, Col, Row } from "react-bootstrap"
 import { useTranslation } from "react-i18next"
-import { flexRender } from "@tanstack/react-table"
+import { Table, flexRender } from "@tanstack/react-table"
 import InputSearch, { Filters } from "@sefirosweb/react-multiple-search"
 import { FaFileExport } from "react-icons/fa"
 import { RefreshButton } from "../buttons/RefreshButton"
 import { DebouncedInput } from "./DebouncedInput"
 import { TableContext } from "./TableContext"
+import { exportToExcel } from "@/lib"
 
 type Props = {
+    table: Table<any>,
     createButtonFn: () => void
     setDynamicFilters: React.Dispatch<React.SetStateAction<Array<Filters>>>
     setGlobalFilter: React.Dispatch<React.SetStateAction<string>>
 }
 
 export const TableToolbar: React.FC<Props> = (props) => {
-    const { crudOptions, isFetching, refreshTable } = useContext(TableContext)
+    const { crudOptions, isFetching, refreshTable, tableData, isLazy, pageOptions } = useContext(TableContext)
     const { t } = useTranslation()
 
     const [filter, setFilter] = useState("");
@@ -28,6 +30,45 @@ export const TableToolbar: React.FC<Props> = (props) => {
     useEffect(() => {
         props.setGlobalFilter(filter);
     }, [filter])
+
+    const generateExcel = (fileName: string) => {
+        if (isLazy) {
+            if (crudOptions.exportFn) {
+                return crudOptions.exportFn({
+                    table: props.table,
+                    tableData,
+                    pageOptions
+                })
+            }
+            return console.error("exportFn is required when isLazy is true")
+        }
+
+        if (crudOptions.exportFn) {
+            crudOptions.exportFn({
+                table: props.table,
+                tableData
+            })
+        } else {
+
+            const data: Array<Record<string, any>> = []
+
+            const rows = crudOptions.exportFilteredData ?
+                props.table.getFilteredRowModel().rows :
+                props.table.getCoreRowModel().rows
+
+            rows.forEach(row => {
+                const tempRowData: Record<string, any> = {}
+                row.getAllCells()
+                    .filter(cell => cell.column.columnDef.meta?.exportable !== false)
+                    .forEach((cell) => {
+                        tempRowData[cell.column.id] = cell.getValue()
+                    })
+                data.push(tempRowData)
+            })
+
+            exportToExcel(data, fileName)
+        }
+    }
 
     return (
         <Row>
@@ -80,9 +121,8 @@ export const TableToolbar: React.FC<Props> = (props) => {
 
                                 {crudOptions.canExport &&
                                     <Button
-                                        // onClick={() => generateExcel(exportName + Date.now())}
                                         disabled={isFetching}
-                                    >
+                                        onClick={() => generateExcel(crudOptions.exportName ? crudOptions.exportName : "Export_" + Date.now())}>
                                         <FaFileExport size={18} />
                                     </Button>
                                 }

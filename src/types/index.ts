@@ -1,6 +1,6 @@
 import { FilterLabel } from "@sefirosweb/react-multiple-search"
 import { UseQueryOptions } from "@tanstack/react-query"
-import { CellContext, ColumnDef } from "@tanstack/react-table"
+import { CellContext, ColumnDef, Table } from "@tanstack/react-table"
 import React from "react"
 export type ActionCrud = 'create' | 'edit' | 'delete'
 export type FieldType = 'text' | 'number' | 'date' | 'datetime' | 'select' | 'checkbox'
@@ -88,6 +88,14 @@ export type CrudOptions<T> = {
 
     canRefresh?: boolean,
     onSubmitFn?: (data: Partial<T>, action: ActionCrud) => Promise<Partial<T> | null>,
+
+    exportFilteredData?: boolean
+    exportName?: string
+    exportFn?: (data: {
+        tableData: Array<T>,
+        table: Table<T>,
+        pageOptions?: PageOptions
+    }) => void,
 
     canExport?: boolean,
 

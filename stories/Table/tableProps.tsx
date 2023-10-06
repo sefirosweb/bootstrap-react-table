@@ -113,6 +113,7 @@ export const crudOptions: CrudOptions<GeneratedData> = {
     globalSearch: true,
     pageSizes: [10, 25, 50, 100, 500, 1000, 5000, 10000],
     delayFilter: delay,
+    exportFilteredData: true,
     enableGlobalFilterLabels: [
         {
             filter: 'name',

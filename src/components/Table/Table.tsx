@@ -247,6 +247,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       <Row>
         <Col>
           <TableToolbar
+            table={table}
             createButtonFn={createButtonFn}
             setDynamicFilters={setDynamicFilters}
             setGlobalFilter={setGlobalFilter}

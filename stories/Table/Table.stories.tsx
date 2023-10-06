@@ -19,8 +19,12 @@ export const LazyTemplate: Story = {
     tableProps: {
       useQueryOptions: useQueryOptionsLazy,
       columns,
-      crudOptions,
+      crudOptions: {
+        ...crudOptions,
+        exportFn: (props) => console.log('Add custom export', props),
+      },
       lazy: true
+
     }
   },
   render: (props) => {
