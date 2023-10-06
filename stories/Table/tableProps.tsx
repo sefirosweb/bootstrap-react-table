@@ -35,6 +35,7 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
     {
         accessorKey: 'name',
         header: 'Name',
+        enableSorting: true,
         meta: {
             filterable: true,
             editable: true,
@@ -50,6 +51,7 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
     {
         accessorKey: 'price',
         header: '€',
+        enableSorting: true,
         meta: {
             editable: true,
             filterable: true,
@@ -79,6 +81,8 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
     {
         id: 'created_at_date',
         accessorFn: (row) => DateTime.fromISO(row.created_at).toISODate(),
+        header: () => <div>Created at date</div>,
+        enableSorting: true,
         meta: {
             editable: false,
             filterable: true,
@@ -89,6 +93,7 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
         id: 'created_at',
         accessorFn: (row) => DateTime.fromISO(row.created_at).toISO(),
         cell: (props) => DateTime.fromISO(props.row.original.created_at).toLocaleString(DateTime.DATETIME_SHORT),
+        enableSorting: true,
         meta: {
             editable: true,
             filterable: true,

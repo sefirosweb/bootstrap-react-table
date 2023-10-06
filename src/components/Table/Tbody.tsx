@@ -1,26 +1,22 @@
 import { flexRender, Table } from "@tanstack/react-table";
-import React from "react";
+import React, { useContext } from "react";
 import style from "./Tbody.module.scss"
+import { TableContext } from "./TableContext";
 
 type Props = {
     table: Table<any>,
-    isLoading: boolean,
 }
-
 
 export const Tbody: React.FC<Props> = (props) => {
     const { table } = props
-
-
+    const { isFetching } = useContext(TableContext)
 
     const TrLoading: React.FC<{}> = () => (
         <tr>
-            <td colSpan={100} className={props.isLoading ? style.isLoading : style.trBorder}>
+            <td colSpan={100} className={isFetching ? style.isLoading : style.trBorder}>
             </td>
         </tr>
     )
-
-
 
     return (
         <tbody>

@@ -4,6 +4,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
+import { TableContext } from "./TableContext";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,
@@ -79,21 +80,22 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
     }));
 
     return (
-        <Table
-            columns={props.columns}
-            crudOptions={props.crudOptions}
-            tableData={tableData?.results ?? []}
-            isFetching={isFetching}
-            isLazy={true}
-            pageOptions={pageOptions}
-            setPageOptions={setPageOptions}
-            pages={tableData?.pages ?? 1}
-            pageSizes={pageSizes}
-            totalRows={tableData?.totalRows ?? 0}
-            refreshTable={refreshTable}
-            queryKey={queryKey}
-            ref={refTable}
-        />
+        <TableContext.Provider value={{
+            columns: props.columns,
+            crudOptions: props.crudOptions,
+            tableData: tableData?.results ?? [],
+            isFetching: isFetching,
+            isLazy: true,
+            pageOptions: pageOptions,
+            setPageOptions: setPageOptions,
+            pages: tableData?.pages ?? 1,
+            pageSizes: pageSizes,
+            totalRows: tableData?.totalRows ?? 0,
+            refreshTable: refreshTable,
+            queryKey: queryKey,
+        }}>
+            <Table ref={refTable} />
+        </TableContext.Provider>
     )
 
 })

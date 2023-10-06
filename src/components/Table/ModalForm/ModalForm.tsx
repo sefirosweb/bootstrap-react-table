@@ -1,26 +1,25 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { Modal } from "../../Modal"
-import { ActionCrud, CrudOptions, FormDataType, MutationVars, QueryEagle, QueryPage } from "../../../types"
-import { CellContext, Column, ColumnDef, Table } from "@tanstack/react-table"
+import { ActionCrud, FormDataType, MutationVars, QueryEagle } from "../../../types"
+import { CellContext, Table } from "@tanstack/react-table"
 import { FormFields } from "./FormFields"
 import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query"
 import { t } from "i18next"
 import { DateTime } from "luxon"
+import { TableContext } from "../TableContext"
 
 type Props = {
-    crudOptions: CrudOptions<any>,
-    showModal: boolean,
-    setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
     action: ActionCrud
     cell: CellContext<any, unknown> | null
     table: Table<any>
+    showModal: boolean,
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
     isLoadingModal: boolean
-    queryKey: QueryKey
-    isLazy: boolean,
 }
 
 export const ModalForm: React.FC<Props> = (props) => {
-    const { action, cell, table, crudOptions, queryKey, isLazy } = props
+    const { action, cell, table, showModal, setShowModal, isLoadingModal } = props
+    const { crudOptions, queryKey, isLazy } = useContext(TableContext)
 
     const [formData, setFormData] = useState<FormDataType>({})
 
@@ -29,7 +28,7 @@ export const ModalForm: React.FC<Props> = (props) => {
             const newFormData: FormDataType = {}
 
             table.getAllFlatColumns()
-                .filter(column => column.columnDef.meta?.editable === true || column.id === props.crudOptions.primaryKey)
+                .filter(column => column.columnDef.meta?.editable === true || column.id === crudOptions.primaryKey)
                 .forEach(column => {
                     newFormData[column.id] = null
                 })
@@ -144,12 +143,12 @@ export const ModalForm: React.FC<Props> = (props) => {
         <>
             <Modal
                 onShow={onOpenModal}
-                show={props.showModal}
-                setShow={props.setShowModal}
+                show={showModal}
+                setShow={setShowModal}
                 title={action}
                 accept={t('Accept')}
                 handleAccept={onSubmitForm}
-                isLoading={props.isLoadingModal}
+                isLoading={isLoadingModal}
                 body={
                     <>
                         {action === 'delete' && <div>Estas seguro de borrar??</div>}

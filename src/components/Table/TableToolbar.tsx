@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Button, ButtonGroup, Col, Row } from "react-bootstrap"
 import { useTranslation } from "react-i18next"
 import { flexRender } from "@tanstack/react-table"
-import { CrudOptions } from "@/index"
 import InputSearch, { Filters } from "@sefirosweb/react-multiple-search"
 import { FaFileExport } from "react-icons/fa"
 import { RefreshButton } from "../buttons/RefreshButton"
 import { DebouncedInput } from "./DebouncedInput"
+import { TableContext } from "./TableContext"
 
 type Props = {
-    crudOptions: CrudOptions<any>
     createButtonFn: () => void
     setDynamicFilters: React.Dispatch<React.SetStateAction<Array<Filters>>>
     setGlobalFilter: React.Dispatch<React.SetStateAction<string>>
-    refreshTable: () => void,
-    isLoading: boolean,
 }
 
 export const TableToolbar: React.FC<Props> = (props) => {
-    const { create, customButtons } = props.crudOptions
+    const { crudOptions, isFetching, refreshTable } = useContext(TableContext)
     const { t } = useTranslation()
 
     const [filter, setFilter] = useState("");
@@ -35,10 +32,10 @@ export const TableToolbar: React.FC<Props> = (props) => {
     return (
         <Row>
             <Col lg={6} md={6} xs={12} className="mb-3">
-                {create && (
+                {crudOptions.create && (
                     <>
-                        {props.crudOptions.createButton ?
-                            flexRender(props.crudOptions.createButton, { onClick: props.createButtonFn }) :
+                        {crudOptions.createButton ?
+                            flexRender(crudOptions.createButton, { onClick: props.createButtonFn }) :
                             <Button variant="success" onClick={props.createButtonFn}>
                                 {t('Create')}
                             </Button>
@@ -46,45 +43,45 @@ export const TableToolbar: React.FC<Props> = (props) => {
                     </>
                 )}
 
-                {customButtons}
+                {crudOptions.customButtons}
             </Col>
 
             <Col lg={6} md={6} xs={12} className="mb-3 align-self-end">
                 <div className="d-flex justify-content-end">
-                    {props.crudOptions.globalSearch && typeof props.crudOptions.enableGlobalFilterLabels === 'undefined' && (
+                    {crudOptions.globalSearch && typeof crudOptions.enableGlobalFilterLabels === 'undefined' && (
                         <DebouncedInput
                             value={filter}
                             onChange={(value) => setFilter(value)}
                             placeholder={t('Search')}
                             className="form-control"
-                            delayFilter={props.crudOptions.delayFilter ?? 230}
+                            delayFilter={crudOptions.delayFilter ?? 230}
                         />
                     )}
 
-                    {props.crudOptions.globalSearch && props.crudOptions.enableGlobalFilterLabels && (
+                    {crudOptions.globalSearch && crudOptions.enableGlobalFilterLabels && (
                         <div className="w-100">
                             <InputSearch
                                 filters={filters}
                                 setFilters={setFilters}
-                                filterLabels={props.crudOptions.enableGlobalFilterLabels}
+                                filterLabels={crudOptions.enableGlobalFilterLabels}
                             />
                         </div>
                     )}
 
-                    {(props.crudOptions.canRefresh || props.crudOptions.canExport) && (
+                    {(crudOptions.canRefresh || crudOptions.canExport) && (
                         <div>
                             <ButtonGroup className="ms-2">
-                                {props.crudOptions.canRefresh && (
+                                {crudOptions.canRefresh && (
                                     <RefreshButton
-                                        disabled={props.isLoading}
-                                        onClick={() => props.refreshTable()}
+                                        disabled={isFetching}
+                                        onClick={() => refreshTable()}
                                     />
                                 )}
 
-                                {props.crudOptions.canExport &&
+                                {crudOptions.canExport &&
                                     <Button
                                         // onClick={() => generateExcel(exportName + Date.now())}
-                                        disabled={props.isLoading}
+                                        disabled={isFetching}
                                     >
                                         <FaFileExport size={18} />
                                     </Button>

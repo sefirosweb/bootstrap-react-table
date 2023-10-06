@@ -46,6 +46,6 @@ export const Table = forwardRef<TableRef, Props>((props, ref) => {
 
 export { TableToolbar } from './TableToolbar'
 export { Tbody } from './Tbody'
-export { Tfooter } from './Tfooter'
+export { Pagination } from './Pagination/Pagination'
 export { Thead } from './Thead'
 export { ModalForm } from './ModalForm'

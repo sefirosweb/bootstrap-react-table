@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Form, Pagination, Row } from "react-bootstrap";
+import { Col, Form, Pagination as BPagination, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 type Props = {
@@ -22,33 +22,33 @@ type Props = {
     pageSizes: Array<number>,
 }
 
-export const Tfooter: React.FC<Props> = (props) => {
+export const Pagination: React.FC<Props> = (props) => {
     const { t } = useTranslation()
 
     return (
         <Row>
             <Col xs="auto" className="d-flex align-items-center">
-                <Pagination style={{ marginBottom: 0 }}>
-                    <Pagination.First
+                <BPagination style={{ marginBottom: 0 }}>
+                    <BPagination.First
                         onClick={props.handleFirstPage}
                         disabled={props.firstPageEnabled}
                     />
-                    <Pagination.Prev
+                    <BPagination.Prev
                         onClick={props.handlePrevPage}
                         disabled={props.prevPageEnabled}
                     />
-                    <Pagination.Item active>
+                    <BPagination.Item active>
                         {props.currentPage} {t('of')}{' '} {props.pages}
-                    </Pagination.Item>
-                    <Pagination.Next
+                    </BPagination.Item>
+                    <BPagination.Next
                         onClick={props.handleNextPage}
                         disabled={props.nextPageEnabled}
                     />
-                    <Pagination.Last
+                    <BPagination.Last
                         onClick={props.handleLastPage}
                         disabled={props.lastPageEnabled}
                     />
-                </Pagination>
+                </BPagination>
             </Col>
             <Col xs="auto" className="d-flex align-items-center">
                 <Form.Select

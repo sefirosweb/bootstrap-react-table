@@ -1,22 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { flexRender, Table } from "@tanstack/react-table";
-import { CrudOptions, Filter as FilterType } from "@/index";
+import React, { useContext, useEffect, useState } from "react";
+import { flexRender, Header, Table } from "@tanstack/react-table";
+import { Filter as FilterType } from "@/index";
 import { Filter } from "./TheadFilters";
+import { TableContext } from "./TableContext";
 
 type Props = {
     table: Table<any>,
     tableFilters: FilterType,
     setTableFilters: React.Dispatch<React.SetStateAction<FilterType>>,
-    crudOptions: CrudOptions<any>,
+}
+
+const sortDirection = (header: Header<any, unknown>) => {
+    if (!header.column.getCanSort()) return null;
+
+    const direction = header.column.getIsSorted()
+    if (!direction) return " -"
+
+    if (direction === "asc") return "🔼"
+    if (direction === "desc") return "🔽"
 }
 
 export const Thead: React.FC<Props> = (props) => {
     const [tableFilters, setTableFilters] = useState<FilterType>({})
+    const { crudOptions } = useContext(TableContext)
 
     useEffect(() => {
         const timeout = setTimeout(() => {
             props.setTableFilters(tableFilters)
-        }, props.crudOptions.delayFilter ?? 230);
+        }, crudOptions.delayFilter ?? 230);
 
         return () => clearTimeout(timeout);
     }, [tableFilters]);
@@ -30,15 +41,13 @@ export const Thead: React.FC<Props> = (props) => {
                             {header.isPlaceholder ? null : (
                                 <div
                                     {...{
-                                        className: header.column.getCanSort() ? "select-none" : "",
+                                        className: header.column.getCanSort() ? "cursor-pointer select-none" : "",
                                         onClick: header.column.getToggleSortingHandler(),
                                     }}
                                 >
                                     {flexRender(header.column.columnDef.header, header.getContext())}
 
-                                    {header.column.getCanSort()
-                                        ? { asc: "🔼", desc: "🔽", }[header.column.getIsSorted() as string] ?? " -"
-                                        : null}
+                                    {sortDirection(header)}
                                 </div>
                             )}
                         </th>
