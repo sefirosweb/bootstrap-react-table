@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 import { generateOptionsValue } from "../../test/mock/generateOptionsValue";
 import { faker } from "@faker-js/faker";
 
-const delay = 230
+const delay = 6000
 
 export const optionsCategory: UseQueryOptions<Array<SelectOption>> = {
     queryKey: ['optionsCategory'],
@@ -112,7 +112,6 @@ export const crudOptions: CrudOptions<GeneratedData> = {
     canRefresh: true,
     globalSearch: true,
     pageSizes: [10, 25, 50, 100, 500, 1000, 5000, 10000],
-    delayFilter: delay,
     exportFilteredData: true,
     enableGlobalFilterLabels: [
         {

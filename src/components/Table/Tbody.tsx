@@ -13,7 +13,10 @@ export const Tbody: React.FC<Props> = (props) => {
 
     const TrLoading: React.FC<{}> = () => (
         <tr>
-            <td colSpan={100} className={isFetching ? style.isLoading : style.trBorder}>
+            <td colSpan={100} className={style.trBorder} >
+                <div className={style.loader}>
+                    {isFetching && <div className={style.loaderBar}></div>}
+                </div>
             </td>
         </tr>
     )
