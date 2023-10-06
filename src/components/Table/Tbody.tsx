@@ -1,5 +1,5 @@
 import { flexRender, Table } from "@tanstack/react-table";
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import style from "./Tbody.module.scss"
 import { TableContext } from "./TableContext";
 
@@ -11,15 +11,18 @@ export const Tbody: React.FC<Props> = (props) => {
     const { table } = props
     const { isFetching } = useContext(TableContext)
 
-    const TrLoading: React.FC<{}> = () => (
-        <tr>
-            <td colSpan={100} className={style.trBorder} >
-                <div className={style.loader}>
-                    {isFetching && <div className={style.loaderBar}></div>}
-                </div>
-            </td>
-        </tr>
-    )
+    const TrLoading = useMemo(() => {
+        const TrLoading: React.FC<{}> = () => (
+            <tr>
+                <td colSpan={100} className={style.trBorder} >
+                    <div className={style.loader}>
+                        {isFetching && <div className={style.loaderBar}></div>}
+                    </div>
+                </td>
+            </tr>
+        )
+        return TrLoading
+    }, [isFetching])
 
     return (
         <tbody>
