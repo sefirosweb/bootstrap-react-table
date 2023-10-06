@@ -56,9 +56,6 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  console.log({ sorting })
-  console.log(props.pageOptions)
-
   useEffect(() => {
     if (!props.isLazy) return
 
@@ -113,6 +110,9 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     setColumnFilters(newColumnFilters)
   }, [tableFilters, dynamicFilters])
 
+  useEffect(() => {
+    props.setPageOptions({ ...props.pageOptions, sorting: sorting })
+  }, [sorting])
 
   const createButtonFn = () => {
     const action = () => {

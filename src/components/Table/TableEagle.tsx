@@ -22,7 +22,7 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
         page: 1,
         pageSize: props.crudOptions.pageSize ?? pageSizes[0],
         filters: [],
-        orders: [],
+        sorting: [],
     }
 
     const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)

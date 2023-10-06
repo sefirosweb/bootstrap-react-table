@@ -22,6 +22,46 @@ export const getFetchOptionsValue = (delay = 30): Promise<Array<SelectOption>> =
     });
 }
 
+export const compareValue = (aVal: any, bVal: any, desc: boolean) => {
+    if (aVal === bVal) {
+        return null
+    }
+
+    if (DateTime.fromISO(aVal).isValid && DateTime.fromISO(bVal).isValid) {
+        if (!desc) {
+            return DateTime.fromISO(aVal).toMillis() - DateTime.fromISO(bVal).toMillis()
+        }
+
+        return DateTime.fromISO(bVal).toMillis() - DateTime.fromISO(aVal).toMillis()
+    }
+
+    if (typeof aVal === 'string' && typeof bVal === 'string') {
+        if (!desc) {
+            return aVal.localeCompare(bVal)
+        }
+
+        return bVal.localeCompare(aVal)
+    }
+
+    if (typeof aVal === 'number' && typeof bVal === 'number') {
+        if (!desc) {
+            return aVal - bVal
+        }
+
+        return bVal - aVal
+    }
+
+    if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
+        if (!desc) {
+            return aVal ? -1 : 1
+        }
+
+        return bVal ? -1 : 1
+    }
+
+    return null
+}
+
 export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<QueryPage<GeneratedData>> => {
     return new Promise((resolve) => {
         let data = getData({
@@ -31,6 +71,7 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
 
         const currentPage = params.meta?.page ?? 1
         const pageSize = params.meta?.pageSize ?? 10
+        const sorting = params.meta?.sorting ?? []
 
         const start = currentPage * pageSize - pageSize;
         const end = start + pageSize;
@@ -74,6 +115,21 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
                 }
             })
         })
+
+        data.sort((a, b) => {
+            for (let i = 0; i < sorting.length; i++) {
+                const sort = sorting[i]
+                const aVal = a[sort.id]
+                const bVal = b[sort.id]
+
+                const resSort = compareValue(aVal, bVal, sort.desc)
+                if (resSort !== null) {
+                    return resSort
+                }
+            }
+
+            return 0;
+        });
 
         const newData = data.slice(start, end);
         const totalPages = Math.ceil(data.length / pageSize);

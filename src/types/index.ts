@@ -18,7 +18,10 @@ export type PageOptions = {
     page: number,
     pageSize: number
     filters: Array<Filter>,
-    orders: Array<Record<string, 'asc' | 'desc'>>,
+    sorting: Array<{
+        id: string,
+        desc: boolean
+    }>,
 }
 
 export type SelectOption = {
