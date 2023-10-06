@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 import { generateOptionsValue } from "../../test/mock/generateOptionsValue";
 import { faker } from "@faker-js/faker";
 
-const delay = 6000
+const delay = 600
 
 export const optionsCategory: UseQueryOptions<Array<SelectOption>> = {
     queryKey: ['optionsCategory'],

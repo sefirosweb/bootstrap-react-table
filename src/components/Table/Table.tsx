@@ -1,31 +1,14 @@
-import React, { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
 import { CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, Table as TableTanStackProp, useReactTable } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { Table as BTable, Col, Row } from "react-bootstrap";
 import { Tbody, Thead, TableToolbar, ModalForm } from "./index";
-import { ActionCrud, CrudOptions, Filter, PageOptions, EditButton, DeleteButton } from "@/index";
+import { ActionCrud, Filter, EditButton, DeleteButton } from "@/index";
 import { Filters } from "@sefirosweb/react-multiple-search";
 import { filterFn } from "@/lib";
-import { QueryKey } from "@tanstack/react-query";
 import { globalFilterFn } from "@/lib/filterFn/globalFilterFn";
 import { TableContext } from "./TableContext";
 import { Pagination } from "./Pagination";
-
-export type Props = {
-  columns: Array<ColumnDef<any>>,
-  crudOptions: CrudOptions<any>,
-  tableData: Array<any>,
-  isFetching: boolean,
-
-  isLazy: boolean,
-  pageSizes: Array<number>,
-  pageOptions: PageOptions,
-  setPageOptions: React.Dispatch<React.SetStateAction<PageOptions>>,
-  pages?: number,
-  totalRows?: number,
-  refreshTable: () => void,
-  queryKey: QueryKey
-}
 
 type CustomColumnFiltersState = Array<{
   id: string,

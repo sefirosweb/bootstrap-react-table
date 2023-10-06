@@ -7,6 +7,7 @@ import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query"
 import { t } from "i18next"
 import { DateTime } from "luxon"
 import { TableContext } from "../TableContext"
+import { useTranslation } from "react-i18next"
 
 type Props = {
     action: ActionCrud
@@ -20,6 +21,7 @@ type Props = {
 export const ModalForm: React.FC<Props> = (props) => {
     const { action, cell, table, showModal, setShowModal, isLoadingModal } = props
     const { crudOptions, queryKey, isLazy } = useContext(TableContext)
+    const { t } = useTranslation()
 
     const [formData, setFormData] = useState<FormDataType>({})
 
@@ -151,7 +153,11 @@ export const ModalForm: React.FC<Props> = (props) => {
                 isLoading={isLoadingModal}
                 body={
                     <>
-                        {action === 'delete' && <div>Estas seguro de borrar??</div>}
+                        {action === 'delete' && <div>
+                            {crudOptions.onDeleteModal && cell ?
+                                crudOptions.onDeleteModal(cell) :
+                                t('messages.confirm_delete')}
+                        </div>}
 
                         {action !== 'delete' && table
                             .getAllFlatColumns()

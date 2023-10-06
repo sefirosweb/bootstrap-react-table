@@ -12,10 +12,7 @@ export default {
     Delete: 'Borrar',
     Edit: 'Editar',
     of: 'de',
-    error: {
-        wrong_selected: 'El valor seleccionado no es correcto'
-    },
     messages: {
-        confirm_delete: 'Estas seguro que desea borrar el registro'
+        confirm_delete: '¿Estas seguro que desea borrar el registro?'
     }
 }

@@ -30,9 +30,15 @@ export type SelectOption = {
     [key: string]: unknown;
 }
 
-export type QueryEagle<T> = {
-    results: Array<T>
-}
+
+export type TableProps<T> = {
+    columns: Array<ColumnDef<T>>,
+    crudOptions: CrudOptions<T>,
+    lazy: boolean,
+} & (
+        | Lazy<T>
+        | Eagle<T>
+    )
 
 type Lazy<T> = {
     lazy: true,
@@ -44,15 +50,9 @@ type Eagle<T> = {
     useQueryOptions: UseQueryOptions<QueryEagle<T>>
 }
 
-export type TableProps<T> = {
-    columns: Array<ColumnDef<T>>,
-    crudOptions: CrudOptions<T>,
-    lazy: boolean,
-} & (
-        | Lazy<T>
-        | Eagle<T>
-    )
-
+export type QueryEagle<T> = {
+    results: Array<T>
+}
 
 export type QueryPage<T> = {
     pages: number,
