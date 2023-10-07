@@ -1,84 +1,81 @@
-import { Column, flexRender } from "@tanstack/react-table"
+import { flexRender, Header } from "@tanstack/react-table"
 import { FormDataType } from "@/index"
 import { Form } from "react-bootstrap"
 import { FormSelect } from "@/components/FormSelect"
 
 type Props = {
-    column: Column<any>,
+    header: Header<any, unknown>,
     isLoadingModal: boolean,
     formData: FormDataType,
     setFormData: React.Dispatch<React.SetStateAction<FormDataType>>,
 }
 
-
 export const FormFields: React.FC<Props> = (props) => {
-    const { column, formData, setFormData, isLoadingModal } = props
-    const label = typeof column.columnDef.header === 'function' ? column.id : column.columnDef.header
+    const { header, formData, setFormData, isLoadingModal } = props
 
     return (
-        <Form.Group className="mb-3" controlId={`form_${column.id}`}>
+        <Form.Group className="mb-3" controlId={`form_${header.id}`}>
             <Form.Label>
-                {column.id}
-                {/* {flexRender(column.columnDef.header)} */}
+                {flexRender(header.column.columnDef.header, header.getContext())}
             </Form.Label>
 
 
-            {(column.columnDef.meta?.type === undefined || column.columnDef.meta.type === 'text') && (
+            {(header.column.columnDef.meta?.type === undefined || header.column.columnDef.meta.type === 'text') && (
                 <Form.Control
                     type="text"
-                    value={formData[column.id] ?? ''}
+                    value={formData[header.id] ?? ''}
                     onChange={(e) => {
                         const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
+                        newFormData[header.id] = e.target.value
                         setFormData(newFormData)
                     }}
                 />
             )}
 
-            {column.columnDef.meta?.type === 'number' && (
+            {header.column.columnDef.meta?.type === 'number' && (
                 <Form.Control
                     type="number"
-                    value={formData[column.id] ?? ''}
+                    value={formData[header.id] ?? ''}
                     onChange={(e) => {
                         const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
+                        newFormData[header.id] = e.target.value
                         setFormData(newFormData)
                     }}
                 />
             )}
 
-            {column.columnDef.meta?.type === 'date' && (
+            {header.column.columnDef.meta?.type === 'date' && (
                 <Form.Control
-                    value={formData[column.id] ?? ''}
+                    value={formData[header.id] ?? ''}
                     onChange={(e) => {
                         const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
+                        newFormData[header.id] = e.target.value
                         setFormData(newFormData)
                     }}
                     type='date'
                 />
             )}
 
-            {column.columnDef.meta?.type === 'datetime' && (
+            {header.column.columnDef.meta?.type === 'datetime' && (
                 <Form.Control
-                    value={formData[column.id] ?? ''}
+                    value={formData[header.id] ?? ''}
                     onChange={(e) => {
                         const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
+                        newFormData[header.id] = e.target.value
                         setFormData(newFormData)
                     }}
                     type='datetime-local'
                 />
             )}
 
-            {column.columnDef.meta?.type === 'select' && (
+            {header.column.columnDef.meta?.type === 'select' && (
                 <FormSelect
-                    value={formData[column.id] ?? ''}
-                    useQueryOptions={column.columnDef.meta.useQueryOptions}
-                    addNullOption={column.columnDef.meta.addNullOption}
+                    value={formData[header.id] ?? ''}
+                    useQueryOptions={header.column.columnDef.meta.useQueryOptions}
+                    addNullOption={header.column.columnDef.meta.addNullOption}
                     handleChange={(selectedOption) => {
                         const newFormData = { ...formData }
-                        newFormData[column.id] = selectedOption?.value ?? null
+                        newFormData[header.id] = selectedOption?.value ?? null
                         setFormData(newFormData)
                     }}
                 />

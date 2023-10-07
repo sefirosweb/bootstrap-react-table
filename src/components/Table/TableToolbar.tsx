@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react"
-import { Button, ButtonGroup, Col, Row } from "react-bootstrap"
+import React, { useContext, useEffect, useMemo, useState } from "react"
+import { Button, ButtonGroup, Col, Dropdown, Form, Row } from "react-bootstrap"
 import { useTranslation } from "react-i18next"
 import { Table, flexRender } from "@tanstack/react-table"
 import InputSearch, { Filters } from "@sefirosweb/react-multiple-search"
-import { FaFileExport } from "react-icons/fa"
+import { FaColumns, FaFileExport } from "react-icons/fa"
 import { RefreshButton } from "../buttons/RefreshButton"
 import { DebouncedInput } from "./DebouncedInput"
 import { TableContext } from "./TableContext"
@@ -17,7 +17,7 @@ type Props = {
 }
 
 export const TableToolbar: React.FC<Props> = (props) => {
-    const { crudOptions, isFetching, refreshTable, tableData, isLazy, pageOptions } = useContext(TableContext)
+    const { crudOptions, isFetching, refreshTable, tableData, isLazy, pageOptions, columns } = useContext(TableContext)
     const { t } = useTranslation()
 
     const [filter, setFilter] = useState("");
@@ -70,6 +70,12 @@ export const TableToolbar: React.FC<Props> = (props) => {
         }
     }
 
+    const headersToggle = useMemo(() => {
+        return props.table.getHeaderGroups()
+            .flatMap(headerGroup => headerGroup.headers)
+            .filter(header => header.column.columnDef.meta?.toggleShow === true)
+    }, [props.table])
+
     return (
         <Row>
             <Col lg={6} md={6} xs={12} className="mb-3">
@@ -109,7 +115,7 @@ export const TableToolbar: React.FC<Props> = (props) => {
                         </div>
                     )}
 
-                    {(crudOptions.canRefresh || crudOptions.canExport) && (
+                    {(crudOptions.canRefresh || crudOptions.canExport || headersToggle.length > 0) && (
                         <div>
                             <ButtonGroup className="ms-2">
                                 {crudOptions.canRefresh && (
@@ -126,6 +132,28 @@ export const TableToolbar: React.FC<Props> = (props) => {
                                         <FaFileExport size={18} />
                                     </Button>
                                 }
+
+                                {headersToggle.length > 0 &&
+                                    <Dropdown as={ButtonGroup}>
+                                        <Dropdown.Toggle disabled={isFetching} >
+                                            <FaColumns size={18} />
+                                        </Dropdown.Toggle>
+
+                                        <Dropdown.Menu>
+                                            {headersToggle.map(header => (
+                                                <Form.Check
+                                                    className="mx-3"
+                                                    type="checkbox"
+                                                    id={header.id}
+                                                    key={header.id}
+                                                    name={header.id}
+                                                    label={flexRender(header.column.columnDef.header, header.getContext())}
+                                                />
+                                            ))}
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                }
+
                             </ButtonGroup>
                         </div>
                     )}

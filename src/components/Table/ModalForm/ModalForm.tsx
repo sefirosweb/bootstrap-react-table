@@ -3,8 +3,7 @@ import { Modal } from "../../Modal"
 import { ActionCrud, FormDataType, MutationVars, QueryEagle } from "../../../types"
 import { CellContext, Table } from "@tanstack/react-table"
 import { FormFields } from "./FormFields"
-import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query"
-import { t } from "i18next"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { DateTime } from "luxon"
 import { TableContext } from "../TableContext"
 import { useTranslation } from "react-i18next"
@@ -160,10 +159,11 @@ export const ModalForm: React.FC<Props> = (props) => {
                         </div>}
 
                         {action !== 'delete' && table
-                            .getAllFlatColumns()
-                            .filter(column => column.columnDef.meta?.editable === true && column.id !== crudOptions.primaryKey)
-                            .map(column => (
-                                <FormFields key={column.id} column={column} formData={formData} setFormData={setFormData} isLoadingModal={props.isLoadingModal} />
+                            .getHeaderGroups()
+                            .flatMap(headerGroup => headerGroup.headers)
+                            .filter(header => header.column.columnDef.meta?.editable === true && header.id !== crudOptions.primaryKey)
+                            .map(header => (
+                                <FormFields key={header.id} header={header} formData={formData} setFormData={setFormData} isLoadingModal={props.isLoadingModal} />
                             ))}
                     </>
                 }

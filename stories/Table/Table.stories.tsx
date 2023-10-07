@@ -29,7 +29,7 @@ export const LazyTemplate: Story = {
   },
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
-    crudOptions.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
+    props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
 
     return (
       <div>
@@ -56,7 +56,7 @@ export const LazyTemplateGlobal: Story = {
   },
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
-    crudOptions2.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
+    props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
 
     return (
       <div>
@@ -83,7 +83,7 @@ export const EagleTemplate: Story = {
   },
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
-    crudOptions.onSubmitFn = (data, action) => onSubmitFnWoRefresh(data, action, tableRef.current)
+    props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFnWoRefresh(data, action, tableRef.current)
 
     return (
       <div>
@@ -110,7 +110,7 @@ export const EagleTemplateGlobal: Story = {
   },
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
-    crudOptions2.onSubmitFn = (data, action) => onSubmitFnWoRefresh(data, action, tableRef.current)
+    props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFnWoRefresh(data, action, tableRef.current)
 
     return (
       <div>

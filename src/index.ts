@@ -22,6 +22,7 @@ declare module '@tanstack/table-core' {
         type?: FieldType;
         useQueryOptions?: UseQueryOptions<Array<SelectOption>>,
         addNullOption?: boolean;
+        toggleShow?: boolean
     }
 }
 

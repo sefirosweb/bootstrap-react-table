@@ -29,7 +29,8 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
         accessorKey: 'uuid',
         header: 'UUID',
         meta: {
-            visible: true,
+            visible: false,
+            toggleShow: true,
         },
     },
     {
