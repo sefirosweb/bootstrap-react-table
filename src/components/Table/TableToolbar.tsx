@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useMemo, useState } from "react"
-import { Button, ButtonGroup, Col, Dropdown, Form, Row } from "react-bootstrap"
+import React, { useContext, useEffect, useState } from "react"
+import { Button, ButtonGroup, Col, Dropdown, Row } from "react-bootstrap"
 import { useTranslation } from "react-i18next"
 import { Table, flexRender } from "@tanstack/react-table"
 import InputSearch, { Filters } from "@sefirosweb/react-multiple-search"
@@ -8,6 +8,7 @@ import { RefreshButton } from "../buttons/RefreshButton"
 import { DebouncedInput } from "./DebouncedInput"
 import { TableContext } from "./TableContext"
 import { exportToExcel } from "@/lib"
+import { Togle } from "./TableToolbar/Togle"
 
 type Props = {
     table: Table<any>,
@@ -17,7 +18,7 @@ type Props = {
 }
 
 export const TableToolbar: React.FC<Props> = (props) => {
-    const { crudOptions, isFetching, refreshTable, tableData, isLazy, pageOptions, columns } = useContext(TableContext)
+    const { crudOptions, isFetching, refreshTable, tableData, isLazy, pageOptions } = useContext(TableContext)
     const { t } = useTranslation()
 
     const [filter, setFilter] = useState("");
@@ -70,9 +71,8 @@ export const TableToolbar: React.FC<Props> = (props) => {
         }
     }
 
-    const headersToggle = props.table.getHeaderGroups()
-        .flatMap(headerGroup => headerGroup.headers)
-        .filter(header => header.column.columnDef.meta?.toggleShow === true)
+    const headersToggle = props.table.getAllLeafColumns()
+        .filter(column => column.columnDef.meta?.toggleShow === true)
 
     return (
         <Row>
@@ -139,14 +139,7 @@ export const TableToolbar: React.FC<Props> = (props) => {
 
                                         <Dropdown.Menu>
                                             {headersToggle.map(header => (
-                                                <Form.Check
-                                                    className="mx-3"
-                                                    type="checkbox"
-                                                    id={header.id}
-                                                    key={header.id}
-                                                    name={header.id}
-                                                    label={flexRender(header.column.columnDef.header, header.getContext())}
-                                                />
+                                                <Togle header={header} key={header.id} />
                                             ))}
                                         </Dropdown.Menu>
                                     </Dropdown>

@@ -1,7 +1,7 @@
 import React from "react";
 import { UseQueryOptions } from "@tanstack/react-query";
 import { ActionCrud, CrudOptions, QueryEagle, QueryPage, SelectOption, TableRef } from "../../src";
-import { GeneratedData, createData, deleteData, fakeData, generateRandomString, getFetchAll, getFetchOptionsValue, getFetchPage, getRandom, updateData } from "../../test/mock";
+import { GeneratedData, createData, deleteData, fakeData, getFetchAll, getFetchOptionsValue, getFetchPage, getRandom, updateData } from "../../test/mock";
 import { ColumnDef } from "@tanstack/react-table";
 import { DateTime } from "luxon";
 import { generateOptionsValue } from "../../test/mock/generateOptionsValue";
@@ -40,6 +40,7 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
         meta: {
             filterable: true,
             editable: true,
+            toggleShow: true,
         },
     },
     {
@@ -61,9 +62,10 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
     },
     {
         id: 'id_category',
+        accessorKey: 'stock',
+        header: 'Category',
         accessorFn: (row) => row.category?.uuid,
         cell: (props) => <div>{props.row.original.category?.name}</div>,
-        header: 'Category',
         meta: {
             filterable: true,
             editable: true,

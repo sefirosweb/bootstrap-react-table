@@ -29,11 +29,8 @@ export const Tbody: React.FC<Props> = (props) => {
             <TrLoading />
 
             {table.getRowModel().rows.map((row) => (
-                <tr
-                    key={row.id}
-                >
+                <tr key={row.id}                >
                     {row.getVisibleCells()
-                        .filter(cell => cell.column.columnDef.meta?.visible !== false)
                         .map((cell) => (
                             <td
                                 key={cell.id}>

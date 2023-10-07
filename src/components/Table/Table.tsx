@@ -1,5 +1,5 @@
 import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
-import { CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, Table as TableTanStackProp, useReactTable } from "@tanstack/react-table";
+import { CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, Table as TableTanStackProp, useReactTable, VisibilityState } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { Table as BTable, Col, Row } from "react-bootstrap";
 import { Tbody, Thead, TableToolbar, ModalForm } from "./index";
@@ -38,6 +38,27 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
+
+  const INITIAL_VISIBLE_COLUMNS = (): VisibilityState => {
+    const visibleColumns: VisibilityState = {}
+    props.columns.forEach((column) => {
+      //@ts-ignore
+      const id = column.id ? column.id : (column.accessorKey ? column.accessorKey : column.header)
+      console.log('id', id)
+      console.log('column.meta?.visible', column.meta?.visible)
+
+      if (!id) return
+      visibleColumns[id] = column.meta?.visible === false ? false : true
+    })
+
+    return visibleColumns
+  }
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(INITIAL_VISIBLE_COLUMNS);
+
+  useEffect(() => {
+    console.log('columnVisibility', columnVisibility)
+  }, [columnVisibility])
 
   useEffect(() => {
     if (!props.isLazy) return
@@ -174,12 +195,14 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
       state: {
         sorting,
+        columnVisibility,
       },
 
       defaultColumn: {
         enableSorting: false,
       },
 
+      onColumnVisibilityChange: setColumnVisibility,
       onSortingChange: setSorting,
       getCoreRowModel: getCoreRowModel(),
     });
@@ -202,12 +225,14 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
         globalFilter,
         columnFilters,
         sorting,
+        columnVisibility,
       },
 
       defaultColumn: {
         enableSorting: false,
       },
 
+      onColumnVisibilityChange: setColumnVisibility,
       onColumnFiltersChange: setColumnFilters,
       getFilteredRowModel: getFilteredRowModel(),
       globalFilterFn: globalFilterFn,
