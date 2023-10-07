@@ -106,7 +106,6 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
 ];
 
 export const crudOptions: CrudOptions<GeneratedData> = {
-    id: 'table_stories',
     primaryKey: 'uuid',
     create: true,
     edit: true,

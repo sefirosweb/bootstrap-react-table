@@ -73,7 +73,6 @@ type CreateButton = React.FC<{
 }>
 
 export type CrudOptions<T> = {
-    id?: string,
     primaryKey: keyof T,
 
     create?: boolean,
