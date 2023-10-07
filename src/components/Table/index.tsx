@@ -19,6 +19,10 @@ export const Table = forwardRef<TableRef, Props>((props, ref) => {
     const { columns, crudOptions, lazy, useQueryOptions } = props.tableProps
     const queryClient = useGetQueryClient()
 
+    if (crudOptions.toggleShowColumns === undefined) {
+        crudOptions.toggleShowColumns = columns.find(column => column.meta?.toggleShow === true) ? true : false
+    }
+
     if (lazy) {
         return (
             <QueryClientProvider client={queryClient}>

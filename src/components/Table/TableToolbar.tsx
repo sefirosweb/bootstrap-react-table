@@ -70,11 +70,9 @@ export const TableToolbar: React.FC<Props> = (props) => {
         }
     }
 
-    const headersToggle = useMemo(() => {
-        return props.table.getHeaderGroups()
-            .flatMap(headerGroup => headerGroup.headers)
-            .filter(header => header.column.columnDef.meta?.toggleShow === true)
-    }, [props.table])
+    const headersToggle = props.table.getHeaderGroups()
+        .flatMap(headerGroup => headerGroup.headers)
+        .filter(header => header.column.columnDef.meta?.toggleShow === true)
 
     return (
         <Row>
@@ -133,7 +131,7 @@ export const TableToolbar: React.FC<Props> = (props) => {
                                     </Button>
                                 }
 
-                                {headersToggle.length > 0 &&
+                                {crudOptions.toggleShowColumns &&
                                     <Dropdown as={ButtonGroup}>
                                         <Dropdown.Toggle disabled={isFetching} >
                                             <FaColumns size={18} />

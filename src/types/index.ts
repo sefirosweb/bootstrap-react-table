@@ -109,4 +109,6 @@ export type CrudOptions<T> = {
     pageSize?: number,
     pageSizes?: Array<number>,
     customButtons?: JSX.Element
+
+    toggleShowColumns?: boolean,
 }
