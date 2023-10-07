@@ -159,11 +159,10 @@ export const ModalForm: React.FC<Props> = (props) => {
                         </div>}
 
                         {action !== 'delete' && table
-                            .getHeaderGroups()
-                            .flatMap(headerGroup => headerGroup.headers)
-                            .filter(header => header.column.columnDef.meta?.editable === true && header.id !== crudOptions.primaryKey)
-                            .map(header => (
-                                <FormFields key={header.id} header={header} formData={formData} setFormData={setFormData} isLoadingModal={props.isLoadingModal} />
+                            .getAllLeafColumns()
+                            .filter(column => column.columnDef.meta?.editable === true && column.id !== crudOptions.primaryKey)
+                            .map(column => (
+                                <FormFields key={column.id} column={column} formData={formData} setFormData={setFormData} isLoadingModal={props.isLoadingModal} />
                             ))}
                     </>
                 }

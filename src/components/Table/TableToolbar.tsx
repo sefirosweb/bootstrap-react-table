@@ -71,7 +71,7 @@ export const TableToolbar: React.FC<Props> = (props) => {
         }
     }
 
-    const headersToggle = props.table.getAllLeafColumns()
+    const toggleColumns = props.table.getAllLeafColumns()
         .filter(column => column.columnDef.meta?.toggleShow === true)
 
     return (
@@ -113,7 +113,7 @@ export const TableToolbar: React.FC<Props> = (props) => {
                         </div>
                     )}
 
-                    {(crudOptions.canRefresh || crudOptions.canExport || headersToggle.length > 0) && (
+                    {(crudOptions.canRefresh || crudOptions.canExport || crudOptions.toggleShowColumns) && (
                         <div>
                             <ButtonGroup className="ms-2">
                                 {crudOptions.canRefresh && (
@@ -138,8 +138,8 @@ export const TableToolbar: React.FC<Props> = (props) => {
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu>
-                                            {headersToggle.map(header => (
-                                                <Togle header={header} key={header.id} />
+                                            {toggleColumns.map(column => (
+                                                <Togle column={column} key={column.id} />
                                             ))}
                                         </Dropdown.Menu>
                                     </Dropdown>

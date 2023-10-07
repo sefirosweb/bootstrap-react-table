@@ -44,8 +44,6 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     props.columns.forEach((column) => {
       //@ts-ignore
       const id = column.id ? column.id : (column.accessorKey ? column.accessorKey : column.header)
-      console.log('id', id)
-      console.log('column.meta?.visible', column.meta?.visible)
 
       if (!id) return
       visibleColumns[id] = column.meta?.visible === false ? false : true
@@ -55,10 +53,6 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
   }
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(INITIAL_VISIBLE_COLUMNS);
-
-  useEffect(() => {
-    console.log('columnVisibility', columnVisibility)
-  }, [columnVisibility])
 
   useEffect(() => {
     if (!props.isLazy) return
