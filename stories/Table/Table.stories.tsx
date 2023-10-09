@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import { Table, TableRef } from '../../src';
+import { PageOptions, Table, TableRef } from '../../src';
 import { columns, crudOptions, onSubmitFn, onSubmitFnWoRefresh, useQueryOptionsEagle, useQueryOptionsLazy } from './tableProps';
+import { Button } from 'react-bootstrap';
 
 const meta: Meta = {
   title: 'Tables/Table',
@@ -29,16 +30,41 @@ export const LazyTemplate: Story = {
   },
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
+
+
+    const [pageOptions, setPageOptions] = React.useState<PageOptions>({
+      filters: [],
+      page: 1,
+      pageSize: 5,
+      sorting: [],
+    })
+
     props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
+    props.tableProps.crudOptions.pageOptions = pageOptions;
+    props.tableProps.crudOptions.setPageOptions = setPageOptions;
+
+    useEffect(() => {
+      console.log('pageOptions from story', pageOptions)
+    }, [pageOptions])
 
     return (
       <div>
         <div>
           This is Lazy load template
         </div>
+        <div>
+          <Button onClick={() => {
+            setPageOptions({
+              ...pageOptions,
+              pageSize: 10
+            })
+          }}>
+            Change Page
+          </Button>
+        </div>
         <div className='mt-3'>
           <Table {...props} ref={tableRef} />
-        </div>
+          d</div>
       </div>
     )
 

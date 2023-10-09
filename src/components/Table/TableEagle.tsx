@@ -18,20 +18,32 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
 
     const pageSizes = props.crudOptions.pageSizes ?? [10, 25, 50, 100, 500]
 
-    const INITIAL_PAGE_OPTIONS: PageOptions = {
+    const INITIAL_PAGE_OPTIONS: PageOptions = props.crudOptions.pageOptions ?? {
         page: 1,
-        pageSize: props.crudOptions.pageSize ?? pageSizes[0],
+        pageSize: pageSizes[0],
         filters: [],
         sorting: [],
     }
 
     const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)
-
     const [queryKey, setQueryKey] = useState([props.useQueryOptions.queryKey])
 
     useEffect(() => {
         setQueryKey([props.useQueryOptions.queryKey])
     }, [props.useQueryOptions.queryKey])
+
+    useEffect(() => {
+        if (!props.crudOptions.pageOptions) return
+        setPageOptions(props.crudOptions.pageOptions)
+    }, [props.crudOptions.pageOptions])
+
+    useEffect(() => {
+        if (pageOptions === props.crudOptions.pageOptions) return
+
+        if (props.crudOptions.setPageOptions) {
+            props.crudOptions.setPageOptions({ ...pageOptions })
+        }
+    }, [pageOptions])
 
     const INITIAL_DATA: QueryEagle<any> = {
         results: [],
@@ -68,7 +80,7 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
     useImperativeHandle(ref, () => ({
         refreshTable,
         setShowModal: (show: boolean) => refTable.current?.setShowModal(show),
-        setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading)
+        setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading),
     }));
 
     return (

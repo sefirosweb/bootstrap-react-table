@@ -16,22 +16,34 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
     const queryClient = useQueryClient()
     const refTable = useRef<PropsRef>(null)
 
-    const pageSizes = props.crudOptions.pageSizes ?? [10, 25, 50, 100, 500]
+    const pageSizes = props.crudOptions.pageSizes ?? [5, 10, 25, 50, 100, 500]
 
-    const INITIAL_PAGE_OPTIONS: PageOptions = {
+    const INITIAL_PAGE_OPTIONS: PageOptions = props.crudOptions.pageOptions ?? {
         page: 1,
-        pageSize: props.crudOptions.pageSize ?? pageSizes[0],
+        pageSize: pageSizes[0],
         filters: [],
         sorting: [],
     }
 
     const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)
-
     const [queryKey, setQueryKey] = useState([props.useQueryOptions.queryKey, pageOptions])
 
     useEffect(() => {
         setQueryKey([props.useQueryOptions.queryKey, pageOptions])
     }, [props.useQueryOptions.queryKey, pageOptions])
+
+    useEffect(() => {
+        if (!props.crudOptions.pageOptions) return
+        setPageOptions(props.crudOptions.pageOptions)
+    }, [props.crudOptions.pageOptions])
+
+    useEffect(() => {
+        if (pageOptions === props.crudOptions.pageOptions) return
+
+        if (props.crudOptions.setPageOptions) {
+            props.crudOptions.setPageOptions({ ...pageOptions })
+        }
+    }, [pageOptions])
 
     const INITIAL_DATA: QueryPage<any> = {
         results: [],

@@ -105,7 +105,9 @@ export type CrudOptions<T> = {
     enableGlobalFilterLabels?: Array<FilterLabel>
     delayFilter?: number,
 
-    pageSize?: number,
+    pageOptions?: PageOptions,
+    setPageOptions?: (pageOptions: PageOptions) => void,
+
     pageSizes?: Array<number>,
     customButtons?: JSX.Element
 
