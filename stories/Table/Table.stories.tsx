@@ -31,7 +31,6 @@ export const LazyTemplate: Story = {
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
 
-
     const [pageOptions, setPageOptions] = React.useState<PageOptions>({
       filters: [],
       page: 1,
@@ -56,15 +55,22 @@ export const LazyTemplate: Story = {
           <Button onClick={() => {
             setPageOptions({
               ...pageOptions,
-              pageSize: 10
+              pageSize: 10,
+              page: 4,
+              sorting: [
+                {
+                  id: 'created_at',
+                  desc: true,
+                }
+              ],
             })
           }}>
-            Change Page
+            Change Page & apply filters
           </Button>
         </div>
         <div className='mt-3'>
           <Table {...props} ref={tableRef} />
-          d</div>
+        </div>
       </div>
     )
 

@@ -37,13 +37,15 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
   const [isLoadingModal, setIsLoadingModal] = useState(false)
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const [sorting, setSorting] = useState<SortingState>(props.pageOptions.sorting ?? []);
 
   const INITIAL_VISIBLE_COLUMNS = (): VisibilityState => {
     const visibleColumns: VisibilityState = {}
     props.columns.forEach((column) => {
       //@ts-ignore
-      const id = column.id ? column.id : (column.accessorKey ? column.accessorKey : column.header)
+      // const id = column.id ? column.id : (column.accessorKey ? column.accessorKey : column.header)
+      const id = column.id
 
       if (!id) return
       visibleColumns[id] = column.meta?.visible === false ? false : true
@@ -109,8 +111,14 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
   }, [tableFilters, dynamicFilters])
 
   useEffect(() => {
+    if (props.pageOptions.sorting === sorting) return
     props.setPageOptions({ ...props.pageOptions, sorting: sorting })
   }, [sorting])
+
+  useEffect(() => {
+    if (props.pageOptions.sorting === sorting) return
+    setSorting(props.pageOptions.sorting)
+  }, [props.pageOptions.sorting])
 
   const createButtonFn = () => {
     const action = () => {
