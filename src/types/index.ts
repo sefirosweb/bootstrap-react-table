@@ -1,4 +1,4 @@
-import { FilterLabel } from "@sefirosweb/react-multiple-search"
+import { FilterLabel, Filters } from "@sefirosweb/react-multiple-search"
 import { UseQueryOptions } from "@tanstack/react-query"
 import { CellContext, ColumnDef, Table } from "@tanstack/react-table"
 import React from "react"
@@ -17,7 +17,7 @@ export type MutationVars = {
 export type PageOptions = {
     page: number,
     pageSize: number
-    filters: Array<Filter>,
+    filters: Array<Filters>,
     sorting: Array<{
         id: string,
         desc: boolean
