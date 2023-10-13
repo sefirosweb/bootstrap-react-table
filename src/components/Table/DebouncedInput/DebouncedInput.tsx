@@ -12,13 +12,18 @@ export const DebouncedInput: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (typeof value !== 'string') return;
+    if (value === currentValue) return;
+
 
     setCurrentValue(value);
   }, [value]);
 
   useEffect(() => {
     if (!onChange) return;
+    if (value === currentValue) return;
+
     const timeout = setTimeout(() => {
+
       onChange(currentValue);
     }, delayFilter);
 

@@ -43,7 +43,7 @@ export const fakeData = (uuid: string, category: OptionsType): GeneratedData => 
 }
 
 export const getData = (options?: Options) => {
-    const { maxValue = 300, minValue = 40 } = options ?? {}
+    const { maxValue = 300, minValue = 100 } = options ?? {}
 
     if (generatedData.length > 0) {
         return generatedData

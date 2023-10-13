@@ -13,24 +13,17 @@ import { Togle } from "./TableToolbar/Togle"
 type Props = {
     table: Table<any>,
     createButtonFn: () => void
-    setDynamicFilters: React.Dispatch<React.SetStateAction<Array<Filters>>>
-    setGlobalFilter: React.Dispatch<React.SetStateAction<string>>
 }
 
 export const TableToolbar: React.FC<Props> = (props) => {
-    const { crudOptions, isFetching, refreshTable, tableData, isLazy, pageOptions } = useContext(TableContext)
+    const { crudOptions, isFetching, refreshTable, tableData, isLazy, pageOptions, setPageOptions } = useContext(TableContext)
     const { t } = useTranslation()
 
-    const [filter, setFilter] = useState("");
-    const [filters, setFilters] = useState<Array<Filters>>([]);
+    const globalFilter = pageOptions.globalFilter ?? ''
+    const setGlobalFilter = (newVal: string) => setPageOptions({ ...pageOptions, globalFilter: newVal })
 
-    useEffect(() => {
-        props.setDynamicFilters(filters);
-    }, [filters]);
-
-    useEffect(() => {
-        props.setGlobalFilter(filter);
-    }, [filter])
+    const inputFilters = pageOptions.inputFilters ?? []
+    const setInputFilters = (newVal: Array<Filters>) => setPageOptions({ ...pageOptions, inputFilters: newVal })
 
     const generateExcel = (fileName: string) => {
         if (isLazy) {
@@ -95,8 +88,8 @@ export const TableToolbar: React.FC<Props> = (props) => {
                 <div className="d-flex justify-content-end">
                     {crudOptions.globalSearch && typeof crudOptions.enableGlobalFilterLabels === 'undefined' && (
                         <DebouncedInput
-                            value={filter}
-                            onChange={(value) => setFilter(value)}
+                            value={globalFilter}
+                            onChange={(value) => setGlobalFilter(value)}
                             placeholder={t('Search')}
                             className="form-control"
                             delayFilter={crudOptions.delayFilter ?? 230}
@@ -106,8 +99,8 @@ export const TableToolbar: React.FC<Props> = (props) => {
                     {crudOptions.globalSearch && crudOptions.enableGlobalFilterLabels && (
                         <div className="w-100">
                             <InputSearch
-                                filters={filters}
-                                setFilters={setFilters}
+                                filters={inputFilters}
+                                setFilters={setInputFilters}
                                 filterLabels={crudOptions.enableGlobalFilterLabels}
                             />
                         </div>

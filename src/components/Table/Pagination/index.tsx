@@ -37,7 +37,7 @@ export const Pagination: React.FC<Props> = ({ table }) => {
         <CPagination
             pages={table.getPageCount() === 0 ? 1 : table.getPageCount()}
             currentPage={table.getState().pagination.pageIndex + 1}
-            totalRows={props.tableData.length}
+            totalRows={table.getFilteredRowModel().rows.length}
 
             handleFirstPage={() => table.setPageIndex(0)}
             handlePrevPage={() => table.previousPage()}

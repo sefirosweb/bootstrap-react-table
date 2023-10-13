@@ -1,44 +1,52 @@
 import React, { useEffect, useState } from "react"
 import { Form } from "react-bootstrap"
-import { Filter } from "@/index"
-import { DateTime } from "luxon"
+import { isEqual } from "lodash"
+
+type CustomType = [string | null, string | null]
 
 type Props = {
     headerId: string
-    tableFilters: Filter,
-    setTableFilters: React.Dispatch<React.SetStateAction<Filter>>,
+    value?: CustomType,
+    setValue: (newValue?: CustomType) => void,
 }
 
+const INITIAL_VALUE: [string, string] = ['', '']
+
 export const FilterDates: React.FC<Props> = (props) => {
-    const { headerId, tableFilters, setTableFilters } = props
-    const [values, setValues] = useState<{ min: string, max: string }>({ min: '', max: '' })
+    const { headerId, value, setValue } = props
+    const [values, setValues] = useState<[string, string]>(INITIAL_VALUE)
 
     useEffect(() => {
-        const newFilters = { ...tableFilters }
-
-        if (values.min === '' && values.max === '') {
-            delete newFilters[headerId]
-            setTableFilters(newFilters)
+        if (!value) {
+            if (!isEqual(values, INITIAL_VALUE)) {
+                setValues(INITIAL_VALUE)
+            }
             return
         }
 
-        let min = values.min === '' ? null : DateTime.fromISO(values.min)
-        let max = values.max === '' ? null : DateTime.fromISO(values.max)
+        const newFilters: [string, string] = [
+            value[0] ?? '',
+            value[1] ?? '',
+        ]
 
-        if (min !== null && max !== null) {
-            if (min > max) {
-                let temp = min
-                min = max
-                max = temp
-            }
+        if (isEqual(newFilters, values)) return
+        setValues(newFilters)
+
+    }, [value])
+
+    useEffect(() => {
+        if (values[0] === '' && values[1] === '') {
+            setValue(undefined)
+            return
         }
 
-        newFilters[headerId] = {
-            min: min?.toISODate(),
-            max: max?.toISODate(),
-        }
+        const newFilters: CustomType = [
+            values[0] === '' ? null : values[0],
+            values[1] === '' ? null : values[1]
+        ]
 
-        setTableFilters(newFilters)
+        if (isEqual(newFilters, value)) return
+        setValue(newFilters)
     }, [values])
 
 
@@ -49,8 +57,8 @@ export const FilterDates: React.FC<Props> = (props) => {
                 name={`filter_${headerId}_min`}
                 placeholder="min"
                 type="date"
-                value={values.min}
-                onChange={(e) => setValues({ ...values, min: e.target.value })}
+                value={values[0]}
+                onChange={(e) => setValues([e.target.value, values[1]])}
             />
 
             <Form.Control
@@ -59,8 +67,8 @@ export const FilterDates: React.FC<Props> = (props) => {
                 placeholder="max"
                 type="date"
                 className="mt-1"
-                value={values.max}
-                onChange={(e) => setValues({ ...values, max: e.target.value })}
+                value={values[1]}
+                onChange={(e) => setValues([values[0], e.target.value])}
             />
         </>
     )

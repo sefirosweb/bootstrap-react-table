@@ -9,54 +9,67 @@ import { ColumnDef } from "@tanstack/react-table"
 
 type Props = {
     type?: FieldType
-    header_id: string
+    headerId: string
     tableFilters: FilterType,
     setTableFilters: React.Dispatch<React.SetStateAction<FilterType>>,
     columnDef: ColumnDef<any>,
 }
 
 export const Filter: React.FC<Props> = (props) => {
-    const { type, header_id, columnDef, tableFilters, setTableFilters } = props
+    const { type, headerId, columnDef, tableFilters, setTableFilters } = props
+
+    const value = tableFilters[headerId] ?? undefined
+    const setValue = (newValue?: any) => {
+        const newTableFilters = structuredClone(tableFilters)
+
+        if (!newValue) {
+            delete newTableFilters[headerId]
+        } else {
+            newTableFilters[headerId] = newValue
+        }
+
+        setTableFilters(newTableFilters)
+    }
 
     return (
         <>
             {(!type || type === 'text') && (
                 <FilterText
-                    headerId={header_id}
-                    tableFilters={tableFilters}
-                    setTableFilters={setTableFilters}
+                    headerId={headerId}
+                    value={value}
+                    setValue={setValue}
                 />
             )}
 
             {(type === 'number') && (
                 <FilterNumbers
-                    headerId={header_id}
-                    tableFilters={tableFilters}
-                    setTableFilters={setTableFilters}
+                    headerId={headerId}
+                    value={value}
+                    setValue={setValue}
                 />
             )}
 
             {(type === 'date') && (
                 <FilterDates
-                    headerId={header_id}
-                    tableFilters={tableFilters}
-                    setTableFilters={setTableFilters}
+                    headerId={headerId}
+                    value={value}
+                    setValue={setValue}
                 />
             )}
 
             {(type === 'datetime') && (
                 <FilterDatesTime
-                    headerId={header_id}
-                    tableFilters={tableFilters}
-                    setTableFilters={setTableFilters}
+                    headerId={headerId}
+                    value={value}
+                    setValue={setValue}
                 />
             )}
 
             {(type === 'select') && (
                 <FilterSelect
-                    headerId={header_id}
-                    tableFilters={tableFilters}
-                    setTableFilters={setTableFilters}
+                    headerId={headerId}
+                    value={value}
+                    setValue={setValue}
                     columnDef={columnDef}
                 />
             )}

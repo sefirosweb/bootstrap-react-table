@@ -1,6 +1,6 @@
 import { FilterLabel, Filters } from "@sefirosweb/react-multiple-search"
 import { UseQueryOptions } from "@tanstack/react-query"
-import { CellContext, ColumnDef, Table } from "@tanstack/react-table"
+import { CellContext, ColumnDef, ColumnFiltersState, Table } from "@tanstack/react-table"
 import React from "react"
 export type ActionCrud = 'create' | 'edit' | 'delete'
 export type FieldType = 'text' | 'number' | 'date' | 'datetime' | 'select' | 'checkbox'
@@ -17,7 +17,9 @@ export type MutationVars = {
 export type PageOptions = {
     page: number,
     pageSize: number
-    filters: Array<Filters>,
+    globalFilter?: string,
+    inputFilters?: Array<Filters>,
+    columnFilters?: ColumnFiltersState,
     sorting: Array<{
         id: string,
         desc: boolean
@@ -106,7 +108,7 @@ export type CrudOptions<T> = {
     delayFilter?: number,
 
     pageOptions?: PageOptions,
-    setPageOptions?: (pageOptions: PageOptions) => void,
+    setPageOptions?: React.Dispatch<React.SetStateAction<PageOptions>>,
 
     pageSizes?: Array<number>,
     customButtons?: JSX.Element

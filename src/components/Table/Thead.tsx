@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { flexRender, Header, Table } from "@tanstack/react-table";
-import { Filter as FilterType } from "@/index";
+import { ColumnFiltersState, flexRender, Header, Table } from "@tanstack/react-table";
 import { Filter } from "./TheadFilters";
 import { TableContext } from "./TableContext";
+import { Filter as FilterType } from "@/index";
+import { isEqual } from "lodash";
 
 type Props = {
     table: Table<any>,
-    tableFilters: FilterType,
-    setTableFilters: React.Dispatch<React.SetStateAction<FilterType>>,
 }
 
 const sortDirection = (header: Header<any, unknown>) => {
@@ -22,15 +21,37 @@ const sortDirection = (header: Header<any, unknown>) => {
 
 export const Thead: React.FC<Props> = (props) => {
     const [tableFilters, setTableFilters] = useState<FilterType>({})
-    const { crudOptions } = useContext(TableContext)
+    const { pageOptions, setPageOptions, crudOptions } = useContext(TableContext)
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            props.setTableFilters(tableFilters)
+            const newColumnFilters: ColumnFiltersState = []
+            for (const key in tableFilters) {
+                const filter = tableFilters[key]
+                newColumnFilters.push({
+                    id: key,
+                    value: filter,
+                })
+            }
+
+            if (isEqual(newColumnFilters, pageOptions.columnFilters ?? [])) return
+            setPageOptions({ ...pageOptions, columnFilters: newColumnFilters })
         }, crudOptions.delayFilter ?? 230);
 
         return () => clearTimeout(timeout);
-    }, [tableFilters]);
+    }, [tableFilters, pageOptions]);
+
+
+    useEffect(() => {
+        if (!pageOptions.columnFilters) return
+        const newTableFilters: FilterType = {}
+        for (const filter of pageOptions.columnFilters) {
+            newTableFilters[filter.id] = filter.value
+        }
+
+        if (isEqual(newTableFilters, tableFilters)) return
+        setTableFilters(newTableFilters)
+    }, [pageOptions.columnFilters]);
 
     return (
         <thead>
@@ -73,7 +94,7 @@ export const Thead: React.FC<Props> = (props) => {
                                                 <Filter
                                                     type={header.column.columnDef.meta?.type}
                                                     columnDef={header.column.columnDef}
-                                                    header_id={header.id}
+                                                    headerId={header.id}
                                                     tableFilters={tableFilters}
                                                     setTableFilters={setTableFilters}
                                                 />

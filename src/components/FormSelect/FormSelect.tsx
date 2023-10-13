@@ -25,6 +25,8 @@ export const FormSelect: React.FC<Props> = ({ addNullOption, value, useQueryOpti
     const { data: selectData } = useQuery(useQueryOptions)
 
     useEffect(() => {
+        if (selectedOption === value) return
+
         if (typeof value === "number") {
             setSelectedOption(value.toString());
         } else if (typeof value === "string") {
@@ -32,6 +34,9 @@ export const FormSelect: React.FC<Props> = ({ addNullOption, value, useQueryOpti
         } else {
             setSelectedOption("");
         }
+
+        const selectedOptionFilter = selectData?.find(filter => filter.value === value)
+        handleChange(selectedOptionFilter)
     }, [value]);
 
     return (

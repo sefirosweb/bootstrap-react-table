@@ -5,6 +5,7 @@ import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
 import { TableContext } from "./TableContext";
+import { isEqual, isFunction } from "lodash";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,
@@ -16,34 +17,25 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
     const queryClient = useQueryClient()
     const refTable = useRef<PropsRef>(null)
 
-    const pageSizes = props.crudOptions.pageSizes ?? [5, 10, 25, 50, 100, 500]
-
-    const INITIAL_PAGE_OPTIONS: PageOptions = props.crudOptions.pageOptions ?? {
+    const pageSizes = props.crudOptions.pageSizes ?? [10, 25, 50, 100, 500]
+    const INITIAL_PAGE_OPTIONS: PageOptions = {
         page: 1,
         pageSize: pageSizes[0],
-        filters: [],
+        globalFilter: '',
+        inputFilters: [],
+        columnFilters: [],
         sorting: [],
     }
 
-    const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)
+    const [pageOptionsLocal, setPageOptionsLocal] = useState<PageOptions>(Object.assign({ ...INITIAL_PAGE_OPTIONS }, props.crudOptions.pageOptions))
+    const pageOptions = props.crudOptions.pageOptions || pageOptionsLocal
+    const setPageOptions = props.crudOptions.setPageOptions || setPageOptionsLocal
+
     const [queryKey, setQueryKey] = useState([props.useQueryOptions.queryKey, pageOptions])
 
     useEffect(() => {
         setQueryKey([props.useQueryOptions.queryKey, pageOptions])
     }, [props.useQueryOptions.queryKey, pageOptions])
-
-    useEffect(() => {
-        if (!props.crudOptions.pageOptions) return
-        setPageOptions(props.crudOptions.pageOptions)
-    }, [props.crudOptions.pageOptions])
-
-    useEffect(() => {
-        if (pageOptions === props.crudOptions.pageOptions) return
-
-        if (props.crudOptions.setPageOptions) {
-            props.crudOptions.setPageOptions({ ...pageOptions })
-        }
-    }, [pageOptions])
 
     const INITIAL_DATA: QueryPage<any> = {
         results: [],
@@ -61,21 +53,28 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
         initialData: INITIAL_DATA,
         ...props.useQueryOptions,
         queryKey,
-        queryFn: (params) => {
-            if (!props.useQueryOptions.queryFn) {
-                return Promise.reject(new Error('No query function provided'));
-            }
+        queryFn: async (params) => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    if (!props.useQueryOptions.queryFn) {
+                        return Promise.reject(new Error('No query function provided'));
+                    }
 
-            const pageConfig = params.queryKey[1] as PageOptions
+                    const pageConfig = params.queryKey[1] as PageOptions
 
-            params.meta = {
-                page: pageConfig?.page ?? pageOptions.page,
-                pageSize: pageConfig?.pageSize ?? pageOptions.pageSize,
-                filters: pageConfig?.filters ?? [],
-                sorting: pageConfig?.sorting ?? [],
-            }
+                    params.meta = {
+                        page: pageConfig?.page ?? pageOptions.page,
+                        pageSize: pageConfig?.pageSize ?? pageOptions.pageSize,
+                        columnFilters: pageConfig?.columnFilters ?? [],
+                        inputFilters: pageConfig?.inputFilters ?? [],
+                        globalFilter: pageConfig?.globalFilter ?? "",
+                        sorting: pageConfig?.sorting ?? [],
+                    }
 
-            return props.useQueryOptions.queryFn(params)
+                    resolve(props.useQueryOptions.queryFn(params))
+                });
+            })
+
         },
     }
 

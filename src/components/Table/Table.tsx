@@ -1,10 +1,9 @@
 import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
-import { CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, Table as TableTanStackProp, useReactTable, VisibilityState } from "@tanstack/react-table";
+import { CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, TableOptions, useReactTable, VisibilityState } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { Table as BTable, Col, Row } from "react-bootstrap";
 import { Tbody, Thead, TableToolbar, ModalForm } from "./index";
-import { ActionCrud, Filter, EditButton, DeleteButton } from "@/index";
-import { Filters } from "@sefirosweb/react-multiple-search";
+import { ActionCrud, EditButton, DeleteButton } from "@/index";
 import { filterFn } from "@/lib";
 import { globalFilterFn } from "@/lib/filterFn/globalFilterFn";
 import { TableContext } from "./TableContext";
@@ -15,6 +14,7 @@ type CustomColumnFiltersState = Array<{
   value: Array<unknown>
 }>
 
+
 export type PropsRef = {
   setShowModal: (show: boolean) => void
   setIsLoadingModal: (isLoading: boolean) => void
@@ -22,33 +22,20 @@ export type PropsRef = {
 
 export const Table = forwardRef<PropsRef>((_, ref) => {
   const props = useContext(TableContext)
-
   const { t } = useTranslation()
+
   const [columns, setColumns] = useState<Array<ColumnDef<any>>>([])
   const [cellSelected, setCellSelected] = useState<CellContext<any, unknown> | null>(null)
   const [action, setAction] = useState<ActionCrud>('create')
   const [showModal, setShowModal] = useState(false)
 
-
-  const [tableFilters, setTableFilters] = useState<Filter>({})
-  const [dynamicFilters, setDynamicFilters] = useState<Array<Filters>>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
-
   const [isLoadingModal, setIsLoadingModal] = useState(false)
-
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
-  const [sorting, setSorting] = useState<SortingState>(props.pageOptions.sorting ?? []);
 
   const INITIAL_VISIBLE_COLUMNS = (): VisibilityState => {
     const visibleColumns: VisibilityState = {}
     props.columns.forEach((column) => {
-      //@ts-ignore
-      // const id = column.id ? column.id : (column.accessorKey ? column.accessorKey : column.header)
-      const id = column.id
-
-      if (!id) return
-      visibleColumns[id] = column.meta?.visible === false ? false : true
+      if (!column.id) return
+      visibleColumns[column.id] = column.meta?.visible === false ? false : true
     })
 
     return visibleColumns
@@ -56,69 +43,35 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(INITIAL_VISIBLE_COLUMNS);
 
-  useEffect(() => {
-    if (!props.isLazy) return
 
-    const filters: Array<Filters> = [...dynamicFilters];
-
-    for (const key in tableFilters) {
-      filters.push({
-        filter: key,
-        label: key,
-        text: tableFilters[key],
-      })
-    }
-
-    if (globalFilter !== '') {
-      filters.push({
-        filter: 'globalFilter',
-        label: 'globalFilter',
-        text: globalFilter,
-      })
-    }
-
-    props.setPageOptions({ ...props.pageOptions, filters: filters })
-
-  }, [tableFilters, dynamicFilters, globalFilter])
-
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   useEffect(() => {
     if (props.isLazy) return
-
     const newColumnFilters: CustomColumnFiltersState = []
 
-    for (const key in tableFilters) {
+    props.pageOptions.columnFilters?.forEach((columnFilter) => {
       newColumnFilters.push({
-        id: key,
-        value: [tableFilters[key]],
+        id: columnFilter.id,
+        value: [columnFilter.value],
       })
-    }
+    })
 
-    if (dynamicFilters) {
-      dynamicFilters.forEach((filter) => {
-        const columnFilter = newColumnFilters.find((columnFilter) => columnFilter.id === filter.filter)
-        if (columnFilter) {
-          columnFilter.value.push(filter.text)
-        } else {
-          newColumnFilters.push({
-            id: filter.filter,
-            value: [filter.text]
-          })
-        }
-      })
-    }
+    props.pageOptions.inputFilters?.forEach((inputFilter) => {
+      const columnFilter = newColumnFilters.find((columnFilter) => columnFilter.id === inputFilter.filter)
+
+      if (columnFilter) {
+        columnFilter.value.push(inputFilter.text)
+      } else {
+        newColumnFilters.push({
+          id: inputFilter.filter,
+          value: [inputFilter.text]
+        })
+      }
+    })
 
     setColumnFilters(newColumnFilters)
-  }, [tableFilters, dynamicFilters])
+  }, [props.pageOptions.columnFilters, props.pageOptions.inputFilters])
 
-  useEffect(() => {
-    if (props.pageOptions.sorting === sorting) return
-    props.setPageOptions({ ...props.pageOptions, sorting: sorting })
-  }, [sorting])
-
-  useEffect(() => {
-    if (props.pageOptions.sorting === sorting) return
-    setSorting(props.pageOptions.sorting)
-  }, [props.pageOptions.sorting])
 
   const createButtonFn = () => {
     const action = () => {
@@ -188,63 +141,63 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     setColumns(newColumns)
   }, [props.columns])
 
-  let table: TableTanStackProp<any>
-
-  if (props.isLazy) {
-    table = useReactTable({
-      columns: columns,
-      data: props.tableData,
-
-      state: {
-        sorting,
-        columnVisibility,
-      },
-
-      defaultColumn: {
-        enableSorting: false,
-      },
-
-      onColumnVisibilityChange: setColumnVisibility,
-      onSortingChange: setSorting,
-      getCoreRowModel: getCoreRowModel(),
-    });
-  } else {
-    table = useReactTable({
-      columns: columns,
-      data: props.tableData,
-
-      initialState: {
-        pagination: {
-          pageSize: props.pageOptions.pageSize,
-        },
-      },
-
-      getCoreRowModel: getCoreRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-
-      enableColumnFilters: true,
-      state: {
-        globalFilter,
-        columnFilters,
-        sorting,
-        columnVisibility,
-      },
-
-      defaultColumn: {
-        enableSorting: false,
-      },
-
-      onColumnVisibilityChange: setColumnVisibility,
-      onColumnFiltersChange: setColumnFilters,
-      getFilteredRowModel: getFilteredRowModel(),
-      globalFilterFn: globalFilterFn,
-      getColumnCanGlobalFilter: () => true,
-      onGlobalFilterChange: setGlobalFilter,
-      onSortingChange: setSorting,
-      getSortedRowModel: getSortedRowModel(),
-      autoResetPageIndex: false,
-    });
+  const tableProps: TableOptions<any> = {
+    columns: columns,
+    data: props.tableData,
+    getCoreRowModel: getCoreRowModel(),
+    state: {
+      sorting: props.pageOptions.sorting ?? [],
+      columnVisibility,
+    },
+    onColumnVisibilityChange: setColumnVisibility,
+    defaultColumn: {
+      enableSorting: false,
+    },
+    onSortingChange: (sorting) => {
+      if (typeof sorting !== 'function') {
+        props.setPageOptions({ ...props.pageOptions, sorting })
+      } else {
+        const newSorting = sorting(props.pageOptions.sorting ?? [])
+        props.setPageOptions({ ...props.pageOptions, sorting: newSorting })
+      }
+    },
   }
+
+  const tablePropsEagle: TableOptions<any> = {
+    ...tableProps,
+    initialState: {
+      pagination: {
+        pageSize: props.pageOptions.pageSize,
+      },
+    },
+    getPaginationRowModel: getPaginationRowModel(),
+
+    enableColumnFilters: true,
+    state: {
+      ...tableProps.state,
+      globalFilter: props.pageOptions.globalFilter ?? "",
+      columnFilters,
+    },
+
+    // onColumnFiltersChange: (columnFilters) => {
+    //   console.log('columnFilters', columnFilters)
+    //   if (typeof columnFilters !== "function") {
+    //     props.setPageOptions({ ...props.pageOptions, columnFilters })
+    //   } else {
+    //     const newColumnFilters = columnFilters(props.pageOptions.columnFilters ?? [])
+    //     props.setPageOptions({ ...props.pageOptions, columnFilters: newColumnFilters })
+    //   }
+    // },
+
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: globalFilterFn,
+    getColumnCanGlobalFilter: () => true,
+    onGlobalFilterChange: (globalFilter) => props.setPageOptions({ ...props.pageOptions, globalFilter }),
+    getSortedRowModel: getSortedRowModel(),
+    autoResetPageIndex: false,
+  }
+
+  const table = useReactTable(props.isLazy ? tableProps : tablePropsEagle)
 
   useImperativeHandle(ref, () => ({
     setShowModal,
@@ -259,8 +212,6 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
           <TableToolbar
             table={table}
             createButtonFn={createButtonFn}
-            setDynamicFilters={setDynamicFilters}
-            setGlobalFilter={setGlobalFilter}
           />
         </Col>
       </Row>
@@ -273,7 +224,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
             bordered
             responsive
           >
-            <Thead table={table} tableFilters={tableFilters} setTableFilters={setTableFilters} />
+            <Thead table={table} />
             <Tbody table={table} />
           </BTable>
 

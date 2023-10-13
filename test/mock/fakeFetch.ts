@@ -7,7 +7,7 @@ import { DateTime } from "luxon";
 
 export const getFetchOptionsValue = (delay = 30): Promise<Array<SelectOption>> => {
     return new Promise((resolve) => {
-        console.log('fetching => getFetchOptionsValue')
+        console.log('fetching => getFetchOptionsValue => START')
         setTimeout(() => {
             const data = generateOptionsValue().map(p => ({
                 ...p,
@@ -16,7 +16,7 @@ export const getFetchOptionsValue = (delay = 30): Promise<Array<SelectOption>> =
             }))
 
             console.log('getFetchOptionsValue:', data)
-            console.log('fetching => getFetchOptionsValue => done')
+            console.log('fetching => getFetchOptionsValue => DONE')
             resolve(data);
         }, delay)
     });
@@ -65,8 +65,8 @@ export const compareValue = (aVal: any, bVal: any, desc: boolean) => {
 export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<QueryPage<GeneratedData>> => {
     return new Promise((resolve) => {
         let data = getData({
-            minValue: 1000,
-            maxValue: 5000
+            minValue: 5000,
+            maxValue: 20000
         })
 
         const currentPage = params.meta?.page ?? 1
@@ -76,7 +76,33 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
         const start = currentPage * pageSize - pageSize;
         const end = start + pageSize;
 
-        params.meta?.filters?.forEach(p => {
+        const filters: Array<Record<string, any>> = []
+        if (params.meta?.globalFilter) {
+            filters.push({
+                filter: 'globalFilter',
+                text: params.meta.globalFilter
+            })
+        }
+
+        if (params.meta?.columnFilters) {
+            params.meta.columnFilters.forEach(p => {
+                filters.push({
+                    filter: p.id,
+                    text: p.value
+                })
+            })
+        }
+
+        if (params.meta?.inputFilters) {
+            params.meta.inputFilters.forEach(p => {
+                filters.push({
+                    filter: p.filter,
+                    text: p.text
+                })
+            })
+        }
+
+        filters.forEach(p => {
             data = data.filter(d => {
                 if (p.filter === 'id_category' && d.category) {
                     return matchString(d.category.uuid, p.text)
@@ -87,15 +113,20 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
                 }
 
                 if (p.filter === 'created_at_date') {
-                    return inRangeDate(DateTime.fromISO(d.created_at).toMillis(), DateTime.fromISO(p.text.min).toMillis(), DateTime.fromISO(p.text.max).toMillis())
+                    const min = p.text[0] ? DateTime.fromISO(p.text[0]) : null
+                    const max = p.text[1] ? DateTime.fromISO(p.text[1]) : null
+                    return inRangeDate(DateTime.fromISO(d.created_at).toMillis(), min?.toMillis(), max?.toMillis())
                 }
 
                 if (p.filter === 'created_at') {
-                    return inRangeDateTime(DateTime.fromISO(d.created_at).toMillis(), DateTime.fromISO(p.text.min).toMillis(), DateTime.fromISO(p.text.max).toMillis())
+                    const min = p.text[0] ? DateTime.fromISO(p.text[0]) : null
+                    const max = p.text[1] ? DateTime.fromISO(p.text[1]) : null
+                    return inRangeDateTime(DateTime.fromISO(d.created_at).toMillis(), min?.toMillis(), max?.toMillis())
                 }
 
+
                 if (p.filter === 'price') {
-                    return inRangeNumber(d.price, p.text.min, p.text.max)
+                    return inRangeNumber(d.price, p.text[0], p.text[1])
                 }
 
                 if (p.filter === 'description') {
@@ -156,8 +187,8 @@ export const getFetchAll = (params: QueryFunctionContext, delay = 30): Promise<Q
     return new Promise((resolve) => {
         const data = getData(
             {
-                minValue: 1000,
-                maxValue: 5000
+                minValue: 5000,
+                maxValue: 20000
             }
         )
 

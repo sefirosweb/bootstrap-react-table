@@ -5,6 +5,7 @@ import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
 import { TableContext } from "./TableContext";
+import { isEqual, isFunction } from "lodash";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,
@@ -17,33 +18,24 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
     const refTable = useRef<PropsRef>(null)
 
     const pageSizes = props.crudOptions.pageSizes ?? [10, 25, 50, 100, 500]
-
-    const INITIAL_PAGE_OPTIONS: PageOptions = props.crudOptions.pageOptions ?? {
+    const INITIAL_PAGE_OPTIONS: PageOptions = {
         page: 1,
         pageSize: pageSizes[0],
-        filters: [],
+        globalFilter: '',
+        inputFilters: [],
+        columnFilters: [],
         sorting: [],
     }
 
-    const [pageOptions, setPageOptions] = useState<PageOptions>(INITIAL_PAGE_OPTIONS)
+    const [pageOptionsLocal, setPageOptionsLocal] = useState<PageOptions>(Object.assign({ ...INITIAL_PAGE_OPTIONS }, props.crudOptions.pageOptions))
+    const pageOptions = props.crudOptions.pageOptions || pageOptionsLocal
+    const setPageOptions = props.crudOptions.setPageOptions || setPageOptionsLocal
+
     const [queryKey, setQueryKey] = useState([props.useQueryOptions.queryKey])
 
     useEffect(() => {
         setQueryKey([props.useQueryOptions.queryKey])
     }, [props.useQueryOptions.queryKey])
-
-    useEffect(() => {
-        if (!props.crudOptions.pageOptions) return
-        setPageOptions(props.crudOptions.pageOptions)
-    }, [props.crudOptions.pageOptions])
-
-    useEffect(() => {
-        if (pageOptions === props.crudOptions.pageOptions) return
-
-        if (props.crudOptions.setPageOptions) {
-            props.crudOptions.setPageOptions({ ...pageOptions })
-        }
-    }, [pageOptions])
 
     const INITIAL_DATA: QueryEagle<any> = {
         results: [],
@@ -57,17 +49,23 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
         ...props.useQueryOptions,
         queryKey,
         queryFn: (params) => {
-            if (!props.useQueryOptions.queryFn) {
-                return Promise.reject(new Error('No query function provided'));
-            }
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    if (!props.useQueryOptions.queryFn) {
+                        return Promise.reject(new Error('No query function provided'));
+                    }
 
-            const pageConfig = params.queryKey[1] as PageOptions
+                    const pageConfig = params.queryKey[1] as PageOptions
 
-            params.meta = {
-                filters: pageConfig?.filters ?? [],
-            }
+                    params.meta = {
+                        columnFilters: pageConfig?.columnFilters ?? [],
+                        inputFilters: pageConfig?.inputFilters ?? [],
+                        globalFilter: pageConfig?.globalFilter ?? "",
+                    }
 
-            return props.useQueryOptions.queryFn(params)
+                    resolve(props.useQueryOptions.queryFn(params))
+                });
+            })
         },
     }
 

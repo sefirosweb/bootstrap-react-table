@@ -1,42 +1,55 @@
+import { isEqual } from "lodash"
 import React, { useEffect, useState } from "react"
 import { Form } from "react-bootstrap"
-import { Filter } from "@/index"
+
+type CustomType = [number | null, number | null]
 
 type Props = {
     headerId: string
-    tableFilters: Filter,
-    setTableFilters: React.Dispatch<React.SetStateAction<Filter>>,
+    value?: CustomType,
+    setValue: (newValue?: CustomType) => void,
 }
 
+const INITIAL_VALUE: [string, string] = ['', '']
+
 export const FilterNumbers: React.FC<Props> = (props) => {
-    const { headerId, tableFilters, setTableFilters } = props
-    const [values, setValues] = useState<{ min: string, max: string }>({ min: '', max: '' })
+    const { headerId, value, setValue } = props
+    const [values, setValues] = useState<[string, string]>(INITIAL_VALUE)
 
     useEffect(() => {
-        const newFilters = { ...tableFilters }
-
-        if (values.min === '' && values.max === '') {
-            delete newFilters[headerId]
-            setTableFilters(newFilters)
+        if (!value) {
+            if (!isEqual(values, INITIAL_VALUE)) {
+                setValues(INITIAL_VALUE)
+            }
             return
         }
 
-        let min = parseFloat(values.min)
-        let max = parseFloat(values.max)
+        const newFilters: [string, string] = [
+            value[0]?.toString() ?? '',
+            value[1]?.toString() ?? '',
+        ]
 
+        if (isEqual(newFilters, values)) return
+        setValues(newFilters)
 
-        if (!isNaN(min) && !isNaN(max) && min > max) {
-            let temp = min
-            min = max
-            max = temp
+    }, [value])
+
+    useEffect(() => {
+        if (values[0] === '' && values[1] === '') {
+            setValue(undefined)
+            return
         }
 
-        newFilters[headerId] = {
-            min: isNaN(min) ? null : min,
-            max: isNaN(max) ? null : max,
-        }
+        let min = parseFloat(values[0])
+        let max = parseFloat(values[1])
 
-        setTableFilters(newFilters)
+        const newFilters: CustomType = [
+            isNaN(min) ? null : min,
+            isNaN(max) ? null : max,
+        ]
+
+        if (isEqual(newFilters, value)) return
+        setValue(newFilters)
     }, [values])
 
 
@@ -47,8 +60,8 @@ export const FilterNumbers: React.FC<Props> = (props) => {
                 name={`filter_${headerId}_min`}
                 placeholder="min"
                 type="number"
-                value={values.min}
-                onChange={(e) => setValues({ ...values, min: e.target.value })}
+                value={values[0]}
+                onChange={(e) => setValues([e.target.value, values[1]])}
             />
             <Form.Control
                 id={`filter_${headerId}_max`}
@@ -56,8 +69,8 @@ export const FilterNumbers: React.FC<Props> = (props) => {
                 placeholder="max"
                 type="number"
                 className="mt-1"
-                value={values.max}
-                onChange={(e) => setValues({ ...values, max: e.target.value })}
+                value={values[1]}
+                onChange={(e) => setValues([values[0], e.target.value])}
             />
         </>
     )

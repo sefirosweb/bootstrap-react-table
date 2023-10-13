@@ -113,7 +113,7 @@ export const crudOptions: CrudOptions<GeneratedData> = {
     canExport: true,
     canRefresh: true,
     globalSearch: true,
-    pageSizes: [5, 10, 25, 50, 100, 500, 1000, 5000, 10000],
+    pageSizes: [10, 25, 50, 100, 500, 1000, 5000, 10000],
     exportFilteredData: true,
     enableGlobalFilterLabels: [
         {

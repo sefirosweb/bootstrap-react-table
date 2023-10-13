@@ -4,30 +4,20 @@ import { Filter } from "@/index"
 
 type Props = {
     headerId: string
-    tableFilters: Filter,
-    setTableFilters: React.Dispatch<React.SetStateAction<Filter>>,
+    value?: string,
+    setValue: React.Dispatch<React.SetStateAction<string | undefined>>,
 }
 
 export const FilterText: React.FC<Props> = (props) => {
-    const { headerId, tableFilters, setTableFilters } = props
-
-    const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newFilter = { ...tableFilters }
-        if (e.target.value === '') {
-            delete newFilter[headerId]
-        } else {
-            newFilter[headerId] = e.target.value
-        }
-        setTableFilters(newFilter)
-    }
+    const { headerId, value, setValue } = props
 
     return (
         <Form.Control
             id={`filter_${headerId}`}
             name={`filter_${headerId}`}
             type="text"
-            value={tableFilters[headerId] ?? ''}
-            onChange={onChange}
+            value={value ?? ''}
+            onChange={(e) => setValue(e.target.value)}
         />
     )
 }

@@ -1,37 +1,33 @@
 import React, { useEffect, useState } from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { FormSelect, Filter, SelectOption } from "@/index"
+import { FormSelect, SelectOption } from "@/index"
 
 type Props = {
     headerId: string
-    tableFilters: Filter,
-    setTableFilters: React.Dispatch<React.SetStateAction<Filter>>,
+    value?: string,
+    setValue: React.Dispatch<React.SetStateAction<string | undefined>>,
     columnDef: ColumnDef<any>
 }
 
 export const FilterSelect: React.FC<Props> = (props) => {
+    const { headerId, value, setValue } = props
     const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>(undefined);
 
     if (!props.columnDef.meta?.useQueryOptions) {
-        console.log('err')
         throw new Error('FilterSelect requires useQueryOptions')
     }
 
     useEffect(() => {
-        const newTableFilters = { ...props.tableFilters }
-        if (!selectedOption) {
-            delete newTableFilters[props.headerId]
-        } else {
-            newTableFilters[props.headerId] = selectedOption.value
-        }
-
-        props.setTableFilters(newTableFilters)
+        setValue(selectedOption?.value)
     }, [selectedOption])
 
     return (
         <FormSelect
+            id={`filter_${headerId}`}
+            name={`filter_${headerId}`}
             useQueryOptions={props.columnDef.meta.useQueryOptions}
             handleChange={(option) => setSelectedOption(option)}
+            value={value}
             addNullOption={true}
         />
     )

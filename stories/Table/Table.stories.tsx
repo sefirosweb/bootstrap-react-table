@@ -1,8 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { PageOptions, Table, TableRef } from '../../src';
 import { columns, crudOptions, onSubmitFn, onSubmitFnWoRefresh, useQueryOptionsEagle, useQueryOptionsLazy } from './tableProps';
 import { Button } from 'react-bootstrap';
+import { getData, getRandom } from '../../test/mock';
+import { generateOptionsValue } from '../../test/mock/generateOptionsValue';
+import { DateTime } from 'luxon';
 
 const meta: Meta = {
   title: 'Tables/Table',
@@ -14,6 +17,47 @@ export default meta;
 type Story = StoryObj<typeof Table>;
 
 const crudOptions2 = { ...crudOptions, enableGlobalFilterLabels: undefined }
+
+const newPageOptions: PageOptions = {
+  pageSize: 5,
+  page: 1,
+  inputFilters: [
+    {
+      filter: 'description',
+      label: 'Desc.',
+      text: "!" + getRandom(getRandom(generateOptionsValue()).description.split(' ')),
+    },
+  ],
+  globalFilter: getRandom(getRandom(generateOptionsValue()).description.split(' ')),
+  columnFilters: [
+    {
+      id: 'price',
+      value: [100, null],
+    },
+    {
+      id: 'name',
+      value: getRandom(getData()).name,
+    },
+    {
+      id: 'id_category',
+      value: getRandom(generateOptionsValue()).uuid,
+    },
+    {
+      id: 'created_at_date',
+      value: [null, DateTime.now().toISODate()],
+    },
+    {
+      id: 'created_at',
+      value: [DateTime.now().minus({ days: 7 }).toFormat("yyyy-MM-dd'T'HH:mm:ss"), null],
+    },
+  ],
+  sorting: [
+    {
+      desc: true,
+      id: 'created_at'
+    }
+  ],
+}
 
 export const LazyTemplate: Story = {
   args: {
@@ -31,20 +75,22 @@ export const LazyTemplate: Story = {
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
 
-    const [pageOptions, setPageOptions] = React.useState<PageOptions>({
-      filters: [],
+    const [pageOptions, setPageOptions] = useState<PageOptions>({
       page: 1,
-      pageSize: 5,
+      pageSize: 10,
       sorting: [],
     })
+
+
 
     props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
     props.tableProps.crudOptions.pageOptions = pageOptions;
     props.tableProps.crudOptions.setPageOptions = setPageOptions;
+    props.tableProps.crudOptions.delayFilter = 800
 
-    useEffect(() => {
-      console.log('pageOptions from story', pageOptions)
-    }, [pageOptions])
+    // useEffect(() => {
+    //   console.log('pageOptions from story', pageOptions)
+    // }, [pageOptions])
 
     return (
       <div>
@@ -55,14 +101,8 @@ export const LazyTemplate: Story = {
           <Button onClick={() => {
             setPageOptions({
               ...pageOptions,
-              pageSize: 10,
-              page: 4,
-              sorting: [
-                {
-                  id: 'created_at',
-                  desc: true,
-                }
-              ],
+              ...newPageOptions,
+              globalFilter: ''
             })
           }}>
             Change Page & apply filters
@@ -88,12 +128,32 @@ export const LazyTemplateGlobal: Story = {
   },
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
+    const [pageOptions, setPageOptions] = useState<PageOptions>({
+      page: 1,
+      pageSize: 10,
+      sorting: [],
+    })
+
     props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
+    props.tableProps.crudOptions.pageOptions = pageOptions;
+    props.tableProps.crudOptions.setPageOptions = setPageOptions;
+    props.tableProps.crudOptions.delayFilter = 800
 
     return (
       <div>
         <div>
           This is Lazy load template
+        </div>
+        <div>
+          <Button onClick={() => {
+            setPageOptions({
+              ...pageOptions,
+              ...newPageOptions,
+              inputFilters: [],
+            })
+          }}>
+            Change Page & apply filters
+          </Button>
         </div>
         <div className='mt-3'>
           <Table {...props} ref={tableRef} />

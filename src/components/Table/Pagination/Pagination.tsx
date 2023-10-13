@@ -67,7 +67,7 @@ export const Pagination: React.FC<Props> = (props) => {
                 </Form.Select>
             </Col>
             <Col xs="auto" className="d-flex align-items-center">
-                {t('Total rows')}: {props.totalRows}
+                {t('total_rows', { rows: props.totalRows })}
             </Col>
         </Row>
     )
