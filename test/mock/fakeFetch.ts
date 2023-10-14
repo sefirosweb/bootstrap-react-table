@@ -138,6 +138,10 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
                     return matchString(d.category.name, p.text)
                 }
 
+                if (p.filter === 'categories' && d.categories) {
+                    return matchString(d.categories?.map(c => c.name).join(', '), p.text)
+                }
+
                 if (p.filter === 'globalFilter') {
                     return matchString(d.name, p.text) || matchString(d.category?.name ?? '', p.text) || matchString(d.description, p.text) || matchString(d.uuid, p.text)
                 }

@@ -118,6 +118,7 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
     {
         id: 'categories',
         header: 'Categories',
+        accessorFn: (row) => row.categories?.map(category => category.name).join(','),
         cell: (props) => (
             <ul>
                 {props.row.original.categories?.map((category, index) => (
@@ -188,6 +189,10 @@ export const crudOptions: CrudOptions<GeneratedData> = {
         {
             filter: 'category',
             label: 'Category',
+        },
+        {
+            filter: 'categories',
+            label: 'Categories',
         },
         {
             filter: 'uuid',
