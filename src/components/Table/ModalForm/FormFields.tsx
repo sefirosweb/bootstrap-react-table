@@ -15,6 +15,18 @@ type Props = {
 export const FormFields: React.FC<Props> = (props) => {
     const { column, formData, setFormData, isLoadingModal, cellSelected } = props
 
+    const value = formData[column.id]
+    const setValue = (newValue?: any) => {
+        const newFormData = { ...formData }
+        newFormData[column.id] = newValue
+        setFormData(newFormData)
+    }
+
+    if (column.columnDef.meta?.customForm) {
+        const CustomForm = column.columnDef.meta.customForm
+        return <CustomForm column={column} value={value} setValue={setValue} />
+    }
+
     return (
         <Form.Group className="mb-3" controlId={`form_${column.id}`}>
             <Form.Label>
@@ -26,12 +38,8 @@ export const FormFields: React.FC<Props> = (props) => {
                 <Form.Control
                     type="text"
                     disabled={isLoadingModal}
-                    value={formData[column.id] ?? ''}
-                    onChange={(e) => {
-                        const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
-                        setFormData(newFormData)
-                    }}
+                    value={value ?? ''}
+                    onChange={(e) => setValue(e.target.value)}
                 />
             )}
 
@@ -39,12 +47,8 @@ export const FormFields: React.FC<Props> = (props) => {
                 <Form.Control
                     type="number"
                     disabled={isLoadingModal}
-                    value={formData[column.id] ?? ''}
-                    onChange={(e) => {
-                        const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
-                        setFormData(newFormData)
-                    }}
+                    value={value ?? ''}
+                    onChange={(e) => setValue(e.target.value)}
                 />
             )}
 
@@ -52,12 +56,8 @@ export const FormFields: React.FC<Props> = (props) => {
                 <Form.Control
                     type='date'
                     disabled={isLoadingModal}
-                    value={formData[column.id] ?? ''}
-                    onChange={(e) => {
-                        const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
-                        setFormData(newFormData)
-                    }}
+                    value={value ?? ''}
+                    onChange={(e) => setValue(e.target.value)}
                 />
             )}
 
@@ -65,25 +65,17 @@ export const FormFields: React.FC<Props> = (props) => {
                 <Form.Control
                     type='datetime-local'
                     disabled={isLoadingModal}
-                    value={formData[column.id] ?? ''}
-                    onChange={(e) => {
-                        const newFormData = { ...formData }
-                        newFormData[column.id] = e.target.value
-                        setFormData(newFormData)
-                    }}
+                    value={value ?? ''}
+                    onChange={(e) => setValue(e.target.value)}
                 />
             )}
 
             {column.columnDef.meta?.type === 'select' && (
                 <FormSelect
-                    value={formData[column.id] ?? ''}
+                    value={value ?? ''}
                     useQueryOptions={column.columnDef.meta.useQueryOptions}
                     addNullOption={column.columnDef.meta.addNullOption}
-                    handleChange={(value) => {
-                        const newFormData = { ...formData }
-                        newFormData[column.id] = value?.value ?? null
-                        setFormData(newFormData)
-                    }}
+                    handleChange={(value) => setValue(value?.value ?? null)}
                 />
             )}
 
@@ -93,11 +85,7 @@ export const FormFields: React.FC<Props> = (props) => {
                     tableProps={column.columnDef.meta.tableProps}
                     cellSelected={cellSelected}
                     multiSelectUnique={column.columnDef.meta.multiSelectUnique}
-                    handleChange={(value) => {
-                        const newFormData = { ...formData }
-                        newFormData[column.id] = value
-                        setFormData(newFormData)
-                    }}
+                    handleChange={(value) => setValue(value)}
                 />
             )}
 

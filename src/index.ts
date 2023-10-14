@@ -1,4 +1,4 @@
-import { CellContext, HeaderContext, RowData, StringOrTemplateHeader } from "@tanstack/react-table";
+import { CellContext, Column, HeaderContext, RowData, StringOrTemplateHeader } from "@tanstack/react-table";
 import { FieldType, PageOptions, SelectOption, TableProps } from "./types";
 import { UseQueryOptions } from "@tanstack/react-query";
 
@@ -22,8 +22,8 @@ declare module '@tanstack/table-core' {
         type?: FieldType;
         useQueryOptions?: UseQueryOptions<Array<SelectOption>>,
         tableProps?: (cell?: CellContext<TData, unknown>) => TableProps<any>,
-        customFilterTest?: StringOrTemplateHeader<TData, TValue>,
         customFilter?: React.FC<{ header: HeaderContext<TData, unknown>, value: any, setValue: (value: any) => void }>,
+        customForm?: React.FC<{ column: Column<any, unknown>, value: any, setValue: (value: any) => void }>,
         multiSelectUnique?: boolean;
         addNullOption?: boolean;
         toggleShow?: boolean
