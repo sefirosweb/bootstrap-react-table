@@ -3,7 +3,7 @@ import { UseQueryOptions } from "@tanstack/react-query"
 import { CellContext, ColumnDef, ColumnFiltersState, Table } from "@tanstack/react-table"
 import React from "react"
 export type ActionCrud = 'create' | 'edit' | 'delete'
-export type FieldType = 'text' | 'number' | 'date' | 'datetime' | 'select' | 'checkbox'
+export type FieldType = 'text' | 'number' | 'date' | 'datetime' | 'select' | 'checkbox' | 'multiselect'
 
 export type FormDataType = Record<string | number | symbol, any>
 

@@ -1,17 +1,19 @@
-import { Column } from "@tanstack/react-table"
+import { CellContext, Column } from "@tanstack/react-table"
 import { FormDataType } from "@/index"
 import { Form } from "react-bootstrap"
 import { FormSelect } from "@/components/FormSelect"
+import { FormMultiSelect } from "@/components/FormMultiSelect"
 
 type Props = {
     column: Column<any>,
     isLoadingModal: boolean,
     formData: FormDataType,
     setFormData: React.Dispatch<React.SetStateAction<FormDataType>>,
+    cellSelected?: CellContext<any, unknown>
 }
 
 export const FormFields: React.FC<Props> = (props) => {
-    const { column, formData, setFormData, isLoadingModal } = props
+    const { column, formData, setFormData, isLoadingModal, cellSelected } = props
 
     return (
         <Form.Group className="mb-3" controlId={`form_${column.id}`}>
@@ -74,13 +76,26 @@ export const FormFields: React.FC<Props> = (props) => {
 
             {column.columnDef.meta?.type === 'select' && (
                 <FormSelect
-
                     value={formData[column.id] ?? ''}
                     useQueryOptions={column.columnDef.meta.useQueryOptions}
                     addNullOption={column.columnDef.meta.addNullOption}
-                    handleChange={(selectedOption) => {
+                    handleChange={(value) => {
                         const newFormData = { ...formData }
-                        newFormData[column.id] = selectedOption?.value ?? null
+                        newFormData[column.id] = value?.value ?? null
+                        setFormData(newFormData)
+                    }}
+                />
+            )}
+
+            {column.columnDef.meta?.type === 'multiselect' && (
+                <FormMultiSelect
+                    useQueryOptions={column.columnDef.meta.useQueryOptions}
+                    tableProps={column.columnDef.meta.tableProps}
+                    cellSelected={cellSelected}
+                    multiSelectUnique={column.columnDef.meta.multiSelectUnique}
+                    handleChange={(value) => {
+                        const newFormData = { ...formData }
+                        newFormData[column.id] = value
                         setFormData(newFormData)
                     }}
                 />

@@ -1,5 +1,5 @@
-import { RowData } from "@tanstack/react-table";
-import { FieldType, PageOptions, SelectOption } from "./types";
+import { CellContext, RowData } from "@tanstack/react-table";
+import { FieldType, PageOptions, SelectOption, TableProps } from "./types";
 import { UseQueryOptions } from "@tanstack/react-query";
 
 export * from "./types"
@@ -21,6 +21,8 @@ declare module '@tanstack/table-core' {
         filterable?: boolean;
         type?: FieldType;
         useQueryOptions?: UseQueryOptions<Array<SelectOption>>,
+        tableProps?: (cell?: CellContext<TData, unknown>) => TableProps<any>,
+        multiSelectUnique?: boolean;
         addNullOption?: boolean;
         toggleShow?: boolean
     }

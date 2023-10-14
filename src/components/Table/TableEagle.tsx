@@ -1,11 +1,10 @@
 import { CrudOptions, PageOptions, QueryEagle } from "@/types";
-import { UseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryKey, UseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
 import { TableContext } from "./TableContext";
-import { isEqual, isFunction } from "lodash";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,
@@ -31,10 +30,11 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
     const pageOptions = props.crudOptions.pageOptions || pageOptionsLocal
     const setPageOptions = props.crudOptions.setPageOptions || setPageOptionsLocal
 
-    const [queryKey, setQueryKey] = useState([props.useQueryOptions.queryKey])
+    const [queryKey, setQueryKey] = useState<QueryKey>(props.useQueryOptions.queryKey ?? [])
 
     useEffect(() => {
-        setQueryKey([props.useQueryOptions.queryKey])
+        if (!props.useQueryOptions.queryKey) return
+        setQueryKey(props.useQueryOptions.queryKey)
     }, [props.useQueryOptions.queryKey])
 
     const INITIAL_DATA: QueryEagle<any> = {

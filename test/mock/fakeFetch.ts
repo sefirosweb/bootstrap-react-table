@@ -1,7 +1,7 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
 import { QueryEagle, QueryPage, SelectOption, matchString } from "../../src";
 import { GeneratedData, getData } from "./crudData";
-import { generateOptionsValue } from "./generateOptionsValue";
+import { OptionsType, generateOptionsValue } from "./generateOptionsValue";
 import { inRangeDate, inRangeDateTime, inRangeNumber } from "../../src/lib";
 import { DateTime } from "luxon";
 
@@ -64,10 +64,7 @@ export const compareValue = (aVal: any, bVal: any, desc: boolean) => {
 
 export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<QueryPage<GeneratedData>> => {
     return new Promise((resolve) => {
-        let data = getData({
-            minValue: 5000,
-            maxValue: 20000
-        })
+        let data = getData()
 
         const currentPage = params.meta?.page ?? 1
         const pageSize = params.meta?.pageSize ?? 10
@@ -185,13 +182,7 @@ export const getFetchPage = (params: QueryFunctionContext, delay = 30): Promise<
 
 export const getFetchAll = (params: QueryFunctionContext, delay = 30): Promise<QueryEagle<GeneratedData>> => {
     return new Promise((resolve) => {
-        const data = getData(
-            {
-                minValue: 5000,
-                maxValue: 20000
-            }
-        )
-
+        const data = getData()
 
         setTimeout(() => {
             const response: QueryEagle<GeneratedData> = {
@@ -202,4 +193,21 @@ export const getFetchAll = (params: QueryFunctionContext, delay = 30): Promise<Q
             resolve(response);
         }, delay);
     });
+}
+
+export const getCategoriesFromUuids = (uuid: string, delay = 30): Promise<QueryEagle<OptionsType>> => {
+    return new Promise((resolve) => {
+        const data = getData()
+        const dataFiltered = data.find(p => p.uuid === uuid)
+
+        setTimeout(() => {
+            if (!dataFiltered) return resolve({
+                results: []
+            })
+
+            resolve({
+                results: dataFiltered.categories ?? []
+            });
+        }, delay);
+    })
 }

@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next"
 
 type Props = {
     action: ActionCrud
-    cell: CellContext<any, unknown> | null
+    cell?: CellContext<any, unknown>
     table: Table<any>
     showModal: boolean,
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
@@ -162,7 +162,7 @@ export const ModalForm: React.FC<Props> = (props) => {
                             .getAllLeafColumns()
                             .filter(column => column.columnDef.meta?.editable === true && column.id !== crudOptions.primaryKey)
                             .map(column => (
-                                <FormFields key={column.id} column={column} formData={formData} setFormData={setFormData} isLoadingModal={props.isLoadingModal} />
+                                <FormFields key={column.id} column={column} formData={formData} setFormData={setFormData} isLoadingModal={props.isLoadingModal} cellSelected={cell} />
                             ))}
                     </>
                 }

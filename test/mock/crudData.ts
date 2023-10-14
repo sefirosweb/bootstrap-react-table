@@ -5,14 +5,13 @@ import { OptionsType, generateOptionsValue } from './generateOptionsValue';
 
 export type GeneratedData = {
     uuid: string;
-    value: string;
     ean: number;
     name: string;
     description: string | null;
     random: string | null;
     price: number;
     category?: OptionsType;
-    categories: Array<OptionsType>;
+    categories?: Array<OptionsType>;
     created_at: string;
 }
 
@@ -25,7 +24,6 @@ type Options = {
 export const fakeData = (uuid: string, category: OptionsType): GeneratedData => {
     return {
         uuid: uuid,
-        value: uuid,
         ean: faker.number.int({ min: 8437002848521, max: 9000000000000 }),
         name: faker.commerce.product(),
         description: Math.random() < 0.4 ? faker.commerce.productDescription() : null,
@@ -43,7 +41,7 @@ export const fakeData = (uuid: string, category: OptionsType): GeneratedData => 
 }
 
 export const getData = (options?: Options) => {
-    const { maxValue = 300, minValue = 100 } = options ?? {}
+    const { maxValue = 5000, minValue = 1000 } = options ?? {}
 
     if (generatedData.length > 0) {
         return generatedData
@@ -70,11 +68,13 @@ export const createData = (data: Omit<GeneratedData, 'uuid'> & { id_category?: s
     const dataWitId: GeneratedData = {
         ...data,
         uuid: faker.string.uuid(),
-        value: faker.string.uuid()
     }
 
     const category = generateOptionsValue().find(p => data.id_category && p.uuid === data.id_category)
     dataWitId.category = category
+
+    //@ts-ignore
+    dataWitId.categories = generateOptionsValue().filter(p => dataWitId.categories?.includes(p.uuid))
 
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -87,14 +87,18 @@ export const createData = (data: Omit<GeneratedData, 'uuid'> & { id_category?: s
 export const updateData = (data: Partial<GeneratedData & { id_category?: string }>, delay = 150): Promise<Partial<GeneratedData>> => {
     return new Promise((resolve) => {
         setTimeout(() => {
-            const findData = generatedData.find((item) => item.uuid === data.uuid)
-            if (!findData) return resolve(data)
+            const newData = { ...data }
+            const findData = generatedData.find((item) => item.uuid === newData.uuid)
+            if (!findData) return resolve(newData)
 
-            const category = generateOptionsValue().find(p => data.id_category && p.uuid === data.id_category)
-            data.category = category
+            const category = generateOptionsValue().find(p => newData.id_category && p.uuid === newData.id_category)
+            newData.category = category
+
+            //@ts-ignore
+            newData.categories = generateOptionsValue().filter(p => newData.categories?.includes(p.uuid))
 
             const index = generatedData.indexOf(findData)
-            generatedData[index] = { ...findData, ...data }
+            generatedData[index] = { ...findData, ...newData }
             resolve(generatedData[index])
         }, delay)
     })

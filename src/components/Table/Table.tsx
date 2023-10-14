@@ -25,7 +25,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
   const { t } = useTranslation()
 
   const [columns, setColumns] = useState<Array<ColumnDef<any>>>([])
-  const [cellSelected, setCellSelected] = useState<CellContext<any, unknown> | null>(null)
+  const [cellSelected, setCellSelected] = useState<CellContext<any, unknown> | undefined>(undefined)
   const [action, setAction] = useState<ActionCrud>('create')
   const [showModal, setShowModal] = useState(false)
 
@@ -75,7 +75,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   const createButtonFn = () => {
     const action = () => {
-      setCellSelected(null)
+      setCellSelected(undefined)
       setAction('create')
       setShowModal(true)
     }

@@ -5,7 +5,6 @@ import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
 import { TableContext } from "./TableContext";
-import { isEqual, isFunction } from "lodash";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,

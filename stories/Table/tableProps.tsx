@@ -1,10 +1,10 @@
 import React from "react";
 import { UseQueryOptions } from "@tanstack/react-query";
-import { ActionCrud, CrudOptions, QueryEagle, QueryPage, SelectOption, TableRef } from "../../src";
-import { GeneratedData, createData, deleteData, fakeData, getFetchAll, getFetchOptionsValue, getFetchPage, getRandom, updateData } from "../../test/mock";
-import { ColumnDef } from "@tanstack/react-table";
+import { ActionCrud, CrudOptions, QueryEagle, QueryPage, SelectOption, TableProps, TableRef } from "../../src";
+import { GeneratedData, createData, deleteData, fakeData, getCategoriesFromUuids, getFetchAll, getFetchOptionsValue, getFetchPage, getRandom, updateData } from "../../test/mock";
+import { CellContext, ColumnDef } from "@tanstack/react-table";
 import { DateTime } from "luxon";
-import { generateOptionsValue } from "../../test/mock/generateOptionsValue";
+import { OptionsType, generateOptionsValue } from "../../test/mock/generateOptionsValue";
 import { faker } from "@faker-js/faker";
 
 const delay = 600
@@ -22,6 +22,47 @@ export const useQueryOptionsLazy: UseQueryOptions<QueryPage<GeneratedData>> = {
 export const useQueryOptionsEagle: UseQueryOptions<QueryEagle<GeneratedData>> = {
     queryKey: ['useQueryOptionsEagle'],
     queryFn: (params) => getFetchAll(params, delay)
+}
+
+
+const categoryTable = (cell?: CellContext<GeneratedData, unknown>): TableProps<OptionsType> => {
+    return {
+        crudOptions: {
+            primaryKey: 'uuid',
+        },
+        columns: [
+            {
+                accessorKey: 'uuid',
+                header: 'Identificador',
+            },
+            {
+                accessorKey: 'description',
+                header: 'Desc.',
+                meta: {
+                    visible: false,
+                }
+            },
+            {
+                accessorKey: 'name',
+                header: 'Nombre',
+            },
+        ],
+        useQueryOptions: {
+            // queryFn: () => getCategoriesFromUuids(cell.row.original.uuid, delay), // Get data from server
+            queryFn: () => {
+                if (!cell) {
+                    return {
+                        results: []
+                    }
+                }
+
+                return {
+                    results: cell.row.original.categories ?? []
+                }
+            },
+        },
+        lazy: false,
+    }
 }
 
 export const columns: Array<ColumnDef<GeneratedData>> = [
@@ -72,6 +113,26 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
             type: 'select',
             useQueryOptions: optionsCategory,
             addNullOption: true,
+        },
+    },
+    {
+        id: 'categories',
+        header: 'Categories',
+        cell: (props) => (
+            <ul>
+                {props.row.original.categories?.map((category, index) => (
+                    <li key={index}>{category.name}</li>
+                ))}
+            </ul>
+        ),
+        meta: {
+            toggleShow: true,
+            editable: true,
+            filterable: true,
+            type: 'multiselect',
+            useQueryOptions: optionsCategory,
+            tableProps: (cell) => categoryTable(cell),
+            multiSelectUnique: true
         },
     },
     {

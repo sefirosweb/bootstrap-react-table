@@ -81,16 +81,10 @@ export const LazyTemplate: Story = {
       sorting: [],
     })
 
-
-
     props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFn(data, action, tableRef.current)
     props.tableProps.crudOptions.pageOptions = pageOptions;
     props.tableProps.crudOptions.setPageOptions = setPageOptions;
     props.tableProps.crudOptions.delayFilter = 800
-
-    // useEffect(() => {
-    //   console.log('pageOptions from story', pageOptions)
-    // }, [pageOptions])
 
     return (
       <div>
