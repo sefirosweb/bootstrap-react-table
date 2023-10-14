@@ -146,8 +146,6 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     setColumns(newColumns)
   }, [props.columns])
 
-  console.log('columnVisibility', columnVisibility)
-
   const tableProps: TableOptions<any> = {
     columns: columns,
     data: props.tableData,
