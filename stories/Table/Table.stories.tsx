@@ -1,11 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { PageOptions, Table, TableRef } from '../../src';
-import { columns, crudOptions, onSubmitFn, onSubmitFnWoRefresh, useQueryOptionsEagle, useQueryOptionsLazy } from './tableProps';
+import { columns, crudOptions, useQueryOptionsEagle, useQueryOptionsLazy } from './tableProps';
 import { Button } from 'react-bootstrap';
 import { getData, getRandom } from '../../test/mock';
 import { generateOptionsValue } from '../../test/mock/generateOptionsValue';
 import { DateTime } from 'luxon';
+import { onSubmitFn } from './onSubmitFn';
+import { onSubmitFnWoRefresh } from './onSubmitFnWoRefresh';
 
 const meta: Meta = {
   title: 'Tables/Table',

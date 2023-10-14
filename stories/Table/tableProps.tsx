@@ -1,7 +1,7 @@
 import React from "react";
 import { UseQueryOptions } from "@tanstack/react-query";
 import { ActionCrud, CrudOptions, QueryEagle, QueryPage, SelectOption, TableProps, TableRef } from "../../src";
-import { GeneratedData, createData, deleteData, fakeData, getCategoriesFromUuids, getFetchAll, getFetchOptionsValue, getFetchPage, getRandom, updateData } from "../../test/mock";
+import { GeneratedData, createData, deleteData, fakeData, getFetchAll, getFetchOptionsValue, getFetchPage, getRandom, updateData } from "../../test/mock";
 import { CellContext, ColumnDef } from "@tanstack/react-table";
 import { DateTime } from "luxon";
 import { OptionsType, generateOptionsValue } from "../../test/mock/generateOptionsValue";
@@ -194,87 +194,4 @@ export const crudOptions: CrudOptions<GeneratedData> = {
             label: 'UUID',
         },
     ],
-}
-
-export const onSubmitFn = (data: Partial<any>, action: ActionCrud, tableRef: TableRef | null): Promise<Partial<any> | null> => {
-    console.log('onSubmitFn-data', data)
-    console.log('onSubmitFn-action', action)
-    return new Promise((resolve, reject) => {
-        tableRef?.setIsLoadingModal(true)
-
-        const actionFn = () => {
-
-            if (action === 'create') {
-                const uuid = faker.string.uuid()
-                const category = getRandom(generateOptionsValue())
-
-                const newData = fakeData(uuid, category)
-                return createData({ ...newData, ...data }, 230)
-            }
-
-
-            if (action === 'edit') {
-                return updateData(data, 230)
-            }
-
-            if (action === 'delete') {
-                if (!data.uuid) return Promise.reject('uuid is required')
-                return deleteData(data.uuid, 230)
-            }
-
-            return Promise.reject('Action not found')
-        }
-
-        actionFn()
-            .then(() => {
-                tableRef?.setShowModal(false)
-                tableRef?.refreshTable()
-                resolve(data)
-            })
-            .finally(() => {
-                tableRef?.setIsLoadingModal(false)
-            })
-
-    })
-}
-
-export const onSubmitFnWoRefresh = (data: Partial<GeneratedData>, action: ActionCrud, tableRef: TableRef | null): Promise<Partial<GeneratedData> | null> => {
-    console.log('onSubmitFn-data', data)
-    console.log('onSubmitFn-action', action)
-    return new Promise((resolve, reject) => {
-        tableRef?.setIsLoadingModal(true)
-
-        const actionFn = () => {
-
-            if (action === 'create') {
-                const uuid = faker.string.uuid()
-                const category = getRandom(generateOptionsValue())
-
-                const newData = fakeData(uuid, category)
-                return createData({ ...newData, ...data }, 230)
-            }
-
-
-            if (action === 'edit') {
-                return updateData(data, 230)
-            }
-
-            if (action === 'delete') {
-                if (!data.uuid) return Promise.reject('uuid is required')
-                return deleteData(data.uuid, 230)
-            }
-
-            return Promise.reject('Action not found')
-        }
-
-        actionFn()
-            .then((newData) => {
-                tableRef?.setShowModal(false)
-                resolve(newData)
-            })
-            .finally(() => {
-                tableRef?.setIsLoadingModal(false)
-            })
-
-    })
 }

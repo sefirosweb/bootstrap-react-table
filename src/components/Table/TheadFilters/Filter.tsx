@@ -73,6 +73,14 @@ export const Filter: React.FC<Props> = (props) => {
                     columnDef={columnDef}
                 />
             )}
+
+            {(type === 'multiselect') && (
+                <FilterText
+                    headerId={headerId}
+                    value={value}
+                    setValue={setValue}
+                />
+            )}
         </>
     )
 }

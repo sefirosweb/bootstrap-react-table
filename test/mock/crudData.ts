@@ -64,32 +64,50 @@ export const getData = (options?: Options) => {
 }
 
 
-export const createData = (data: Omit<GeneratedData, 'uuid'> & { id_category?: string }, delay = 150): Promise<GeneratedData> => {
-    const dataWitId: GeneratedData = {
-        ...data,
-        uuid: faker.string.uuid(),
-    }
-
-    const category = generateOptionsValue().find(p => data.id_category && p.uuid === data.id_category)
-    dataWitId.category = category
-
-    //@ts-ignore
-    dataWitId.categories = generateOptionsValue().filter(p => dataWitId.categories?.includes(p.uuid))
-
+export const createData = (data: any, delay = 150): Promise<GeneratedData> => {
     return new Promise((resolve) => {
         setTimeout(() => {
-            generatedData.push(dataWitId)
-            resolve(dataWitId)
+            const newData: GeneratedData = {
+                ...data,
+                uuid: faker.string.uuid(),
+            }
+
+            //@ts-ignore
+            const price = parseFloat(newData.price)
+            if (isNaN(price)) {
+                newData.price = 0
+            } else {
+                newData.price = price
+            }
+
+            const category = generateOptionsValue().find(p => data.id_category && p.uuid === data.id_category)
+            newData.category = category
+
+            //@ts-ignore
+            newData.categories = generateOptionsValue().filter(p => newData.categories?.includes(p.uuid))
+
+
+            generatedData.push(newData)
+            resolve(newData)
         }, delay)
     })
 }
 
-export const updateData = (data: Partial<GeneratedData & { id_category?: string }>, delay = 150): Promise<Partial<GeneratedData>> => {
+export const updateData = (data: any, delay = 150): Promise<Partial<GeneratedData>> => {
     return new Promise((resolve) => {
         setTimeout(() => {
             const newData = { ...data }
             const findData = generatedData.find((item) => item.uuid === newData.uuid)
             if (!findData) return resolve(newData)
+
+            //@ts-ignore
+            const price = parseFloat(newData.price)
+            if (isNaN(price)) {
+                newData.price = 0
+            } else {
+                newData.price = price
+            }
+
 
             const category = generateOptionsValue().find(p => newData.id_category && p.uuid === newData.id_category)
             newData.category = category
@@ -98,7 +116,7 @@ export const updateData = (data: Partial<GeneratedData & { id_category?: string 
             newData.categories = generateOptionsValue().filter(p => newData.categories?.includes(p.uuid))
 
             const index = generatedData.indexOf(findData)
-            generatedData[index] = { ...findData, ...newData }
+            generatedData[index] = { ...newData }
             resolve(generatedData[index])
         }, delay)
     })

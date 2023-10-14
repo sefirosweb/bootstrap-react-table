@@ -107,7 +107,9 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     const newColumns = [...props.columns]
 
     newColumns.forEach((column) => {
-      column.filterFn = filterFn(column.meta?.type)
+      if (!column.filterFn) {
+        column.filterFn = filterFn(column.meta?.type)
+      }
     })
 
     if (props.crudOptions.edit) {
