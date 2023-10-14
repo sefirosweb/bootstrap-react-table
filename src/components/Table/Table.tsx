@@ -33,9 +33,12 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   const INITIAL_VISIBLE_COLUMNS = (): VisibilityState => {
     const visibleColumns: VisibilityState = {}
+
     props.columns.forEach((column) => {
-      if (!column.id) return
-      visibleColumns[column.id] = column.meta?.visible === false ? false : true
+      //@ts-ignore
+      const columnId = column.id || column.accessorKey || column.Header
+      if (!columnId) return
+      visibleColumns[columnId] = column.meta?.visible === false ? false : true
     })
 
     return visibleColumns
@@ -142,6 +145,8 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
     setColumns(newColumns)
   }, [props.columns])
+
+  console.log('columnVisibility', columnVisibility)
 
   const tableProps: TableOptions<any> = {
     columns: columns,
