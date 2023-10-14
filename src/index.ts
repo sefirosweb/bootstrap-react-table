@@ -1,17 +1,15 @@
-import { CellContext, Column, HeaderContext, RowData, StringOrTemplateHeader } from "@tanstack/react-table";
+import { CellContext, Column, HeaderContext, RowData } from "@tanstack/react-table";
 import { FieldType, PageOptions, SelectOption, TableProps } from "./types";
 import { UseQueryOptions } from "@tanstack/react-query";
 
 export * from "./types"
-export { i18nInstance, matchString, useGetQueryClient } from './lib'
+export * from './lib'
+export * from './components/buttons'
 
 export { FormSelect } from './components/FormSelect'
 export { Modal } from './components/Modal'
 export { Table } from './components/Table'
 export type { TableRef } from './components/Table'
-export { DeleteButton } from './components/buttons/DeleteButton'
-export { EditButton } from './components/buttons/EditButton'
-export { LoadingButton } from './components/buttons/LoadingButton'
 
 declare module '@tanstack/table-core' {
     interface ColumnMeta<TData extends RowData, TValue> {
