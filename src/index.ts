@@ -27,6 +27,8 @@ declare module '@tanstack/table-core' {
         multiSelectUnique?: boolean;
         addNullOption?: boolean;
         toggleShow?: boolean
+        getCellStyle?: (cell: CellContext<TData, TValue>) => React.CSSProperties;
+        getCellClass?: (cell: CellContext<TData, TValue>) => string;
     }
 }
 

@@ -1,6 +1,6 @@
 import { FilterLabel, Filters } from "@sefirosweb/react-multiple-search"
 import { UseQueryOptions } from "@tanstack/react-query"
-import { CellContext, ColumnDef, ColumnFiltersState, Table } from "@tanstack/react-table"
+import { CellContext, ColumnDef, ColumnFiltersState, Row, Table } from "@tanstack/react-table"
 import React from "react"
 export type ActionCrud = 'create' | 'edit' | 'delete'
 export type FieldType = 'text' | 'number' | 'date' | 'datetime' | 'select' | 'checkbox' | 'multiselect'
@@ -115,4 +115,7 @@ export type CrudOptions<T> = {
 
     toggleShowColumns?: boolean,
     canSelectRow?: boolean;
+
+    getRowStyles?: (row: Row<T>) => React.CSSProperties;
+    getRowClass?: (row: Row<T>) => string;
 }

@@ -9,7 +9,7 @@ type Props = {
 
 export const Tbody: React.FC<Props> = (props) => {
     const { table } = props
-    const { isFetching } = useContext(TableContext)
+    const { isFetching, crudOptions } = useContext(TableContext)
 
     const TrLoading = useMemo(() => {
         const TrLoading: React.FC<{}> = () => (
@@ -29,10 +29,16 @@ export const Tbody: React.FC<Props> = (props) => {
             <TrLoading />
 
             {table.getRowModel().rows.map((row) => (
-                <tr key={row.id}                >
+                <tr
+                    key={row.id}
+                    style={crudOptions.getRowStyles ? crudOptions.getRowStyles(row) : {}}
+                    className={crudOptions.getRowClass ? crudOptions.getRowClass(row) : ''}
+                >
                     {row.getVisibleCells()
                         .map((cell) => (
                             <td
+                                style={cell.column.columnDef.meta?.getCellStyle ? cell.column.columnDef.meta?.getCellStyle(cell.getContext()) : undefined}
+                                className={cell.column.columnDef.meta?.getCellClass ? cell.column.columnDef.meta?.getCellClass(cell.getContext()) : undefined}
                                 key={cell.id}>
                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </td>
