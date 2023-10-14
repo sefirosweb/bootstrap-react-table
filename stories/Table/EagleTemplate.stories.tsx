@@ -5,7 +5,7 @@ import { columns, crudOptions, useQueryOptionsEagle } from './tableProps';
 import { onSubmitFnWoRefresh } from './onSubmitFnWoRefresh';
 
 const meta: Meta = {
-  title: 'Tables/Table',
+  title: 'Tables/Eagle',
   component: Table,
 };
 

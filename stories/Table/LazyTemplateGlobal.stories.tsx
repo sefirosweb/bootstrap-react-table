@@ -9,7 +9,7 @@ import { DateTime } from 'luxon';
 import { onSubmitFn } from './onSubmitFn';
 
 const meta: Meta = {
-  title: 'Tables/Table',
+  title: 'Tables/Lazy',
   component: Table,
 };
 
