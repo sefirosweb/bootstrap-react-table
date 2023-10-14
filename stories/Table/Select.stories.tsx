@@ -43,6 +43,7 @@ const tableProps: TableProps<GeneratedData> = {
   crudOptions: {
     primaryKey: 'uuid',
     canSelectRow: true,
+    canRefresh: true,
   },
   lazy: false
 }
