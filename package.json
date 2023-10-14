@@ -75,6 +75,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^13.3.0",
     "react-icons": "^4.11.0",
+    "react-select": "^5.7.7",
     "sass": "^1.69.3",
     "storybook": "^7.4.6",
     "vite-plugin-dts": "^3.6.0",

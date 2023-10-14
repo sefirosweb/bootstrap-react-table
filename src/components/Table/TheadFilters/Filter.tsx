@@ -4,19 +4,21 @@ import { FilterDatesTime } from "./FilterDatesTime"
 import { FilterNumbers } from "./FilterNumbers"
 import { FilterSelect } from "./FilterSelect"
 import { FilterText } from "./FilterText"
-import { FieldType, Filter as FilterType } from "@/types"
-import { ColumnDef } from "@tanstack/react-table"
+import { Filter as FilterType } from "@/types"
+import { Header } from "@tanstack/react-table"
 
 type Props = {
-    type?: FieldType
-    headerId: string
+    header: Header<any, unknown>,
     tableFilters: FilterType,
     setTableFilters: React.Dispatch<React.SetStateAction<FilterType>>,
-    columnDef: ColumnDef<any>,
 }
 
 export const Filter: React.FC<Props> = (props) => {
-    const { type, headerId, columnDef, tableFilters, setTableFilters } = props
+    const { header, tableFilters, setTableFilters } = props
+
+    const headerId = header.id
+    const columnDef = header.column.columnDef
+    const type = header.column.columnDef.meta?.type
 
     const value = tableFilters[headerId] ?? undefined
     const setValue = (newValue?: any) => {
@@ -29,6 +31,11 @@ export const Filter: React.FC<Props> = (props) => {
         }
 
         setTableFilters(newTableFilters)
+    }
+
+    if (columnDef.meta?.customFilter) {
+        const CustomFilter = columnDef.meta.customFilter
+        return <CustomFilter header={{ ...header.getContext() }} value={value} setValue={setValue} />
     }
 
     return (
