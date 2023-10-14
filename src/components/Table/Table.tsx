@@ -1,5 +1,6 @@
 import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
 import { CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, TableOptions, useReactTable, VisibilityState } from "@tanstack/react-table";
+import { type Table as ReactTable } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { Table as BTable, Col, Row } from "react-bootstrap";
 import { Tbody, Thead, TableToolbar, ModalForm } from "./index";
@@ -8,6 +9,7 @@ import { filterFn } from "@/lib";
 import { globalFilterFn } from "@/lib/filterFn/globalFilterFn";
 import { TableContext } from "./TableContext";
 import { Pagination } from "./Pagination";
+import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
 
 type CustomColumnFiltersState = Array<{
   id: string,
@@ -18,6 +20,7 @@ type CustomColumnFiltersState = Array<{
 export type PropsRef = {
   setShowModal: (show: boolean) => void
   setIsLoadingModal: (isLoading: boolean) => void
+  table: ReactTable<any>
 };
 
 export const Table = forwardRef<PropsRef>((_, ref) => {
@@ -115,6 +118,33 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       }
     })
 
+    if (props.crudOptions.canSelectRow === true && props.isLazy === false) {
+      newColumns.unshift({
+        id: "select",
+        header: ({ table }) => (
+          <IndeterminateCheckbox
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              indeterminate: table.getIsSomeRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <div className="px-1">
+            <IndeterminateCheckbox
+              {...{
+                checked: row.getIsSelected(),
+                indeterminate: row.getIsSomeSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+            />
+          </div>
+        ),
+      });
+    }
+
+
     if (props.crudOptions.edit) {
       const NewEditButton = props.crudOptions.editButton ? props.crudOptions.editButton : EditButton
       newColumns.push({
@@ -184,16 +214,6 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       columnFilters,
     },
 
-    // onColumnFiltersChange: (columnFilters) => {
-    //   console.log('columnFilters', columnFilters)
-    //   if (typeof columnFilters !== "function") {
-    //     props.setPageOptions({ ...props.pageOptions, columnFilters })
-    //   } else {
-    //     const newColumnFilters = columnFilters(props.pageOptions.columnFilters ?? [])
-    //     props.setPageOptions({ ...props.pageOptions, columnFilters: newColumnFilters })
-    //   }
-    // },
-
     getFilteredRowModel: getFilteredRowModel(),
     globalFilterFn: globalFilterFn,
     getColumnCanGlobalFilter: () => true,
@@ -207,6 +227,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
   useImperativeHandle(ref, () => ({
     setShowModal,
     setIsLoadingModal,
+    table,
   }));
 
 

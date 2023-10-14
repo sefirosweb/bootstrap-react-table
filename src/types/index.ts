@@ -114,4 +114,5 @@ export type CrudOptions<T> = {
     customButtons?: JSX.Element
 
     toggleShowColumns?: boolean,
+    canSelectRow?: boolean;
 }

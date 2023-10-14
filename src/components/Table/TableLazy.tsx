@@ -86,7 +86,11 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
     useImperativeHandle(ref, () => ({
         refreshTable,
         setShowModal: (show: boolean) => refTable.current?.setShowModal(show),
-        setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading)
+        setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading),
+        table: refTable.current?.table,
+        getSelectedRows: (): Array<any> => {
+            return []
+        },
     }));
 
     return (

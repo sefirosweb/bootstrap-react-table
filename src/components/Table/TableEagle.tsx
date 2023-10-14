@@ -79,6 +79,13 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
         refreshTable,
         setShowModal: (show: boolean) => refTable.current?.setShowModal(show),
         setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading),
+        table: refTable.current?.table,
+        getSelectedRows: (): Array<any> => {
+            if (!refTable.current) return [];
+            return refTable.current.table
+                .getSelectedRowModel()
+                .flatRows.map((f) => f.original);
+        },
     }));
 
     return (
