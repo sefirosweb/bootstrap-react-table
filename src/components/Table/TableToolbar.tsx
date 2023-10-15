@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext } from "react"
 import { Button, ButtonGroup, Col, Dropdown, Row } from "react-bootstrap"
 import { useTranslation } from "react-i18next"
 import { Table, flexRender } from "@tanstack/react-table"
@@ -9,6 +9,7 @@ import { DebouncedInput } from "./DebouncedInput"
 import { TableContext } from "./TableContext"
 import { exportToExcel } from "@/lib"
 import { Togle } from "./TableToolbar/Togle"
+import { Pagination } from "./Pagination"
 
 type Props = {
     table: Table<any>,
@@ -69,7 +70,7 @@ export const TableToolbar: React.FC<Props> = (props) => {
 
     return (
         <Row>
-            <Col lg={6} md={6} xs={12} className="mb-3">
+            <Col lg={6} md={6} xs={12} className="mb-1">
                 {crudOptions.create && (
                     <>
                         {crudOptions.createButton ?
@@ -84,65 +85,79 @@ export const TableToolbar: React.FC<Props> = (props) => {
                 {crudOptions.customButtons}
             </Col>
 
-            <Col lg={6} md={6} xs={12} className="mb-3 align-self-end">
-                <div className="d-flex justify-content-end">
-                    {crudOptions.globalSearch && typeof crudOptions.enableGlobalFilterLabels === 'undefined' && (
-                        <DebouncedInput
-                            value={globalFilter}
-                            onChange={(value) => setGlobalFilter(value)}
-                            placeholder={t('Search')}
-                            className="form-control"
-                            delayFilter={crudOptions.delayFilter ?? 230}
-                        />
-                    )}
+            <Col lg={6} md={6} xs={12} className="mb-1 align-self-end">
+                <Row>
+                    <Col>
+                        <div className="d-flex justify-content-end">
+                            {crudOptions.globalSearch && typeof crudOptions.enableGlobalFilterLabels === 'undefined' && (
+                                <DebouncedInput
+                                    size="sm"
+                                    value={globalFilter}
+                                    onChange={(value) => setGlobalFilter(value)}
+                                    placeholder={t('Search')}
+                                    className="form-control mb-1"
+                                    delayFilter={crudOptions.delayFilter ?? 230}
+                                />
+                            )}
 
-                    {crudOptions.globalSearch && crudOptions.enableGlobalFilterLabels && (
-                        <div className="w-100">
-                            <InputSearch
-                                filters={inputFilters}
-                                setFilters={setInputFilters}
-                                filterLabels={crudOptions.enableGlobalFilterLabels}
-                            />
-                        </div>
-                    )}
-
-                    {(crudOptions.canRefresh || crudOptions.canExport || crudOptions.toggleShowColumns) && (
-                        <div>
-                            <ButtonGroup className="ms-2">
-                                {crudOptions.canRefresh && (
-                                    <RefreshButton
-                                        disabled={isFetching}
-                                        onClick={() => refreshTable()}
+                            {crudOptions.globalSearch && crudOptions.enableGlobalFilterLabels && (
+                                <div className="w-100 mb-1">
+                                    <InputSearch
+                                        filters={inputFilters}
+                                        setFilters={setInputFilters}
+                                        filterLabels={crudOptions.enableGlobalFilterLabels}
                                     />
-                                )}
+                                </div>
+                            )}
 
-                                {crudOptions.canExport &&
-                                    <Button
-                                        disabled={isFetching}
-                                        onClick={() => generateExcel(crudOptions.exportName ? crudOptions.exportName : "Export_" + Date.now())}>
-                                        <FaFileExport size={18} />
-                                    </Button>
-                                }
+                            {(crudOptions.canRefresh || crudOptions.canExport || crudOptions.toggleShowColumns) && (
+                                <div>
+                                    <ButtonGroup className="ms-2">
+                                        {crudOptions.canRefresh && (
+                                            <RefreshButton
+                                                size="sm"
+                                                disabled={isFetching}
+                                                onClick={() => refreshTable()}
+                                            />
+                                        )}
 
-                                {crudOptions.toggleShowColumns &&
-                                    <Dropdown as={ButtonGroup}>
-                                        <Dropdown.Toggle disabled={isFetching} >
-                                            <FaColumns size={18} />
-                                        </Dropdown.Toggle>
+                                        {crudOptions.canExport &&
+                                            <Button
+                                                className='d-flex justify-content-center align-items-center p-2'
+                                                size='sm'
+                                                disabled={isFetching}
+                                                onClick={() => generateExcel(crudOptions.exportName ? crudOptions.exportName : "Export_" + Date.now())}>
+                                                <FaFileExport />
+                                            </Button>
+                                        }
 
-                                        <Dropdown.Menu>
-                                            {toggleColumns.map(column => (
-                                                <Togle column={column} key={column.id} />
-                                            ))}
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                }
+                                        {crudOptions.toggleShowColumns &&
+                                            <Dropdown as={ButtonGroup} >
+                                                <Dropdown.Toggle disabled={isFetching} className='d-flex justify-content-center align-items-center p-2' size="sm" >
+                                                    <FaColumns />
+                                                </Dropdown.Toggle>
 
-                            </ButtonGroup>
+                                                <Dropdown.Menu>
+                                                    {toggleColumns.map(column => (
+                                                        <Togle column={column} key={column.id} />
+                                                    ))}
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        }
+
+                                    </ButtonGroup>
+                                </div>
+                            )}
+
                         </div>
-                    )}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Pagination table={props.table} />
+                    </Col>
+                </Row>
 
-                </div>
             </Col>
         </Row>
     )

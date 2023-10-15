@@ -28,7 +28,7 @@ export const Pagination: React.FC<Props> = (props) => {
     return (
         <Row>
             <Col xs="auto" className="d-flex align-items-center">
-                <BPagination style={{ marginBottom: 0 }}>
+                <BPagination style={{ marginBottom: 0 }} size="sm">
                     <BPagination.First
                         onClick={props.handleFirstPage}
                         disabled={props.firstPageEnabled}
@@ -52,6 +52,7 @@ export const Pagination: React.FC<Props> = (props) => {
             </Col>
             <Col xs="auto" className="d-flex align-items-center">
                 <Form.Select
+                    size="sm"
                     value={props.pageSize}
                     onChange={(e) => {
                         const pageSize = parseInt(e.target.value);

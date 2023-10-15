@@ -1,10 +1,13 @@
 import React, { InputHTMLAttributes, useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
 
-interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
+type CustomProps = {
   value?: string;
   onChange?: (value: string) => void;
   delayFilter: number;
 }
+
+type Props = CustomProps & Omit<React.ComponentProps<typeof Form.Control>, 'onChange' | 'value'>;
 
 export const DebouncedInput: React.FC<Props> = (props) => {
   const { value, onChange, delayFilter, ...inputProps } = props;
@@ -31,7 +34,7 @@ export const DebouncedInput: React.FC<Props> = (props) => {
   }, [currentValue]);
 
   return (
-    <input
+    <Form.Control
       {...inputProps}
       value={currentValue}
       onChange={(e) => setCurrentValue(e.target.value)}

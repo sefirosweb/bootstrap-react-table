@@ -8,7 +8,6 @@ import { ActionCrud, EditButton, DeleteButton } from "@/index";
 import { filterFn } from "@/lib";
 import { globalFilterFn } from "@/lib/filterFn/globalFilterFn";
 import { TableContext } from "./TableContext";
-import { Pagination } from "./Pagination";
 import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
 
 type CustomColumnFiltersState = Array<{
@@ -233,31 +232,32 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   return (
     <>
-      <Row>
-        <Col>
-          <TableToolbar
-            table={table}
-            createButtonFn={createButtonFn}
-          />
-        </Col>
-      </Row>
+      <div style={{ height: '100%' }}>
+        <Row>
+          <Col>
+            <TableToolbar
+              table={table}
+              createButtonFn={createButtonFn}
+            />
+          </Col>
+        </Row>
 
-      <Row>
-        <Col>
-          <BTable
-            striped
-            hover
-            bordered
-            responsive
-          >
-            <Thead table={table} />
-            <Tbody table={table} />
-          </BTable>
-
-        </Col>
-      </Row>
-
-      <Pagination table={table} />
+        <Row style={{ height: '100%' }}>
+          <Col style={{ height: '100%' }}>
+            <div style={{ height: '100%', overflowY: 'auto' }}>
+              <BTable
+                striped
+                hover
+                bordered
+                responsive
+              >
+                <Thead table={table} />
+                <Tbody table={table} />
+              </BTable>
+            </div>
+          </Col>
+        </Row>
+      </div>
 
       <ModalForm
         action={action}

@@ -9,8 +9,8 @@ export type Props = CustomProps & React.ComponentProps<typeof Button>;
 export const EditButton: React.FC<Props> = (props) => {
   const { children, variant = 'secondary' } = props;
   return (
-    <Button variant={variant} {...props} >
-      {children} <FaPen size={18} />
+    <Button className='d-flex justify-content-center align-items-center p-2' size='sm' variant={variant} {...props} >
+      {children} <FaPen />
     </Button>
   );
 };

@@ -9,8 +9,8 @@ export type Props = CustomProps & React.ComponentProps<typeof Button>;
 export const RefreshButton: React.FC<Props> = (props) => {
   const { children, variant = "secondary" } = props;
   return (
-    <Button {...props} variant={variant}>
-      {children} <FaSyncAlt size={18} />
+    <Button className='d-flex justify-content-center align-items-center p-2' size='sm' {...props} variant={variant} >
+      {children} <FaSyncAlt />
     </Button>
   );
 };

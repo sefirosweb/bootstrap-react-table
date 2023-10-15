@@ -6,7 +6,7 @@ export type Props = React.ComponentProps<typeof Button>;
 
 export const LoadingButton: React.FC<Props> = (props) => {
   return (
-    <Button variant="primary" disabled {...props}>
+    <Button className='d-flex justify-content-center align-items-center' size='sm' variant="primary" disabled {...props}>
       <LoadingSpinner />
     </Button>
   );
