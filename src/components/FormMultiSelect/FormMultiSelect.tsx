@@ -15,12 +15,11 @@ export type Props = {
 }
 
 export const FormMultiSelect: React.FC<Props> = (props) => {
-    const { multiSelectUnique, useQueryOptions: useQueryOptionsProps, handleChange, tableProps, cellSelected } = props
     const [selectedOption, setSelectedOption] = useState<string>("");
     const { t } = useTranslation()
 
-    if (!useQueryOptionsProps) throw new Error("useQueryOptions is required");
-    if (!tableProps) throw new Error("tableProps is required");
+    if (!props.useQueryOptions) throw new Error("useQueryOptions is required");
+    if (!props.tableProps) throw new Error("tableProps is required");
 
     const queryClient = useQueryClient()
 
@@ -29,7 +28,7 @@ export const FormMultiSelect: React.FC<Props> = (props) => {
         initialData: [],
         initialDataUpdatedAt: 0,
         keepPreviousData: true,
-        ...useQueryOptionsProps,
+        ...props.useQueryOptions,
     }
 
     const { data: selectData } = useQuery(useQueryOptions)
@@ -41,23 +40,23 @@ export const FormMultiSelect: React.FC<Props> = (props) => {
 
     }, [selectData])
 
-    const tablePropsFn = tableProps(cellSelected)
+    const tablePropsFn = props.tableProps(props.cellSelected)
     const queryKey = ['FormMultiSelect']
 
     if (tablePropsFn.lazy === true) {
-        if (!cellSelected) throw new Error("Lazy mode not supported for multi select form");
+        if (!props.cellSelected) throw new Error("Lazy mode not supported for multi select form");
     }
 
     const { data: tableValues } = useObserveQuery<QueryEagle<any>>(queryKey)
 
     useEffect(() => {
         if (!tableValues) {
-            handleChange([])
+            props.handleChange([])
             return
         }
 
         const values = tableValues.results.map(v => v[tablePropsFn.crudOptions.primaryKey])
-        handleChange(values)
+        props.handleChange(values)
     }, [tableValues])
 
     const addFn = async () => {
@@ -72,7 +71,7 @@ export const FormMultiSelect: React.FC<Props> = (props) => {
 
             const selectedOptionFilter = selectData?.find(filter => filter.value === selectedOption)
             if (selectedOptionFilter) {
-                if (multiSelectUnique === true) {
+                if (props.multiSelectUnique === true) {
                     const index = newResults.findIndex(v => v[tablePropsFn.crudOptions.primaryKey] === selectedOptionFilter.value)
                     if (index === -1) {
                         newResults.push(selectedOptionFilter)
