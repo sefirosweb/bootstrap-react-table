@@ -52,7 +52,7 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
         initialData: INITIAL_DATA,
         ...props.useQueryOptions,
         queryKey,
-        queryFn: async (params) => {
+        queryFn: (params) => {
             return new Promise((resolve) => {
                 setTimeout(() => {
                     if (!props.useQueryOptions.queryFn) {
