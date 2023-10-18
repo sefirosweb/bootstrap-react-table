@@ -1,2 +1,2 @@
 import { QueryKey } from "@tanstack/react-query";
-export declare const useObserveQuery: <TData = unknown>(queryKey: QueryKey) => import("@tanstack/react-query").UseQueryResult<TData, unknown>;
+export declare const useObserveQuery: <TData = unknown>(queryKey: QueryKey) => import("@tanstack/react-query/build/legacy/types").UseQueryResult<TData, Error>;
