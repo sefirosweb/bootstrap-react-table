@@ -37,14 +37,8 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
         setQueryKey(props.useQueryOptions.queryKey)
     }, [props.useQueryOptions.queryKey])
 
-    const INITIAL_DATA: QueryEagle<any> = {
-        results: [],
-    }
-
     const useQueryOptions: UseQueryOptions<QueryEagle<any>> = {
         staleTime: Infinity,
-        initialDataUpdatedAt: 0,
-        initialData: INITIAL_DATA,
         ...props.useQueryOptions,
         queryKey,
         queryFn: (params) => {
