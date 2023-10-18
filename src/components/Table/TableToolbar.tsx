@@ -21,10 +21,24 @@ export const TableToolbar: React.FC<Props> = (props) => {
     const { t } = useTranslation()
 
     const globalFilter = pageOptions.globalFilter ?? ''
-    const setGlobalFilter = (newVal: string) => setPageOptions({ ...pageOptions, globalFilter: newVal })
+    const setGlobalFilter = (newVal: string) => {
+        const newPageOptions = { ...pageOptions, globalFilter: newVal }
+        if (isLazy) {
+            newPageOptions.page = 1
+        }
+
+        setPageOptions(newPageOptions)
+    }
 
     const inputFilters = pageOptions.inputFilters ?? []
-    const setInputFilters = (newVal: Array<Filters>) => setPageOptions({ ...pageOptions, inputFilters: newVal })
+    const setInputFilters = (newVal: Array<Filters>) => {
+        const newPageOptions = { ...pageOptions, inputFilters: newVal }
+        if (isLazy) {
+            newPageOptions.page = 1
+        }
+
+        setPageOptions(newPageOptions)
+    }
 
     const generateExcel = (fileName: string) => {
         if (isLazy) {

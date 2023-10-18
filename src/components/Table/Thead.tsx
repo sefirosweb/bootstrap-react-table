@@ -21,7 +21,7 @@ const sortDirection = (header: Header<any, unknown>) => {
 
 export const Thead: React.FC<Props> = (props) => {
     const [tableFilters, setTableFilters] = useState<FilterType>({})
-    const { pageOptions, setPageOptions, crudOptions } = useContext(TableContext)
+    const { pageOptions, setPageOptions, crudOptions, isLazy } = useContext(TableContext)
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -35,7 +35,11 @@ export const Thead: React.FC<Props> = (props) => {
             }
 
             if (isEqual(newColumnFilters, pageOptions.columnFilters ?? [])) return
-            setPageOptions({ ...pageOptions, columnFilters: newColumnFilters })
+            const newPageOptions = { ...pageOptions, columnFilters: newColumnFilters }
+            if (isLazy) {
+                newPageOptions.page = 1
+            }
+            setPageOptions(newPageOptions)
         }, crudOptions.delayFilter ?? 230);
 
         return () => clearTimeout(timeout);

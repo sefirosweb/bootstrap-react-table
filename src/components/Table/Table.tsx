@@ -218,7 +218,6 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     getColumnCanGlobalFilter: () => true,
     onGlobalFilterChange: (globalFilter) => props.setPageOptions({ ...props.pageOptions, globalFilter }),
     getSortedRowModel: getSortedRowModel(),
-    autoResetPageIndex: false,
   }
 
   const table = useReactTable(props.isLazy ? tableProps : tablePropsEagle)
