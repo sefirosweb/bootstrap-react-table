@@ -9,6 +9,7 @@ import { filterFn } from "@/lib";
 import { globalFilterFn } from "@/lib/filterFn/globalFilterFn";
 import { TableContext } from "./TableContext";
 import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
+import { ContentTable, MainContainer } from "./style";
 
 type CustomColumnFiltersState = Array<{
   id: string,
@@ -232,7 +233,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   return (
     <>
-      <div style={{ height: '100%' }}>
+      <MainContainer>
         <Row>
           <Col>
             <TableToolbar
@@ -242,22 +243,25 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
           </Col>
         </Row>
 
-        <Row style={{ height: '100%' }}>
-          <Col style={{ height: '100%' }}>
-            <div style={{ height: '100%', overflowY: 'auto' }}>
+        <Row className="h-100" style={{ minHeight: 0 }}>
+          <Col className="h-100">
+            <ContentTable>
               <BTable
                 striped
                 hover
                 bordered
                 responsive
+                style={{
+                  margin: 0,
+                }}
               >
                 <Thead table={table} />
                 <Tbody table={table} />
               </BTable>
-            </div>
+            </ContentTable>
           </Col>
         </Row>
-      </div>
+      </MainContainer>
 
       <ModalForm
         action={action}

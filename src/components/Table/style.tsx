@@ -13,6 +13,20 @@ export const LoaderDiv = styled.div`
   padding: 3px;
 `
 
+export const MainContainer = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+`
+
+export const ContentTable = styled.div`
+  height: 100%;
+  overflow: auto;
+  margin: 0;
+  border: 0.5px solid var(--bs-border-color);
+`
+
 const borealisBar = keyframes`
   0% {
     left: 0%;
