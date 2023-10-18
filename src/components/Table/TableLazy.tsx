@@ -48,7 +48,6 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
     const useQueryOptions: UseQueryOptions<QueryPage<any>> = {
         staleTime: Infinity,
         initialDataUpdatedAt: 0,
-        keepPreviousData: true,
         initialData: INITIAL_DATA,
         ...props.useQueryOptions,
         queryKey,
@@ -80,7 +79,7 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
     const { data: tableData, isFetching } = useQuery(useQueryOptions)
 
     const refreshTable = () => {
-        queryClient.invalidateQueries([props.useQueryOptions.queryKey])
+        queryClient.invalidateQueries({ queryKey: [props.useQueryOptions.queryKey] })
     }
 
     useImperativeHandle(ref, () => ({

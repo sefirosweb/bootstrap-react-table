@@ -44,7 +44,6 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
     const useQueryOptions: UseQueryOptions<QueryEagle<any>> = {
         staleTime: Infinity,
         initialDataUpdatedAt: 0,
-        keepPreviousData: true,
         initialData: INITIAL_DATA,
         ...props.useQueryOptions,
         queryKey,
@@ -73,7 +72,7 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
 
     const refreshTable = () => {
         refTable.current?.table?.setRowSelection({});
-        queryClient.invalidateQueries(props.useQueryOptions.queryKey)
+        queryClient.invalidateQueries({ queryKey: props.useQueryOptions.queryKey })
     }
 
     useImperativeHandle(ref, () => ({

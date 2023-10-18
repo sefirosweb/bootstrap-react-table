@@ -18,7 +18,6 @@ export const FormSelect: React.FC<Props> = ({ addNullOption, value, useQueryOpti
         staleTime: Infinity,
         initialData: [],
         initialDataUpdatedAt: 0,
-        keepPreviousData: true,
         ...useQueryOptionsProps,
     }
 

@@ -27,7 +27,6 @@ export const FormMultiSelect: React.FC<Props> = (props) => {
         staleTime: Infinity,
         initialData: [],
         initialDataUpdatedAt: 0,
-        keepPreviousData: true,
         ...props.useQueryOptions,
     }
 
@@ -114,7 +113,6 @@ export const FormMultiSelect: React.FC<Props> = (props) => {
             queryKey: queryKey,
             staleTime: 0,
             initialDataUpdatedAt: 0,
-            keepPreviousData: false,
         },
 
         crudOptions: {
