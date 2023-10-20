@@ -88,6 +88,7 @@ export type CrudOptions<T> = {
     customButtons?: JSX.Element;
     toggleShowColumns?: boolean;
     canSelectRow?: boolean;
+    pagination?: boolean;
     getRowStyles?: (row: Row<T>) => React.CSSProperties;
     getRowClass?: (row: Row<T>) => string;
 };
