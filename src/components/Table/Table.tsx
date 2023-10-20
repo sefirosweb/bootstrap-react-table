@@ -204,7 +204,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
         pageSize: props.pageOptions.pageSize,
       },
     },
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: props.crudOptions.pagination === false ? undefined : getPaginationRowModel(),
 
     enableColumnFilters: true,
     state: {

@@ -26,6 +26,7 @@ export const EagleTemplateGlobal: Story = {
     const tableRef = useRef<TableRef>(null)
     props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFnWoRefresh(data, action, tableRef.current)
     props.tableProps.crudOptions.enableGlobalFilterLabels = undefined
+    // props.tableProps.crudOptions.pagination = false
 
 
     return (
