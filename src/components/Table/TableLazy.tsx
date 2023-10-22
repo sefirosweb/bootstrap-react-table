@@ -79,7 +79,9 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
         refreshTable,
         setColumnFilter: (name: string, value?: any) => {
             const newPageOptions = setColumnFilter(name, value, pageOptions)
-            if (isEqual(newPageOptions, pageOptions)) return
+            if (isEqual(newPageOptions.columnFilters, pageOptions.columnFilters)) return
+
+            newPageOptions.page = 1
             setPageOptions(newPageOptions)
         },
         setShowModal: (show: boolean) => refTable.current?.setShowModal(show),
