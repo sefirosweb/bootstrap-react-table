@@ -1,6 +1,6 @@
 import { FilterLabel, Filters } from "@sefirosweb/react-multiple-search";
 import { UseQueryOptions } from "@tanstack/react-query";
-import { CellContext, ColumnDef, ColumnFiltersState, Row, Table } from "@tanstack/react-table";
+import { CellContext, ColumnDef, ColumnFiltersState, Row, Table, TableOptions } from "@tanstack/react-table";
 import React from "react";
 export type ActionCrud = 'create' | 'edit' | 'delete';
 export type FieldType = 'text' | 'number' | 'date' | 'datetime' | 'select' | 'checkbox' | 'multiselect';
@@ -26,9 +26,11 @@ export type SelectOption = {
     label: string;
     [key: string]: unknown;
 };
+export type CustomTableOptions<T> = Omit<TableOptions<T>, 'columns' | 'data' | 'getCoreRowModel'>;
 export type TableProps<T> = {
     columns: Array<ColumnDef<T>>;
     crudOptions: CrudOptions<T>;
+    customTableOptions?: CustomTableOptions<T>;
     lazy: boolean;
 } & (Lazy<T> | Eagle<T>);
 type Lazy<T> = {
