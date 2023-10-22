@@ -243,7 +243,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   return (
     <>
-      <div>
+      <div style={{ height: '100%' }}>
         <Row>
           <Col>
             <TableToolbar
@@ -253,20 +253,20 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
           </Col>
         </Row>
 
-        <Row>
-          <Col>
-            <div style={{ height: '80vh' }}>
-
-              <VirtualTable table={table} />
-              {/* <BTable
-                striped
-                hover
-                bordered
-                responsive
-              >
-                <Thead table={table} />
-                <Tbody table={table} />
-              </BTable> */}
+        <Row style={{ height: '100%' }}>
+          <Col style={{ height: '100%' }}>
+            <div style={{ height: '100%' }}>
+              {props.crudOptions.virtualRows ?
+                <VirtualTable table={table} /> :
+                <BTable
+                  striped
+                  hover
+                  bordered
+                  responsive
+                >
+                  <Thead table={table} />
+                  <Tbody table={table} />
+                </BTable>}
             </div>
           </Col>
         </Row>

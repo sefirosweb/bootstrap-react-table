@@ -119,6 +119,9 @@ export type CrudOptions<T> = {
     canSelectRow?: boolean;
 
     pagination?: boolean
+    virtualRows?: {
+        height: number,
+    }
 
     getRowStyles?: (row: Row<T>) => React.CSSProperties;
     getRowClass?: (row: Row<T>) => string;

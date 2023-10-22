@@ -19,13 +19,13 @@ export const VirtualTable: React.FC<Props> = ({ table }) => {
     const virtualizer = useVirtualizer({
         count: rows.length,
         getScrollElement: () => parentRef.current,
-        estimateSize: () => 34,
+        estimateSize: () => crudOptions.virtualRows?.height ?? 100,
         overscan: 5,
     });
 
     const TrLoading = useMemo(() => {
         const TrLoading: React.FC<{}> = () => (
-            <tr>
+            <tr style={{ position: 'fixed' }}>
                 <LoaderTD colSpan={100} >
                     <LoaderDiv>
                         {isFetching && <LoaderBar />}
@@ -48,19 +48,42 @@ export const VirtualTable: React.FC<Props> = ({ table }) => {
                     <BTable
                         hover
                         bordered
+                        style={{
+                            display: 'grid'
+                        }}
                     >
 
-                        <Thead table={table} />
+                        <Thead table={table}
+                            style={{
+                                display: 'grid',
+                                position: 'sticky',
+                                top: 0,
+                                zIndex: 2,
+                            }}
+                            trStyle={{
+                                display: 'flex',
+                            }}
 
-                        <tbody>
+                            thStyle={{
+                                width: 100 / (table.getFlatHeaders()?.length ?? 100) + '%',
+                            }}
+                        />
+
+                        <tbody style={{
+                            display: 'grid'
+                        }}>
                             <TrLoading />
 
                             {virtualizer.getVirtualItems().map((virtualRow, index) => {
                                 const row = rows[virtualRow.index] as Row<any>
+                                const width = 100 / (row.getVisibleCells()?.length ?? 100)
+
                                 return (
                                     <tr
                                         key={row.id}
                                         style={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
                                             height: `${virtualRow.size}px`,
                                             transform: `translateY(${virtualRow.start - index * virtualRow.size}px)`,
                                         }}
@@ -69,7 +92,10 @@ export const VirtualTable: React.FC<Props> = ({ table }) => {
                                         {row.getVisibleCells().map((cell) => {
                                             return (
                                                 <td
-                                                    style={cell.column.columnDef.meta?.getCellStyle ? cell.column.columnDef.meta?.getCellStyle(cell.getContext()) : undefined}
+                                                    style={{
+                                                        width: `${width}%`,
+                                                    }}
+                                                    // style={cell.column.columnDef.meta?.getCellStyle ? cell.column.columnDef.meta?.getCellStyle(cell.getContext()) : undefined}
                                                     className={cell.column.columnDef.meta?.getCellClass ? cell.column.columnDef.meta?.getCellClass(cell.getContext()) : undefined}
                                                     key={cell.id}>
                                                     {flexRender(

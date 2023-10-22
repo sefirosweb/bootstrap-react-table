@@ -8,6 +8,8 @@ import { isEqual } from "lodash";
 type Props = {
     table: Table<any>,
     style?: React.CSSProperties,
+    trStyle?: React.CSSProperties,
+    thStyle?: React.CSSProperties,
 }
 
 const sortDirection = (header: Header<any, unknown>) => {
@@ -64,9 +66,9 @@ export const Thead: React.FC<Props> = (props) => {
     return (
         <thead style={props.style}>
             {props.table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
+                <tr key={headerGroup.id} style={props.trStyle}>
                     {headerGroup.headers.map((header) => (
-                        <th key={header.id} colSpan={header.colSpan}>
+                        <th key={header.id} colSpan={header.colSpan} style={props.thStyle}>
                             {header.isPlaceholder ? null : (
                                 <div
                                     {...{
@@ -88,9 +90,9 @@ export const Thead: React.FC<Props> = (props) => {
             {
                 props.table.getHeaderGroups().some(headerGroup => headerGroup.headers.some(header => header.column.columnDef.meta?.filterable)) &&
                 props.table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={`filter_header_group_${headerGroup.id}`}>
+                    <tr key={`filter_header_group_${headerGroup.id}`} style={props.trStyle}>
                         {headerGroup.headers.map((header) => (
-                            <th key={`filter_header_${header.id}`} colSpan={header.colSpan}>
+                            <th key={`filter_header_${header.id}`} colSpan={header.colSpan} style={props.thStyle}>
                                 {header.isPlaceholder ? null : (
                                     <>
                                         {!header.column.columnDef.meta?.filterable && (

@@ -19,11 +19,15 @@ const tableProps: TableProps<any> = {
   crudOptions: {
     ...crudOptions,
     enableGlobalFilterLabels: undefined,
+    pagination: false,
+    virtualRows: {
+      height: 150,
+    },
   },
   lazy: false,
 }
 
-export const EagleTemplateGlobal: Story = {
+export const EagleTemplateVirtualized: Story = {
   args: {
     tableProps: tableProps
   },
@@ -36,7 +40,7 @@ export const EagleTemplateGlobal: Story = {
         <div>
           This is Eagle load template
         </div>
-        <div className='mt-3'>
+        <div className='mt-3' style={{ height: '80vh' }}>
           <Table {...props} ref={tableRef} />
         </div>
       </div>
