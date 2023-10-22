@@ -25,6 +25,8 @@ export const TableToolbar: React.FC<Props> = (props) => {
         const newPageOptions = { ...pageOptions, globalFilter: newVal }
         if (isLazy) {
             newPageOptions.page = 1
+        } else {
+            props.table.resetPageIndex()
         }
 
         setPageOptions(newPageOptions)
@@ -35,6 +37,8 @@ export const TableToolbar: React.FC<Props> = (props) => {
         const newPageOptions = { ...pageOptions, inputFilters: newVal }
         if (isLazy) {
             newPageOptions.page = 1
+        } else {
+            props.table.resetPageIndex()
         }
 
         setPageOptions(newPageOptions)

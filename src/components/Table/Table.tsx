@@ -228,6 +228,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       ...tableProps.state,
       ...props.customTableOptions?.state,
     },
+    autoResetPageIndex: false,
   }
 
   const table = useReactTable(customTableOptions)
