@@ -15,11 +15,12 @@ export type TableRef = {
     setShowModal: (show: boolean) => void
     setIsLoadingModal: (isLoading: boolean) => void
     getSelectedRows: <T>() => Array<T>;
+    setColumnFilter: (name: string, value?: any) => void
     table?: ReactTable<any>
 }
 
 export const Table = forwardRef<TableRef, Props>((props, ref) => {
-    const { columns, crudOptions, lazy, useQueryOptions } = props.tableProps
+    const { columns, crudOptions, lazy, useQueryOptions, customTableOptions } = props.tableProps
     const queryClient = useGetQueryClient()
 
     if (crudOptions.toggleShowColumns === undefined) {
@@ -33,6 +34,7 @@ export const Table = forwardRef<TableRef, Props>((props, ref) => {
                     columns={columns}
                     crudOptions={crudOptions}
                     useQueryOptions={useQueryOptions}
+                    customTableOptions={customTableOptions}
                     ref={ref}
                 />
             </QueryClientProvider >
@@ -45,6 +47,7 @@ export const Table = forwardRef<TableRef, Props>((props, ref) => {
                 columns={columns}
                 crudOptions={crudOptions}
                 useQueryOptions={useQueryOptions}
+                customTableOptions={customTableOptions}
                 ref={ref}
             />
         </QueryClientProvider >

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import { Table, TableRef } from '../../src';
+import { Table, TableProps, TableRef } from '../../src';
 import { columns, crudOptions, useQueryOptionsEagle } from './tableProps';
 import { onSubmitFnWoRefresh } from './onSubmitFnWoRefresh';
 
@@ -13,21 +13,24 @@ export default meta;
 
 type Story = StoryObj<typeof Table>;
 
+const tableProps: TableProps<any> = {
+  useQueryOptions: useQueryOptionsEagle,
+  columns,
+  crudOptions: {
+    ...crudOptions,
+    enableGlobalFilterLabels: undefined,
+    // pagination: false
+  },
+  lazy: false,
+}
+
 export const EagleTemplateGlobal: Story = {
   args: {
-    tableProps: {
-      useQueryOptions: useQueryOptionsEagle,
-      columns,
-      crudOptions: { ...crudOptions },
-      lazy: false
-    }
+    tableProps: tableProps
   },
   render: (props) => {
     const tableRef = useRef<TableRef>(null)
     props.tableProps.crudOptions.onSubmitFn = (data, action) => onSubmitFnWoRefresh(data, action, tableRef.current)
-    props.tableProps.crudOptions.enableGlobalFilterLabels = undefined
-    props.tableProps.crudOptions.pagination = false
-
 
     return (
       <div>

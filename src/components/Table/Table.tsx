@@ -176,7 +176,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     setColumns(newColumns)
   }, [props.columns])
 
-  const tableProps: TableOptions<any> = {
+  const tablePropsLazy: TableOptions<any> = {
     columns: columns,
     data: props.tableData,
     getCoreRowModel: getCoreRowModel(),
@@ -199,7 +199,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
   }
 
   const tablePropsEagle: TableOptions<any> = {
-    ...tableProps,
+    ...tablePropsLazy,
     initialState: {
       pagination: {
         pageSize: props.pageOptions.pageSize,
@@ -209,7 +209,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
     enableColumnFilters: true,
     state: {
-      ...tableProps.state,
+      ...tablePropsLazy.state,
       globalFilter: props.pageOptions.globalFilter ?? "",
       columnFilters,
     },
@@ -221,7 +221,18 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     getSortedRowModel: getSortedRowModel(),
   }
 
-  const table = useReactTable(props.isLazy ? tableProps : tablePropsEagle)
+  const tableProps = props.isLazy ? tablePropsLazy : tablePropsEagle
+  const customTableOptions: TableOptions<any> = {
+    ...tableProps,
+    ...props.customTableOptions,
+    state: {
+      ...tableProps.state,
+      ...props.customTableOptions?.state,
+    },
+    autoResetPageIndex: false,
+  }
+
+  const table = useReactTable(customTableOptions)
 
   useImperativeHandle(ref, () => ({
     setShowModal,

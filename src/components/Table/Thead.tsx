@@ -39,7 +39,10 @@ export const Thead: React.FC<Props> = (props) => {
             const newPageOptions = { ...pageOptions, columnFilters: newColumnFilters }
             if (isLazy) {
                 newPageOptions.page = 1
+            } else {
+                props.table.resetPageIndex()
             }
+
             setPageOptions(newPageOptions)
         }, crudOptions.delayFilter ?? 230);
 

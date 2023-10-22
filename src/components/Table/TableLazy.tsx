@@ -1,15 +1,18 @@
-import { CrudOptions, PageOptions, QueryPage } from "@/types";
+import { CrudOptions, CustomTableOptions, PageOptions, QueryPage } from "@/types";
 import { UseQueryOptions, keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
 import { TableContext } from "./TableContext";
+import { setColumnFilter } from "@/lib/setColumnFilter";
+import { isEqual } from "lodash";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,
     crudOptions: CrudOptions<any>,
     useQueryOptions: UseQueryOptions<QueryPage<any>>,
+    customTableOptions?: CustomTableOptions<any>
 }
 
 export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
@@ -74,6 +77,13 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         refreshTable,
+        setColumnFilter: (name: string, value?: any) => {
+            const newPageOptions = setColumnFilter(name, value, pageOptions)
+            if (isEqual(newPageOptions.columnFilters, pageOptions.columnFilters)) return
+
+            newPageOptions.page = 1
+            setPageOptions(newPageOptions)
+        },
         setShowModal: (show: boolean) => refTable.current?.setShowModal(show),
         setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading),
         table: refTable.current?.table,
@@ -86,6 +96,7 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
         <TableContext.Provider value={{
             columns: props.columns,
             crudOptions: props.crudOptions,
+            customTableOptions: props.customTableOptions,
             tableData: tableData?.results ?? [],
             isFetching: isFetching,
             isLazy: true,

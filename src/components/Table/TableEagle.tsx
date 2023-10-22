@@ -1,15 +1,18 @@
-import { CrudOptions, PageOptions, QueryEagle } from "@/types";
+import { CrudOptions, CustomTableOptions, PageOptions, QueryEagle } from "@/types";
 import { QueryKey, UseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
 import { TableContext } from "./TableContext";
+import { isEqual } from "lodash";
+import { setColumnFilter } from "@/lib/setColumnFilter";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,
     crudOptions: CrudOptions<any>,
     useQueryOptions: UseQueryOptions<QueryEagle<any>>,
+    customTableOptions?: CustomTableOptions<any>
 }
 
 export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
@@ -71,6 +74,13 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         refreshTable,
+        setColumnFilter: (name: string, value?: any) => {
+            const newPageOptions = setColumnFilter(name, value, pageOptions)
+            if (isEqual(newPageOptions, pageOptions)) return
+
+            refTable.current?.table.resetPageIndex()
+            setPageOptions(newPageOptions)
+        },
         setShowModal: (show: boolean) => refTable.current?.setShowModal(show),
         setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading),
         table: refTable.current?.table,
@@ -86,6 +96,7 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
         <TableContext.Provider value={{
             columns: props.columns,
             crudOptions: props.crudOptions,
+            customTableOptions: props.customTableOptions,
             tableData: tableData?.results ?? [],
             isFetching: isFetching,
             isLazy: false,
