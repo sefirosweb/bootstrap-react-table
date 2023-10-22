@@ -9,6 +9,7 @@ export type TableRef = {
     setShowModal: (show: boolean) => void;
     setIsLoadingModal: (isLoading: boolean) => void;
     getSelectedRows: <T>() => Array<T>;
+    setColumnFilter: (name: string, value?: any) => void;
     table?: ReactTable<any>;
 };
 export declare const Table: import("react").ForwardRefExoticComponent<Props & import("react").RefAttributes<TableRef>>;
