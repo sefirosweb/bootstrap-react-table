@@ -5,6 +5,8 @@ import { Table, PropsRef } from "./Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableRef } from ".";
 import { TableContext } from "./TableContext";
+import { setColumnFilter } from "@/lib/setColumnFilter";
+import { isEqual } from "lodash";
 
 export type Props = {
     columns: Array<ColumnDef<any>>,
@@ -75,6 +77,11 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         refreshTable,
+        setColumnFilter: (name: string, value?: any) => {
+            const newPageOptions = setColumnFilter(name, value, pageOptions)
+            if (isEqual(newPageOptions, pageOptions)) return
+            setPageOptions(newPageOptions)
+        },
         setShowModal: (show: boolean) => refTable.current?.setShowModal(show),
         setIsLoadingModal: (isLoading: boolean) => refTable.current?.setIsLoadingModal(isLoading),
         table: refTable.current?.table,
