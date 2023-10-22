@@ -9,6 +9,7 @@ import { filterFn } from "@/lib";
 import { globalFilterFn } from "@/lib/filterFn/globalFilterFn";
 import { TableContext } from "./TableContext";
 import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
+import { VirtualTable } from "./VirtualTable";
 
 type CustomColumnFiltersState = Array<{
   id: string,
@@ -231,7 +232,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   return (
     <>
-      <div style={{ height: '100%' }}>
+      <div>
         <Row>
           <Col>
             <TableToolbar
@@ -241,10 +242,12 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
           </Col>
         </Row>
 
-        <Row style={{ height: '100%' }}>
-          <Col style={{ height: '100%' }}>
-            <div style={{ height: '100%', overflowY: 'auto' }}>
-              <BTable
+        <Row>
+          <Col>
+            <div style={{ height: '80vh' }}>
+
+              <VirtualTable table={table} />
+              {/* <BTable
                 striped
                 hover
                 bordered
@@ -252,7 +255,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
               >
                 <Thead table={table} />
                 <Tbody table={table} />
-              </BTable>
+              </BTable> */}
             </div>
           </Col>
         </Row>

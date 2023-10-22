@@ -7,6 +7,7 @@ import { isEqual } from "lodash";
 
 type Props = {
     table: Table<any>,
+    style?: React.CSSProperties,
 }
 
 const sortDirection = (header: Header<any, unknown>) => {
@@ -58,7 +59,7 @@ export const Thead: React.FC<Props> = (props) => {
     }, [pageOptions.columnFilters]);
 
     return (
-        <thead>
+        <thead style={props.style}>
             {props.table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
