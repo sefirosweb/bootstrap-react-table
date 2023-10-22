@@ -1,4 +1,4 @@
-import { CrudOptions, PageOptions, QueryPage } from "@/types";
+import { CrudOptions, CustomTableOptions, PageOptions, QueryPage } from "@/types";
 import { UseQueryOptions, keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Table, PropsRef } from "./Table";
@@ -10,6 +10,7 @@ export type Props = {
     columns: Array<ColumnDef<any>>,
     crudOptions: CrudOptions<any>,
     useQueryOptions: UseQueryOptions<QueryPage<any>>,
+    customTableOptions?: CustomTableOptions<any>
 }
 
 export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
@@ -86,6 +87,7 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
         <TableContext.Provider value={{
             columns: props.columns,
             crudOptions: props.crudOptions,
+            customTableOptions: props.customTableOptions,
             tableData: tableData?.results ?? [],
             isFetching: isFetching,
             isLazy: true,

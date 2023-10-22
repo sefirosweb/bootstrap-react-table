@@ -1,4 +1,4 @@
-import { CrudOptions, PageOptions } from "@/types";
+import { CrudOptions, CustomTableOptions, PageOptions } from "@/types";
 import { QueryKey } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
@@ -6,6 +6,7 @@ import React from "react";
 export interface TableContext {
     columns: Array<ColumnDef<any>>,
     crudOptions: CrudOptions<any>,
+    customTableOptions?: CustomTableOptions<any>,
     tableData: Array<any>,
     isFetching: boolean,
 
