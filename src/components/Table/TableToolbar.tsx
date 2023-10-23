@@ -171,7 +171,7 @@ export const TableToolbar: React.FC<Props> = (props) => {
                     </Col>
                 </Row>
 
-                {!isLazy && crudOptions.pagination !== false &&
+                {crudOptions.pagination !== false &&
                     <Row>
                         <Col>
                             <Pagination table={props.table} />
