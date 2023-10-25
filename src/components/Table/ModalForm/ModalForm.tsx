@@ -34,7 +34,6 @@ export const ModalForm: React.FC<Props> = (props) => {
                     newFormData[column.id] = null
                 })
 
-
             setFormData(newFormData)
         } else {
             const newFormData: FormDataType = {}
@@ -140,6 +139,12 @@ export const ModalForm: React.FC<Props> = (props) => {
         mutate({ formData, action });
     }
 
+    const setValue = (columnId: string, newValue?: any) => {
+        const newFormData = { ...formData }
+        newFormData[columnId] = newValue
+        setFormData(newFormData)
+    }
+
     return (
         <>
             <Modal
@@ -162,7 +167,14 @@ export const ModalForm: React.FC<Props> = (props) => {
                             .getAllLeafColumns()
                             .filter(column => column.columnDef.meta?.editable === true && column.id !== crudOptions.primaryKey)
                             .map(column => (
-                                <FormFields key={column.id} column={column} formData={formData} setFormData={setFormData} isLoadingModal={props.isLoadingModal} cellSelected={cell} />
+                                <FormFields
+                                    key={column.id}
+                                    column={column}
+                                    value={formData[column.id]}
+                                    setValue={(newValue) => setValue(column.id, newValue)}
+                                    isLoadingModal={props.isLoadingModal}
+                                    cellSelected={cell}
+                                />
                             ))}
                     </>
                 }

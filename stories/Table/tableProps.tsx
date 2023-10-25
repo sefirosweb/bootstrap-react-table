@@ -112,7 +112,6 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
             editable: true,
             type: 'select',
             useQueryOptions: optionsCategory,
-            addNullOption: true,
         },
     },
     {

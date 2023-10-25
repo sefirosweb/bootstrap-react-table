@@ -11,14 +11,14 @@ type Props = {
 
 export const FilterSelect: React.FC<Props> = (props) => {
     const { headerId, value, setValue } = props
-    const [selectedOption, setSelectedOption] = useState<SelectOption | undefined>(undefined);
+    const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
 
     if (!props.columnDef.meta?.useQueryOptions) {
         throw new Error('FilterSelect requires useQueryOptions')
     }
 
     useEffect(() => {
-        setValue(selectedOption?.value)
+        setValue(selectedOption)
     }, [selectedOption])
 
     return (
@@ -26,9 +26,8 @@ export const FilterSelect: React.FC<Props> = (props) => {
             id={`filter_${headerId}`}
             name={`filter_${headerId}`}
             useQueryOptions={props.columnDef.meta.useQueryOptions}
-            handleChange={(option) => setSelectedOption(option)}
+            setValue={(option) => setSelectedOption(option)}
             value={value}
-            addNullOption={true}
         />
     )
 }

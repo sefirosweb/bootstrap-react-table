@@ -1,59 +1,32 @@
+import React, { useEffect } from "react"
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react"
 import { Form } from "react-bootstrap";
 import { SelectOption } from "@/index";
 
-export type Props = React.ComponentProps<typeof Form.Select> & {
-    addNullOption?: boolean
+export type Props = Omit<React.ComponentProps<typeof Form.Select>, 'value' | 'onChange'> & {
     useQueryOptions?: UseQueryOptions<Array<SelectOption>>
-    handleChange: (option: SelectOption | undefined) => void
+    value?: string
+    setValue: (value?: string) => void
 }
 
-export const FormSelect: React.FC<Props> = ({ addNullOption, value, useQueryOptions: useQueryOptionsProps, handleChange, ...props }) => {
-    const [selectedOption, setSelectedOption] = useState<string>("");
+export const FormSelect: React.FC<Props> = ({ value, setValue, useQueryOptions: useQueryOptionsProps, ...props }) => {
 
     if (!useQueryOptionsProps) throw new Error("useQueryOptions is required");
 
     const useQueryOptions: UseQueryOptions<Array<SelectOption>> = {
         staleTime: Infinity,
-        initialData: [],
-        initialDataUpdatedAt: 0,
         ...useQueryOptionsProps,
     }
 
     const { data: selectData } = useQuery(useQueryOptions)
 
-    useEffect(() => {
-        if (selectedOption === value) return
-
-        if (typeof value === "number") {
-            setSelectedOption(value.toString());
-        } else if (typeof value === "string") {
-            setSelectedOption(value);
-        } else {
-            setSelectedOption("");
-        }
-
-        const selectedOptionFilter = selectData?.find(filter => filter.value === value)
-        handleChange(selectedOptionFilter)
-    }, [value]);
-
     return (
         <Form.Select
             {...props}
-            value={selectedOption}
-            onChange={(e) => {
-                setSelectedOption(e.target.value)
-                const selectedOptionFilter = selectData?.find(filter => filter.value.toString() === e.target.value)
-                handleChange(selectedOptionFilter)
-            }}
+            value={value}
+            onChange={(e) => setValue(e.currentTarget.value)}
         >
-            {addNullOption && (
-                <option key={0} value="">
-                    {""}
-                </option>
-            )}
-
+            <option key={0} value="">{""}</option>
             {
                 selectData?.map((option) => {
                     return (

@@ -23,7 +23,6 @@ declare module '@tanstack/table-core' {
         customFilter?: React.FC<{ header: HeaderContext<TData, unknown>, value: any, setValue: (value: any) => void }>,
         customForm?: React.FC<{ column: Column<any, unknown>, value: any, setValue: (value: any) => void }>,
         multiSelectUnique?: boolean;
-        addNullOption?: boolean;
         toggleShow?: boolean
         getCellStyle?: (cell: CellContext<TData, TValue>) => React.CSSProperties;
         getCellClass?: (cell: CellContext<TData, TValue>) => string;

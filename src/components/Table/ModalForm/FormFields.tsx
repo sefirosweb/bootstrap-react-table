@@ -1,5 +1,4 @@
 import { CellContext, Column } from "@tanstack/react-table"
-import { FormDataType } from "@/index"
 import { Form } from "react-bootstrap"
 import { FormSelect } from "@/components/FormSelect"
 import { FormMultiSelect } from "@/components/FormMultiSelect"
@@ -7,20 +6,13 @@ import { FormMultiSelect } from "@/components/FormMultiSelect"
 type Props = {
     column: Column<any>,
     isLoadingModal: boolean,
-    formData: FormDataType,
-    setFormData: React.Dispatch<React.SetStateAction<FormDataType>>,
+    value?: any,
+    setValue: (newValue?: any) => void,
     cellSelected?: CellContext<any, unknown>
 }
 
 export const FormFields: React.FC<Props> = (props) => {
-    const { column, formData, setFormData, isLoadingModal, cellSelected } = props
-
-    const value = formData[column.id]
-    const setValue = (newValue?: any) => {
-        const newFormData = { ...formData }
-        newFormData[column.id] = newValue
-        setFormData(newFormData)
-    }
+    const { column, value, setValue, isLoadingModal, cellSelected } = props
 
     if (column.columnDef.meta?.customForm) {
         const CustomForm = column.columnDef.meta.customForm
@@ -74,8 +66,7 @@ export const FormFields: React.FC<Props> = (props) => {
                 <FormSelect
                     value={value ?? ''}
                     useQueryOptions={column.columnDef.meta.useQueryOptions}
-                    addNullOption={column.columnDef.meta.addNullOption}
-                    handleChange={(value) => setValue(value?.value ?? null)}
+                    setValue={(newValue) => setValue(newValue)}
                 />
             )}
 
