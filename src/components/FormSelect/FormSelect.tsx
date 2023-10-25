@@ -44,7 +44,7 @@ export const FormSelect: React.FC<Props> = ({ addNullOption, value, useQueryOpti
             value={selectedOption}
             onChange={(e) => {
                 setSelectedOption(e.target.value)
-                const selectedOptionFilter = selectData?.find(filter => filter.value === e.target.value)
+                const selectedOptionFilter = selectData?.find(filter => filter.value.toString() === e.target.value)
                 handleChange(selectedOptionFilter)
             }}
         >
