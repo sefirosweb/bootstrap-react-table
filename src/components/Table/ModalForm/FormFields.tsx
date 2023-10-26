@@ -1,7 +1,6 @@
 import { CellContext, Column } from "@tanstack/react-table"
 import { Form } from "react-bootstrap"
-import { FormSelect } from "@/components/FormSelect"
-import { FormMultiSelect } from "@/components/FormMultiSelect"
+import { FormMultiSelect, FormCheckbox, FormSelect } from "@/components"
 
 type Props = {
     column: Column<any>,
@@ -66,6 +65,13 @@ export const FormFields: React.FC<Props> = (props) => {
                 <FormSelect
                     value={value ?? ''}
                     useQueryOptions={column.columnDef.meta.useQueryOptions}
+                    setValue={(newValue) => setValue(newValue)}
+                />
+            )}
+
+            {column.columnDef.meta?.type === 'checkbox' && (
+                <FormCheckbox
+                    value={value ?? ''}
                     setValue={(newValue) => setValue(newValue)}
                 />
             )}

@@ -4,12 +4,7 @@ import { UseQueryOptions } from "@tanstack/react-query";
 
 export * from "./types"
 export * from './lib'
-export * from './components/buttons'
-
-export { FormSelect } from './components/FormSelect'
-export { Modal } from './components/Modal'
-export { Table } from './components/Table'
-export type { TableRef } from './components/Table'
+export * from './components'
 
 declare module '@tanstack/table-core' {
     interface ColumnMeta<TData extends RowData, TValue> {
