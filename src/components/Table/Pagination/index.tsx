@@ -39,10 +39,10 @@ export const Pagination: React.FC<Props> = ({ table }) => {
             currentPage={table.getState().pagination.pageIndex + 1}
             totalRows={table.getFilteredRowModel().rows.length}
 
-            handleFirstPage={() => table.setPageIndex(0)}
-            handlePrevPage={() => table.previousPage()}
-            handleNextPage={() => table.nextPage()}
-            handleLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
+            handleFirstPage={() => props.setPageOptions({ ...props.pageOptions, page: 1 })}
+            handlePrevPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page - 1 })}
+            handleNextPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page + 1 })}
+            handleLastPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pages ?? 1 })}
 
             firstPageEnabled={!table.getCanPreviousPage()}
             prevPageEnabled={!table.getCanPreviousPage()}

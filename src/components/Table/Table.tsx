@@ -199,11 +199,6 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   const tablePropsEagle: TableOptions<any> = {
     ...tablePropsLazy,
-    initialState: {
-      pagination: {
-        pageSize: props.pageOptions.pageSize,
-      },
-    },
     getPaginationRowModel: props.crudOptions.pagination === false ? undefined : getPaginationRowModel(),
 
     enableColumnFilters: true,
@@ -211,6 +206,10 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       ...tablePropsLazy.state,
       globalFilter: props.pageOptions.globalFilter ?? "",
       columnFilters,
+      pagination: {
+        pageIndex: props.pageOptions.page - 1,
+        pageSize: props.pageOptions.pageSize,
+      }
     },
 
     getFilteredRowModel: getFilteredRowModel(),
