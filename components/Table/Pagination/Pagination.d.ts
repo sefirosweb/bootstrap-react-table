@@ -7,10 +7,10 @@ type Props = {
     handlePrevPage: () => void;
     handleNextPage: () => void;
     handleLastPage: () => void;
-    firstPageEnabled: boolean;
-    prevPageEnabled: boolean;
-    nextPageEnabled: boolean;
-    lastPageEnabled: boolean;
+    firstPageDisabled: boolean;
+    prevPageDisabled: boolean;
+    nextPageDisabled: boolean;
+    lastPageDisabled: boolean;
     pageSize: number;
     setPageSize: (pageSize: number) => void;
     pageSizes: Array<number>;
