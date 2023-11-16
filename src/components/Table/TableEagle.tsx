@@ -78,7 +78,7 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
             const newPageOptions = setColumnFilter(name, value, pageOptions)
             if (isEqual(newPageOptions, pageOptions)) return
 
-            refTable.current?.table.resetPageIndex()
+            newPageOptions.page = 1
             setPageOptions(newPageOptions)
         },
         setShowModal: (show: boolean) => refTable.current?.setShowModal(show),

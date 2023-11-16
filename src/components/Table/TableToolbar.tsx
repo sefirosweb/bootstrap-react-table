@@ -23,24 +23,14 @@ export const TableToolbar: React.FC<Props> = (props) => {
     const globalFilter = pageOptions.globalFilter ?? ''
     const setGlobalFilter = (newVal: string) => {
         const newPageOptions = { ...pageOptions, globalFilter: newVal }
-        if (isLazy) {
-            newPageOptions.page = 1
-        } else {
-            props.table.resetPageIndex()
-        }
-
+        newPageOptions.page = 1
         setPageOptions(newPageOptions)
     }
 
     const inputFilters = pageOptions.inputFilters ?? []
     const setInputFilters = (newVal: Array<Filters>) => {
         const newPageOptions = { ...pageOptions, inputFilters: newVal }
-        if (isLazy) {
-            newPageOptions.page = 1
-        } else {
-            props.table.resetPageIndex()
-        }
-
+        newPageOptions.page = 1
         setPageOptions(newPageOptions)
     }
 

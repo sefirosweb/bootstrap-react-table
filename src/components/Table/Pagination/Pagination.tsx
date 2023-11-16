@@ -12,10 +12,10 @@ type Props = {
     handleNextPage: () => void,
     handleLastPage: () => void,
 
-    firstPageEnabled: boolean,
-    prevPageEnabled: boolean,
-    nextPageEnabled: boolean,
-    lastPageEnabled: boolean,
+    firstPageDisabled: boolean,
+    prevPageDisabled: boolean,
+    nextPageDisabled: boolean,
+    lastPageDisabled: boolean,
 
     pageSize: number,
     setPageSize: (pageSize: number) => void,
@@ -31,22 +31,22 @@ export const Pagination: React.FC<Props> = (props) => {
                 <BPagination style={{ marginBottom: 0 }} size="sm">
                     <BPagination.First
                         onClick={props.handleFirstPage}
-                        disabled={props.firstPageEnabled}
+                        disabled={props.firstPageDisabled}
                     />
                     <BPagination.Prev
                         onClick={props.handlePrevPage}
-                        disabled={props.prevPageEnabled}
+                        disabled={props.prevPageDisabled}
                     />
                     <BPagination.Item active>
                         {props.currentPage} {t('of')}{' '} {props.pages}
                     </BPagination.Item>
                     <BPagination.Next
                         onClick={props.handleNextPage}
-                        disabled={props.nextPageEnabled}
+                        disabled={props.nextPageDisabled}
                     />
                     <BPagination.Last
                         onClick={props.handleLastPage}
-                        disabled={props.lastPageEnabled}
+                        disabled={props.lastPageDisabled}
                     />
                 </BPagination>
             </Col>

@@ -21,10 +21,10 @@ export const Pagination: React.FC<Props> = ({ table }) => {
             handleNextPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page + 1 })}
             handleLastPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pages ?? 1 })}
 
-            firstPageEnabled={props.pageOptions.page === 1}
-            prevPageEnabled={props.pageOptions.page === 1}
-            nextPageEnabled={props.pageOptions.page === props.pages}
-            lastPageEnabled={props.pageOptions.page === props.pages}
+            firstPageDisabled={props.pages === undefined || props.pageOptions.page <= 1}
+            prevPageDisabled={props.pages === undefined || props.pageOptions.page <= 1}
+            nextPageDisabled={props.pages === undefined || props.pageOptions.page >= props.pages}
+            lastPageDisabled={props.pages === undefined || props.pageOptions.page >= props.pages}
 
 
             pageSizes={props.pageSizes}
@@ -42,12 +42,12 @@ export const Pagination: React.FC<Props> = ({ table }) => {
             handleFirstPage={() => props.setPageOptions({ ...props.pageOptions, page: 1 })}
             handlePrevPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page - 1 })}
             handleNextPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page + 1 })}
-            handleLastPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pages ?? 1 })}
+            handleLastPage={() => props.setPageOptions({ ...props.pageOptions, page: table.getPageCount() })}
 
-            firstPageEnabled={!table.getCanPreviousPage()}
-            prevPageEnabled={!table.getCanPreviousPage()}
-            nextPageEnabled={!table.getCanNextPage()}
-            lastPageEnabled={!table.getCanNextPage()}
+            firstPageDisabled={!table.getCanPreviousPage()}
+            prevPageDisabled={!table.getCanPreviousPage()}
+            nextPageDisabled={!table.getCanNextPage()}
+            lastPageDisabled={!table.getCanNextPage()}
 
 
             pageSizes={props.pageSizes}
