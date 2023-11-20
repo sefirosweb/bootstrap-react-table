@@ -71,7 +71,7 @@ export const FormMultiSelect: React.FC<Props> = (props) => {
             const selectedOptionFilter = selectData?.find(filter => filter.value === selectedOption)
             if (selectedOptionFilter) {
                 if (props.multiSelectUnique === true) {
-                    const index = newResults.findIndex(v => v[tablePropsFn.crudOptions.primaryKey] === selectedOptionFilter.value)
+                    const index = newResults.findIndex(v => v[tablePropsFn.crudOptions.primaryKey].toString() === selectedOptionFilter.value)
                     if (index === -1) {
                         newResults.push(selectedOptionFilter)
                     }
