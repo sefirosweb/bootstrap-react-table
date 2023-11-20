@@ -6,14 +6,14 @@ interface Props extends HTMLProps<HTMLInputElement> {
 
 export const IndeterminateCheckbox = (props: Props) => {
   const { indeterminate, ...rest } = props;
-  const ref = useRef<HTMLInputElement>(null!);
+  const checkboxRef = useRef<HTMLInputElement>(null!);
   const { checked } = rest;
 
   useEffect(() => {
     if (typeof indeterminate === 'boolean') {
-      ref.current.indeterminate = !checked && indeterminate;
+      checkboxRef.current.indeterminate = !checked && indeterminate;
     }
-  }, [ref, indeterminate, checked]);
+  }, [checkboxRef, indeterminate, checked]);
 
-  return <input type="checkbox" ref={ref} {...rest} />;
+  return <input type="checkbox" ref={checkboxRef} {...rest} />;
 };

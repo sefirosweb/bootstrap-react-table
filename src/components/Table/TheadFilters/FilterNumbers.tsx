@@ -13,11 +13,10 @@ type Props = {
 const INITIAL_VALUE: [string, string] = ['', '']
 
 export const FilterNumbers: React.FC<Props> = (props) => {
-    const { headerId, value, setValue } = props
     const [values, setValues] = useState<[string, string]>(INITIAL_VALUE)
 
     useEffect(() => {
-        if (!value) {
+        if (!props.value) {
             if (!isEqual(values, INITIAL_VALUE)) {
                 setValues(INITIAL_VALUE)
             }
@@ -25,18 +24,18 @@ export const FilterNumbers: React.FC<Props> = (props) => {
         }
 
         const newFilters: [string, string] = [
-            value[0]?.toString() ?? '',
-            value[1]?.toString() ?? '',
+            props.value[0]?.toString() ?? '',
+            props.value[1]?.toString() ?? '',
         ]
 
         if (isEqual(newFilters, values)) return
         setValues(newFilters)
 
-    }, [value])
+    }, [props.value])
 
     useEffect(() => {
         if (values[0] === '' && values[1] === '') {
-            setValue(undefined)
+            props.setValue(undefined)
             return
         }
 
@@ -48,24 +47,24 @@ export const FilterNumbers: React.FC<Props> = (props) => {
             isNaN(max) ? null : max,
         ]
 
-        if (isEqual(newFilters, value)) return
-        setValue(newFilters)
+        if (isEqual(newFilters, props.value)) return
+        props.setValue(newFilters)
     }, [values])
 
 
     return (
         <>
             <Form.Control
-                id={`filter_${headerId}_min`}
-                name={`filter_${headerId}_min`}
+                id={`filter_${props.headerId}_min`}
+                name={`filter_${props.headerId}_min`}
                 placeholder="min"
                 type="number"
                 value={values[0]}
                 onChange={(e) => setValues([e.target.value, values[1]])}
             />
             <Form.Control
-                id={`filter_${headerId}_max`}
-                name={`filter_${headerId}_max`}
+                id={`filter_${props.headerId}_max`}
+                name={`filter_${props.headerId}_max`}
                 placeholder="max"
                 type="number"
                 className="mt-1"

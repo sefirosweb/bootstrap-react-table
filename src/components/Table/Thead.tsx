@@ -21,7 +21,7 @@ const sortDirection = (header: Header<any, unknown>) => {
 
 export const Thead: React.FC<Props> = (props) => {
     const [tableFilters, setTableFilters] = useState<FilterType>({})
-    const { pageOptions, setPageOptions, crudOptions, isLazy } = useContext(TableContext)
+    const tableContext = useContext(TableContext)
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -34,27 +34,27 @@ export const Thead: React.FC<Props> = (props) => {
                 })
             }
 
-            if (isEqual(newColumnFilters, pageOptions.columnFilters ?? [])) return
-            const newPageOptions = { ...pageOptions, columnFilters: newColumnFilters }
+            if (isEqual(newColumnFilters, tableContext.pageOptions.columnFilters ?? [])) return
+            const newPageOptions = { ...tableContext.pageOptions, columnFilters: newColumnFilters }
             newPageOptions.page = 1
 
-            setPageOptions(newPageOptions)
-        }, crudOptions.delayFilter ?? 230);
+            tableContext.setPageOptions(newPageOptions)
+        }, tableContext.crudOptions.delayFilter ?? 230);
 
         return () => clearTimeout(timeout);
-    }, [tableFilters, pageOptions]);
+    }, [tableFilters, tableContext.pageOptions]);
 
 
     useEffect(() => {
-        if (!pageOptions.columnFilters) return
+        if (!tableContext.pageOptions.columnFilters) return
         const newTableFilters: FilterType = {}
-        for (const filter of pageOptions.columnFilters) {
+        for (const filter of tableContext.pageOptions.columnFilters) {
             newTableFilters[filter.id] = filter.value
         }
 
         if (isEqual(newTableFilters, tableFilters)) return
         setTableFilters(newTableFilters)
-    }, [pageOptions.columnFilters]);
+    }, [tableContext.pageOptions.columnFilters]);
 
     return (
         <thead>

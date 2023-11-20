@@ -9,15 +9,13 @@ type Props = {
 }
 
 export const FilterText: React.FC<Props> = (props) => {
-    const { headerId, value, setValue } = props
-
     return (
         <Form.Control
-            id={`filter_${headerId}`}
-            name={`filter_${headerId}`}
+            id={`filter_${props.headerId}`}
+            name={`filter_${props.headerId}`}
             type="text"
-            value={value ?? ''}
-            onChange={(e) => setValue(e.target.value)}
+            value={props.value ?? ''}
+            onChange={(e) => props.setValue(e.target.value)}
         />
     )
 }

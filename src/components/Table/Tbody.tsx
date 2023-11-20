@@ -9,20 +9,20 @@ type Props = {
 
 export const Tbody: React.FC<Props> = (props) => {
     const { table } = props
-    const { isFetching, crudOptions } = useContext(TableContext)
+    const tableContext = useContext(TableContext)
 
     const TrLoading = useMemo(() => {
         const TrLoading: React.FC<{}> = () => (
             <tr>
                 <LoaderTD colSpan={100} >
                     <LoaderDiv>
-                        {isFetching && <LoaderBar />}
+                        {tableContext.isFetching && <LoaderBar />}
                     </LoaderDiv>
                 </LoaderTD>
             </tr>
         )
         return TrLoading
-    }, [isFetching])
+    }, [tableContext.isFetching])
 
     return (
         <tbody>
@@ -31,8 +31,8 @@ export const Tbody: React.FC<Props> = (props) => {
             {table.getRowModel().rows.map((row) => (
                 <tr
                     key={row.id}
-                    style={crudOptions.getRowStyles ? crudOptions.getRowStyles(row) : {}}
-                    className={crudOptions.getRowClass ? crudOptions.getRowClass(row) : ''}
+                    style={tableContext.crudOptions.getRowStyles ? tableContext.crudOptions.getRowStyles(row) : {}}
+                    className={tableContext.crudOptions.getRowClass ? tableContext.crudOptions.getRowClass(row) : ''}
                 >
                     {row.getVisibleCells()
                         .map((cell) => (

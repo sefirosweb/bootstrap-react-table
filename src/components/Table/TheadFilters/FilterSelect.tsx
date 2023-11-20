@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { FormSelect, SelectOption } from "@/index"
+import { FormSelect } from "@/index"
 
 type Props = {
     headerId: string
@@ -10,7 +10,6 @@ type Props = {
 }
 
 export const FilterSelect: React.FC<Props> = (props) => {
-    const { headerId, value, setValue } = props
     const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
 
     if (!props.columnDef.meta?.useQueryOptions) {
@@ -18,16 +17,16 @@ export const FilterSelect: React.FC<Props> = (props) => {
     }
 
     useEffect(() => {
-        setValue(selectedOption)
+        props.setValue(selectedOption)
     }, [selectedOption])
 
     return (
         <FormSelect
-            id={`filter_${headerId}`}
-            name={`filter_${headerId}`}
+            id={`filter_${props.headerId}`}
+            name={`filter_${props.headerId}`}
             useQueryOptions={props.columnDef.meta.useQueryOptions}
-            setValue={(option) => setSelectedOption(option)}
-            value={value}
+            setValue={setSelectedOption}
+            value={props.value}
         />
     )
 }

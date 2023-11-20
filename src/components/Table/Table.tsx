@@ -23,10 +23,10 @@ export type PropsRef = {
 };
 
 export const Table = forwardRef<PropsRef>((_, ref) => {
-  const props = useContext(TableContext)
+  const tableContext = useContext(TableContext)
   const { t } = useTranslation()
 
-  const [columns, setColumns] = useState<Array<ColumnDef<any>>>([])
+
   const [cellSelected, setCellSelected] = useState<CellContext<any, unknown> | undefined>(undefined)
   const [action, setAction] = useState<ActionCrud>('create')
   const [showModal, setShowModal] = useState(false)
@@ -36,7 +36,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
   const INITIAL_VISIBLE_COLUMNS = (): VisibilityState => {
     const visibleColumns: VisibilityState = {}
 
-    props.columns.forEach((column) => {
+    tableContext.columns.forEach((column) => {
       //@ts-ignore
       const columnId = column.id || column.accessorKey || column.Header
       if (!columnId) return
@@ -51,17 +51,17 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   useEffect(() => {
-    if (props.isLazy) return
+    if (tableContext.isLazy) return
     const newColumnFilters: CustomColumnFiltersState = []
 
-    props.pageOptions.columnFilters?.forEach((columnFilter) => {
+    tableContext.pageOptions.columnFilters?.forEach((columnFilter) => {
       newColumnFilters.push({
         id: columnFilter.id,
         value: [columnFilter.value],
       })
     })
 
-    props.pageOptions.inputFilters?.forEach((inputFilter) => {
+    tableContext.pageOptions.inputFilters?.forEach((inputFilter) => {
       const columnFilter = newColumnFilters.find((columnFilter) => columnFilter.id === inputFilter.filter)
 
       if (columnFilter) {
@@ -75,7 +75,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     })
 
     setColumnFilters(newColumnFilters)
-  }, [props.pageOptions.columnFilters, props.pageOptions.inputFilters])
+  }, [tableContext.pageOptions.columnFilters, tableContext.pageOptions.inputFilters])
 
 
   const createButtonFn = () => {
@@ -85,7 +85,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       setShowModal(true)
     }
 
-    props.crudOptions.createFn ? props.crudOptions.createFn(action) : action()
+    tableContext.crudOptions.createFn ? tableContext.crudOptions.createFn(action) : action()
   }
 
   const editButtonFn = (cell: CellContext<any, unknown>) => {
@@ -95,7 +95,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       setShowModal(true)
     }
 
-    props.crudOptions.editFn ? props.crudOptions.editFn(action, cell) : action()
+    tableContext.crudOptions.editFn ? tableContext.crudOptions.editFn(action, cell) : action()
   }
 
   const deleteButtonFn = (cell: CellContext<any, unknown>) => {
@@ -105,11 +105,12 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       setShowModal(true)
     }
 
-    props.crudOptions.deleteFn ? props.crudOptions.deleteFn(action, cell) : action()
+    tableContext.crudOptions.deleteFn ? tableContext.crudOptions.deleteFn(action, cell) : action()
   }
 
+  const [columns, setColumns] = useState<Array<ColumnDef<any>>>([])
   useEffect(() => {
-    const newColumns = [...props.columns]
+    const newColumns = [...tableContext.columns]
 
     newColumns.forEach((column) => {
       if (!column.filterFn) {
@@ -117,7 +118,7 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       }
     })
 
-    if (props.crudOptions.canSelectRow === true && props.isLazy === false) {
+    if (tableContext.crudOptions.canSelectRow === true && tableContext.isLazy === false) {
       newColumns.unshift({
         id: "select",
         header: ({ table }) => (
@@ -144,8 +145,8 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     }
 
 
-    if (props.crudOptions.edit) {
-      const NewEditButton = props.crudOptions.editButton ? props.crudOptions.editButton : EditButton
+    if (tableContext.crudOptions.edit) {
+      const NewEditButton = tableContext.crudOptions.editButton ? tableContext.crudOptions.editButton : EditButton
       newColumns.push({
         id: 'update_button',
         header: t('Edit'),
@@ -158,8 +159,8 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
       })
     }
 
-    if (props.crudOptions.delete) {
-      const NewDeleteButton = props.crudOptions.deleteButton ? props.crudOptions.deleteButton : DeleteButton
+    if (tableContext.crudOptions.delete) {
+      const NewDeleteButton = tableContext.crudOptions.deleteButton ? tableContext.crudOptions.deleteButton : DeleteButton
       newColumns.push({
         id: 'delete_button',
         header: t('Delete'),
@@ -173,14 +174,14 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     }
 
     setColumns(newColumns)
-  }, [props.columns])
+  }, [tableContext.columns])
 
   const tablePropsLazy: TableOptions<any> = {
     columns: columns,
-    data: props.tableData,
+    data: tableContext.tableData,
     getCoreRowModel: getCoreRowModel(),
     state: {
-      sorting: props.pageOptions.sorting ?? [],
+      sorting: tableContext.pageOptions.sorting ?? [],
       columnVisibility,
     },
     onColumnVisibilityChange: setColumnVisibility,
@@ -189,43 +190,43 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
     },
     onSortingChange: (sorting) => {
       if (typeof sorting !== 'function') {
-        props.setPageOptions({ ...props.pageOptions, sorting })
+        tableContext.setPageOptions({ ...tableContext.pageOptions, sorting })
       } else {
-        const newSorting = sorting(props.pageOptions.sorting ?? [])
-        props.setPageOptions({ ...props.pageOptions, sorting: newSorting })
+        const newSorting = sorting(tableContext.pageOptions.sorting ?? [])
+        tableContext.setPageOptions({ ...tableContext.pageOptions, sorting: newSorting })
       }
     },
   }
 
   const tablePropsEagle: TableOptions<any> = {
     ...tablePropsLazy,
-    getPaginationRowModel: props.crudOptions.pagination === false ? undefined : getPaginationRowModel(),
+    getPaginationRowModel: tableContext.crudOptions.pagination === false ? undefined : getPaginationRowModel(),
 
     enableColumnFilters: true,
     state: {
       ...tablePropsLazy.state,
-      globalFilter: props.pageOptions.globalFilter ?? "",
+      globalFilter: tableContext.pageOptions.globalFilter ?? "",
       columnFilters,
       pagination: {
-        pageIndex: props.pageOptions.page - 1,
-        pageSize: props.pageOptions.pageSize,
+        pageIndex: tableContext.pageOptions.page - 1,
+        pageSize: tableContext.pageOptions.pageSize,
       }
     },
 
     getFilteredRowModel: getFilteredRowModel(),
     globalFilterFn: globalFilterFn,
     getColumnCanGlobalFilter: () => true,
-    onGlobalFilterChange: (globalFilter) => props.setPageOptions({ ...props.pageOptions, globalFilter }),
+    onGlobalFilterChange: (globalFilter) => tableContext.setPageOptions({ ...tableContext.pageOptions, globalFilter }),
     getSortedRowModel: getSortedRowModel(),
   }
 
-  const tableProps = props.isLazy ? tablePropsLazy : tablePropsEagle
+  const tableProps = tableContext.isLazy ? tablePropsLazy : tablePropsEagle
   const customTableOptions: TableOptions<any> = {
     ...tableProps,
-    ...props.customTableOptions,
+    ...tableContext.customTableOptions,
     state: {
       ...tableProps.state,
-      ...props.customTableOptions?.state,
+      ...tableContext.customTableOptions?.state,
     },
     autoResetPageIndex: false,
   }

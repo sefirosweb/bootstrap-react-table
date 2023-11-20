@@ -13,11 +13,10 @@ type Props = {
 const INITIAL_VALUE: [string, string] = ['', '']
 
 export const FilterDatesTime: React.FC<Props> = (props) => {
-    const { headerId, value, setValue } = props
     const [values, setValues] = useState<[string, string]>(INITIAL_VALUE)
 
     useEffect(() => {
-        if (!value) {
+        if (!props.value) {
             if (!isEqual(values, INITIAL_VALUE)) {
                 setValues(INITIAL_VALUE)
             }
@@ -25,18 +24,18 @@ export const FilterDatesTime: React.FC<Props> = (props) => {
         }
 
         const newFilters: [string, string] = [
-            value[0] ?? '',
-            value[1] ?? '',
+            props.value[0] ?? '',
+            props.value[1] ?? '',
         ]
 
         if (isEqual(newFilters, values)) return
         setValues(newFilters)
 
-    }, [value])
+    }, [props.value])
 
     useEffect(() => {
         if (values[0] === '' && values[1] === '') {
-            setValue(undefined)
+            props.setValue(undefined)
             return
         }
 
@@ -45,23 +44,23 @@ export const FilterDatesTime: React.FC<Props> = (props) => {
             values[1] === '' ? null : values[1]
         ]
 
-        if (isEqual(newFilters, value)) return
-        setValue(newFilters)
+        if (isEqual(newFilters, props.value)) return
+        props.setValue(newFilters)
     }, [values])
 
     return (
         <>
             <Form.Control
-                id={`filter_${headerId}_min`}
-                name={`filter_${headerId}_min`}
+                id={`filter_${props.headerId}_min`}
+                name={`filter_${props.headerId}_min`}
                 placeholder="min"
                 type="datetime-local"
                 value={values[0]}
                 onChange={(e) => setValues([e.target.value, values[1]])}
             />
             <Form.Control
-                id={`filter_${headerId}_max`}
-                name={`filter_${headerId}_max`}
+                id={`filter_${props.headerId}_max`}
+                name={`filter_${props.headerId}_max`}
                 placeholder="max"
                 type="datetime-local"
                 className="mt-1"
