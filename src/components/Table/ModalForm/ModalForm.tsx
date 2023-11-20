@@ -140,9 +140,12 @@ export const ModalForm: React.FC<Props> = (props) => {
     }
 
     const setValue = (columnId: string, newValue?: any) => {
-        const newFormData = { ...formData }
-        newFormData[columnId] = newValue
-        setFormData(newFormData)
+        setFormData(
+            (newFormData) => {
+                newFormData[columnId] = newValue
+                return newFormData
+            }
+        )
     }
 
     return (

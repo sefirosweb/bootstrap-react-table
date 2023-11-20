@@ -48,7 +48,7 @@ const categoryTable = (cell?: CellContext<GeneratedData, unknown>): TableProps<O
             },
         ],
         useQueryOptions: {
-            // queryFn: () => getCategoriesFromUuids(cell.row.original.uuid, delay), // Get data from server
+            queryKey: ['categoryTable', 'select_options'],
             queryFn: () => {
                 if (!cell) {
                     return {
@@ -130,9 +130,9 @@ export const columns: Array<ColumnDef<GeneratedData>> = [
             editable: true,
             filterable: true,
             type: 'multiselect',
+            multiSelectUnique: true,
             useQueryOptions: optionsCategory,
             tableProps: (cell) => categoryTable(cell),
-            multiSelectUnique: true
         },
     },
     {
