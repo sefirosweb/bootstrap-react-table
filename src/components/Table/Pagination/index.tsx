@@ -8,28 +8,28 @@ type Props = {
 }
 
 export const Pagination: React.FC<Props> = ({ table }) => {
-    const props = useContext(TableContext)
+    const tableContext = useContext(TableContext)
 
-    if (props.isLazy) return (
+    if (tableContext.isLazy) return (
         <CPagination
-            pages={props.pages ?? 1}
-            currentPage={props.pageOptions.page}
-            totalRows={props.totalRows ?? 0}
+            pages={tableContext.pages ?? 1}
+            currentPage={tableContext.pageOptions.page}
+            totalRows={tableContext.totalRows ?? 0}
 
-            handleFirstPage={() => props.setPageOptions({ ...props.pageOptions, page: 1 })}
-            handlePrevPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page - 1 })}
-            handleNextPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page + 1 })}
-            handleLastPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pages ?? 1 })}
+            handleFirstPage={() => tableContext.setPageOptions({ ...tableContext.pageOptions, page: 1 })}
+            handlePrevPage={() => tableContext.setPageOptions({ ...tableContext.pageOptions, page: tableContext.pageOptions.page - 1 })}
+            handleNextPage={() => tableContext.setPageOptions({ ...tableContext.pageOptions, page: tableContext.pageOptions.page + 1 })}
+            handleLastPage={() => tableContext.setPageOptions({ ...tableContext.pageOptions, page: tableContext.pages ?? 1 })}
 
-            firstPageDisabled={props.pages === undefined || props.pageOptions.page <= 1}
-            prevPageDisabled={props.pages === undefined || props.pageOptions.page <= 1}
-            nextPageDisabled={props.pages === undefined || props.pageOptions.page >= props.pages}
-            lastPageDisabled={props.pages === undefined || props.pageOptions.page >= props.pages}
+            firstPageDisabled={tableContext.pages === undefined || tableContext.pageOptions.page <= 1}
+            prevPageDisabled={tableContext.pages === undefined || tableContext.pageOptions.page <= 1}
+            nextPageDisabled={tableContext.pages === undefined || tableContext.pageOptions.page >= tableContext.pages}
+            lastPageDisabled={tableContext.pages === undefined || tableContext.pageOptions.page >= tableContext.pages}
 
 
-            pageSizes={props.pageSizes}
-            pageSize={props.pageOptions.pageSize}
-            setPageSize={(pageSize) => props.setPageOptions({ ...props.pageOptions, pageSize: pageSize, page: 1 })}
+            pageSizes={tableContext.pageSizes}
+            pageSize={tableContext.pageOptions.pageSize}
+            setPageSize={(pageSize) => tableContext.setPageOptions({ ...tableContext.pageOptions, pageSize: pageSize, page: 1 })}
         />
     )
 
@@ -39,10 +39,10 @@ export const Pagination: React.FC<Props> = ({ table }) => {
             currentPage={table.getState().pagination.pageIndex + 1}
             totalRows={table.getFilteredRowModel().rows.length}
 
-            handleFirstPage={() => props.setPageOptions({ ...props.pageOptions, page: 1 })}
-            handlePrevPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page - 1 })}
-            handleNextPage={() => props.setPageOptions({ ...props.pageOptions, page: props.pageOptions.page + 1 })}
-            handleLastPage={() => props.setPageOptions({ ...props.pageOptions, page: table.getPageCount() })}
+            handleFirstPage={() => tableContext.setPageOptions({ ...tableContext.pageOptions, page: 1 })}
+            handlePrevPage={() => tableContext.setPageOptions({ ...tableContext.pageOptions, page: tableContext.pageOptions.page - 1 })}
+            handleNextPage={() => tableContext.setPageOptions({ ...tableContext.pageOptions, page: tableContext.pageOptions.page + 1 })}
+            handleLastPage={() => tableContext.setPageOptions({ ...tableContext.pageOptions, page: table.getPageCount() })}
 
             firstPageDisabled={!table.getCanPreviousPage()}
             prevPageDisabled={!table.getCanPreviousPage()}
@@ -50,10 +50,10 @@ export const Pagination: React.FC<Props> = ({ table }) => {
             lastPageDisabled={!table.getCanNextPage()}
 
 
-            pageSizes={props.pageSizes}
-            pageSize={props.pageOptions.pageSize}
+            pageSizes={tableContext.pageSizes}
+            pageSize={tableContext.pageOptions.pageSize}
             setPageSize={(pageSize) => {
-                props.setPageOptions({ ...props.pageOptions, pageSize: pageSize })
+                tableContext.setPageOptions({ ...tableContext.pageOptions, pageSize: pageSize })
                 table.setPageSize(pageSize)
             }}
         />

@@ -11,3 +11,5 @@ export const filterFn = (fieldType?: FieldType): FilterFn<any> => {
     if (fieldType === 'datetime') return inRangeDateTimeFilterFn;
     return textFilterFn;
 }
+
+export * from './globalFilterFn'

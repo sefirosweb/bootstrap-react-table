@@ -1,14 +1,12 @@
 import { forwardRef, useContext, useEffect, useImperativeHandle, useState } from "react";
-import { CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, TableOptions, useReactTable, VisibilityState } from "@tanstack/react-table";
-import { type Table as ReactTable } from "@tanstack/react-table";
+import { type Table as ReactTable, CellContext, ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, TableOptions, useReactTable, VisibilityState } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
 import { Table as BTable, Col, Row } from "react-bootstrap";
-import { Tbody, Thead, TableToolbar, ModalForm } from "./index";
-import { ActionCrud, EditButton, DeleteButton } from "@/index";
-import { filterFn } from "@/lib";
-import { globalFilterFn } from "@/lib/filterFn/globalFilterFn";
+import { ActionCrud } from "@/types";
+import { filterFn, globalFilterFn } from "@/lib";
+import { Tbody, Thead, TableToolbar, ModalForm, IndeterminateCheckbox } from ".";
+import { EditButton, DeleteButton } from "@/components";
 import { TableContext } from "./TableContext";
-import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
 
 type CustomColumnFiltersState = Array<{
   id: string,
