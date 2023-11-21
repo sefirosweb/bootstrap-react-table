@@ -18,3 +18,4 @@ export { Tbody } from './Tbody';
 export { Pagination } from './Pagination/Pagination';
 export { Thead } from './Thead';
 export { ModalForm } from './ModalForm';
+export { IndeterminateCheckbox } from './IndeterminateCheckbox';

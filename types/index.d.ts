@@ -1,5 +1,5 @@
 import { FilterLabel, Filters } from "@sefirosweb/react-multiple-search";
-import { UseQueryOptions } from "@tanstack/react-query";
+import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
 import { CellContext, ColumnDef, ColumnFiltersState, Row, Table, TableOptions } from "@tanstack/react-table";
 import React from "react";
 export type ActionCrud = 'create' | 'edit' | 'delete';
@@ -94,4 +94,19 @@ export type CrudOptions<T> = {
     getRowStyles?: (row: Row<T>) => React.CSSProperties;
     getRowClass?: (row: Row<T>) => string;
 };
+export interface TableContext {
+    columns: Array<ColumnDef<any>>;
+    crudOptions: CrudOptions<any>;
+    customTableOptions?: CustomTableOptions<any>;
+    tableData: Array<any>;
+    isFetching: boolean;
+    isLazy: boolean;
+    pageSizes: Array<number>;
+    pageOptions: PageOptions;
+    setPageOptions: React.Dispatch<React.SetStateAction<PageOptions>>;
+    pages?: number;
+    totalRows?: number;
+    refreshTable: () => void;
+    queryKey: QueryKey;
+}
 export {};
