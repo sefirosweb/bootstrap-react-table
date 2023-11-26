@@ -22,6 +22,12 @@ const INITIAL_PAGE_OPTIONS = (): PageOptions => {
     if (params.pageSize) {
         params.pageSize = parseInt(params.pageSize)
     }
+    if (params.sorting) {
+        params.sorting = params.sorting.map(p => ({
+            id: p.id,
+            desc: p.desc === true || p.desc === 'true'
+        }))
+    }
 
     const newInitialData: PageOptions = {
         ...initialData,

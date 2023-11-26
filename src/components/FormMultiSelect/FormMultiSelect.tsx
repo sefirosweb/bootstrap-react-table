@@ -138,15 +138,13 @@ export const FormMultiSelect: React.FC<Props> = (props) => {
                     value={selectedOption}
                     onChange={(e) => setSelectedOption(e.target.value)}
                 >
-                    {
-                        selectData?.map((option) => {
-                            return (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            );
-                        })
-                    }
+                    {selectData?.map((option) => {
+                        return (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        );
+                    })}
                 </Form.Select >
                 <Button onClick={addFn}>
                     {t('Add')}

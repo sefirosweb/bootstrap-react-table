@@ -10,16 +10,18 @@ type Props = {
     setValue: (newValue?: CustomType) => void,
 }
 
-const INITIAL_VALUE: [string, string] = ['', '']
+const INITIAL_VALUE = (value?: CustomType): [string, string] => {
+    if (!value) return ['', '']
+    return [value[0] ?? '', value[1] ?? '']
+}
+
 
 export const FilterDatesTime: React.FC<Props> = (props) => {
-    const [values, setValues] = useState<[string, string]>(INITIAL_VALUE)
+    const [values, setValues] = useState<[string, string]>(INITIAL_VALUE(props.value))
 
     useEffect(() => {
-        if (!props.value) {
-            if (!isEqual(values, INITIAL_VALUE)) {
-                setValues(INITIAL_VALUE)
-            }
+        if (props.value === undefined) {
+            setValues(INITIAL_VALUE())
             return
         }
 
@@ -33,20 +35,19 @@ export const FilterDatesTime: React.FC<Props> = (props) => {
 
     }, [props.value])
 
-    useEffect(() => {
-        if (values[0] === '' && values[1] === '') {
-            props.setValue(undefined)
-            return
+    const onChange = (newValue: [string, string]) => {
+
+        setValues(newValue);
+        if (props.setValue) {
+
+            if (newValue[0] === '' && newValue[1] === '') {
+                props.setValue(undefined)
+                return
+            }
+
+            props.setValue(newValue);
         }
-
-        const newFilters: CustomType = [
-            values[0] === '' ? null : values[0],
-            values[1] === '' ? null : values[1]
-        ]
-
-        if (isEqual(newFilters, props.value)) return
-        props.setValue(newFilters)
-    }, [values])
+    }
 
     return (
         <>
@@ -56,7 +57,7 @@ export const FilterDatesTime: React.FC<Props> = (props) => {
                 placeholder="min"
                 type="datetime-local"
                 value={values[0]}
-                onChange={(e) => setValues([e.target.value, values[1]])}
+                onChange={(e) => onChange([e.target.value, values[1]])}
             />
             <Form.Control
                 id={`filter_${props.headerId}_max`}
@@ -65,7 +66,7 @@ export const FilterDatesTime: React.FC<Props> = (props) => {
                 type="datetime-local"
                 className="mt-1"
                 value={values[1]}
-                onChange={(e) => setValues([values[0], e.target.value])}
+                onChange={(e) => onChange([values[0], e.target.value])}
             />
         </>
     )

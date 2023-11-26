@@ -27,15 +27,13 @@ export const FormSelect: React.FC<Props> = ({ value, setValue, useQueryOptions: 
             onChange={(e) => setValue(e.currentTarget.value)}
         >
             <option key={0} value="">{""}</option>
-            {
-                selectData?.map((option) => {
-                    return (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    );
-                })
-            }
+            {selectData?.map((option) => {
+                return (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                );
+            })}
         </Form.Select >
     )
 }

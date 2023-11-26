@@ -12,12 +12,12 @@ let optionsWithValue: Array<OptionsType> | undefined = undefined
 export const generateOptionsValue = () => {
     if (optionsWithValue) return optionsWithValue
     const data: Array<OptionsType> = []
-    for (var i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 5; i++) {
         const cat = faker.commerce.department()
         data.push({
             name: cat,
             value: i.toString(),
-            uuid: faker.string.uuid(),
+            uuid: i.toString(),
             description: faker.commerce.productDescription(),
         })
     }
