@@ -69,7 +69,8 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
 
     const refreshTable = () => {
         refTable.current?.table?.setRowSelection({});
-        queryClient.invalidateQueries({ queryKey: props.useQueryOptions.queryKey })
+        const queryKey = props.crudOptions.queryKeyOnRefresh ?? props.useQueryOptions.queryKey
+        queryClient.invalidateQueries({ queryKey })
     }
 
     useImperativeHandle(ref, () => ({

@@ -72,7 +72,8 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
     const { data: tableData, isFetching } = useQuery(useQueryOptions)
 
     const refreshTable = () => {
-        queryClient.invalidateQueries({ queryKey: [props.useQueryOptions.queryKey] })
+        const queryKey = props.crudOptions.queryKeyOnRefresh ? [props.crudOptions.queryKeyOnRefresh] : [props.useQueryOptions.queryKey]
+        queryClient.invalidateQueries({ queryKey })
     }
 
     useImperativeHandle(ref, () => ({

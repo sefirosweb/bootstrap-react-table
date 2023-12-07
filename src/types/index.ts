@@ -93,6 +93,7 @@ export type CrudOptions<T> = {
     onDeleteModal?: (cell: CellContext<T, unknown>) => JSX.Element,
 
     canRefresh?: boolean,
+    queryKeyOnRefresh?: QueryKey,
     onSubmitFn?: (data: Partial<T>, action: ActionCrud) => Promise<Partial<T> | null>,
 
     exportFilteredData?: boolean
