@@ -1,5 +1,6 @@
-import React from "react";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from '@tanstack/react-table';
+import { default as React } from '../../../../node_modules/react';
+
 type Props = {
     headerId: string;
     value?: string;

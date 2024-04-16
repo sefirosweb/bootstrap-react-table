@@ -1,6 +1,7 @@
-import React from "react";
-import { ActionCrud } from "../../../types";
-import { CellContext, Table } from "@tanstack/react-table";
+import { CellContext, Table } from '@tanstack/react-table';
+import { ActionCrud } from '../../../types';
+import { default as React } from '../../../../node_modules/react';
+
 type Props = {
     action: ActionCrud;
     cell?: CellContext<any, unknown>;

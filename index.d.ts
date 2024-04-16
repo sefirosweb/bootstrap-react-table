@@ -1,8 +1,8 @@
-/// <reference types="react" />
-import { CellContext, Column, HeaderContext, RowData } from "@tanstack/react-table";
-import { FieldType, PageOptions, SelectOption, TableProps } from "./types";
-import { UseQueryOptions } from "@tanstack/react-query";
-export * from "./types";
+import { UseQueryOptions } from '@tanstack/react-query';
+import { FieldType, PageOptions, SelectOption, TableProps } from './types';
+import { CellContext, Column, HeaderContext, RowData } from '@tanstack/react-table';
+
+export * from './types';
 export * from './lib';
 export * from './components';
 declare module '@tanstack/table-core' {

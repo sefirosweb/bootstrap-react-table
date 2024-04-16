@@ -1,5 +1,5 @@
-/// <reference types="react" />
-import { CellContext, Column } from "@tanstack/react-table";
+import { CellContext, Column } from '@tanstack/react-table';
+
 type Props = {
     column: Column<any>;
     isLoadingModal: boolean;

@@ -1,5 +1,6 @@
-import React from "react";
-import { Modal as BModal, ButtonProps } from "react-bootstrap";
+import { Modal as BModal, ButtonProps } from 'react-bootstrap';
+import { default as React } from '../../../node_modules/react';
+
 type CustomProps = {
     body: JSX.Element | string;
     title?: JSX.Element | string;

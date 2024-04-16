@@ -1,7 +1,8 @@
-import { FilterLabel, Filters } from "@sefirosweb/react-multiple-search";
-import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
-import { CellContext, ColumnDef, ColumnFiltersState, Row, Table, TableOptions } from "@tanstack/react-table";
-import React from "react";
+import { default as React } from '../../node_modules/react';
+import { CellContext, ColumnDef, ColumnFiltersState, Row, Table, TableOptions } from '@tanstack/react-table';
+import { QueryKey, UseQueryOptions } from '@tanstack/react-query';
+import { FilterLabel, Filters } from '@sefirosweb/react-multiple-search';
+
 export type ActionCrud = 'create' | 'edit' | 'delete';
 export type FieldType = 'text' | 'number' | 'date' | 'datetime' | 'select' | 'checkbox' | 'multiselect';
 export type FormDataType = Record<string | number | symbol, any>;

@@ -1,6 +1,6 @@
-/// <reference types="react" />
+import { Table as ReactTable } from '@tanstack/react-table';
 import { TableProps } from '../../types';
-import { type Table as ReactTable } from "@tanstack/react-table";
+
 export type Props = {
     tableProps: TableProps<any>;
 };
@@ -12,7 +12,7 @@ export type TableRef = {
     setColumnFilter: (name: string, value?: any) => void;
     table?: ReactTable<any>;
 };
-export declare const Table: import("react").ForwardRefExoticComponent<Props & import("react").RefAttributes<TableRef>>;
+export declare const Table: import('../../../node_modules/react').ForwardRefExoticComponent<Props & import('../../../node_modules/react').RefAttributes<TableRef>>;
 export { TableToolbar } from './TableToolbar';
 export { Tbody } from './Tbody';
 export { Pagination } from './Pagination/Pagination';

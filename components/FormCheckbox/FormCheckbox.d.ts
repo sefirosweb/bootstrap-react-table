@@ -1,5 +1,6 @@
-import React from "react";
-import { Form } from "react-bootstrap";
+import { Form } from 'react-bootstrap';
+import { default as React } from '../../../node_modules/react';
+
 type CustomProps = {
     value?: unknown;
     setValue: (value?: string) => void;

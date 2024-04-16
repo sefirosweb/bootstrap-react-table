@@ -1,7 +1,8 @@
-import { UseQueryOptions } from "@tanstack/react-query";
-import React from "react";
+import { CellContext } from '@tanstack/react-table';
 import { SelectOption, TableProps } from '../../index';
-import { CellContext } from "@tanstack/react-table";
+import { default as React } from '../../../node_modules/react';
+import { UseQueryOptions } from '@tanstack/react-query';
+
 export type Props = {
     multiSelectUnique?: boolean;
     useQueryOptions?: UseQueryOptions<Array<SelectOption>>;

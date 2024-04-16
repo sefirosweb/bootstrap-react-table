@@ -1,5 +1,6 @@
-import { Table } from "@tanstack/react-table";
-import React from "react";
+import { default as React } from '../../../node_modules/react';
+import { Table } from '@tanstack/react-table';
+
 type Props = {
     table: Table<any>;
 };

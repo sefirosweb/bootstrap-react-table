@@ -1,4 +1,5 @@
-import { HTMLProps } from 'react';
+import { HTMLProps } from '../../../node_modules/react';
+
 interface Props extends HTMLProps<HTMLInputElement> {
     indeterminate?: boolean;
 }

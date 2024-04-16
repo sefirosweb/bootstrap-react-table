@@ -1,5 +1,5 @@
-/// <reference types="react" />
-import { Table } from "@tanstack/react-table";
+import { Table } from '@tanstack/react-table';
+
 type Props = {
     table: Table<any>;
 };

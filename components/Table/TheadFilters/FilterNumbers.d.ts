@@ -1,4 +1,5 @@
-import React from "react";
+import { default as React } from '../../../../node_modules/react';
+
 type CustomType = [number | null, number | null];
 type Props = {
     headerId: string;

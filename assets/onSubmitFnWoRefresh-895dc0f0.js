@@ -1,2 +1,0 @@
-import{f as t,h as e,i as c}from"./tableProps-2b128049.js";import"./index-75b2e733.js";const F=(r,n,o)=>(console.log("onSubmitFn-data",r),console.log("onSubmitFn-action",n),new Promise((s,u)=>{o==null||o.setIsLoadingModal(!0),(()=>n==="create"?t(r,230):n==="edit"?e(r,230):n==="delete"?r.uuid?c(r.uuid,230):Promise.reject("uuid is required"):Promise.reject("Action not found"))().then(i=>{o==null||o.setShowModal(!1),s(i)}).catch(i=>{u(i)}).finally(()=>{o==null||o.setIsLoadingModal(!1)})}));export{F as o};
-//# sourceMappingURL=onSubmitFnWoRefresh-895dc0f0.js.map
