@@ -1,5 +1,5 @@
-import React from "react";
-import { Col, Form, Pagination as BPagination, Row } from "react-bootstrap";
+import React, { useEffect, useRef } from "react";
+import { Form, Pagination as BPagination } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 type Props = {
@@ -25,9 +25,20 @@ type Props = {
 export const Pagination: React.FC<Props> = (props) => {
     const { t } = useTranslation()
 
+    const currentPageRef = useRef<HTMLDivElement>(null);
+    const pagesRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!currentPageRef.current || !pagesRef.current) return;
+        console.log('props.pages')
+        const pagesWidth = pagesRef.current.offsetWidth;
+        currentPageRef.current.style.width = `${pagesWidth}px`;
+    }, [props.pages]);
+
+
     return (
-        <Row>
-            <Col xs="auto" className="d-flex align-items-center">
+        <div className="d-flex gap-1 justify-content-between ">
+            <div className="d-flex align-items-center">
                 <BPagination style={{ marginBottom: 0 }} size="sm">
                     <BPagination.First
                         onClick={props.handleFirstPage}
@@ -38,7 +49,17 @@ export const Pagination: React.FC<Props> = (props) => {
                         disabled={props.prevPageDisabled}
                     />
                     <BPagination.Item active>
-                        {props.currentPage} {t('of')}{' '} {props.pages}
+                        <div className="d-flex gap-1">
+                            <div className="text-center" ref={currentPageRef}>
+                                {props.currentPage}
+                            </div>
+                            <div>
+                                {t('of')}
+                            </div>
+                            <div className="text-center" ref={pagesRef}>
+                                {props.pages}
+                            </div>
+                        </div>
                     </BPagination.Item>
                     <BPagination.Next
                         onClick={props.handleNextPage}
@@ -49,8 +70,8 @@ export const Pagination: React.FC<Props> = (props) => {
                         disabled={props.lastPageDisabled}
                     />
                 </BPagination>
-            </Col>
-            <Col xs="auto" className="d-flex align-items-center">
+            </div>
+            <div className="d-flex align-items-center">
                 <Form.Select
                     size="sm"
                     value={props.pageSize}
@@ -66,10 +87,10 @@ export const Pagination: React.FC<Props> = (props) => {
                         </option>
                     ))}
                 </Form.Select>
-            </Col>
-            <Col xs="auto" className="d-flex align-items-center">
+            </div>
+            <div className="d-flex align-items-center">
                 {t('total_rows', { rows: props.totalRows })}
-            </Col>
-        </Row>
+            </div>
+        </div>
     )
 }

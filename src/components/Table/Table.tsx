@@ -241,14 +241,12 @@ export const Table = forwardRef<PropsRef>((_, ref) => {
   return (
     <>
       <div style={{ height: '100%' }}>
-        <Row>
-          <Col>
-            <TableToolbar
-              table={table}
-              createButtonFn={createButtonFn}
-            />
-          </Col>
-        </Row>
+
+        <TableToolbar
+          table={table}
+          createButtonFn={createButtonFn}
+        />
+
 
         <Row style={{ height: '100%' }}>
           <Col style={{ height: '100%' }}>
