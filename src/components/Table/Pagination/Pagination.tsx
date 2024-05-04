@@ -30,7 +30,6 @@ export const Pagination: React.FC<Props> = (props) => {
 
     useEffect(() => {
         if (!currentPageRef.current || !pagesRef.current) return;
-        console.log('props.pages')
         const pagesWidth = pagesRef.current.offsetWidth;
         currentPageRef.current.style.width = `${pagesWidth}px`;
     }, [props.pages]);
