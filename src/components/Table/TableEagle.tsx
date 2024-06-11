@@ -91,6 +91,7 @@ export const TableEagle = forwardRef<TableRef, Props>((props, ref) => {
                 .getSelectedRowModel()
                 .flatRows.map((f) => f.original);
         },
+        getPageOptions: (): PageOptions => pageOptions,
     }));
 
     return (

@@ -91,6 +91,7 @@ export const TableLazy = forwardRef<TableRef, Props>((props, ref) => {
         getSelectedRows: (): Array<any> => {
             return []
         },
+        getPageOptions: (): PageOptions => pageOptions,
     }));
 
     return (
