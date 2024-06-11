@@ -1,5 +1,5 @@
 import { Table as ReactTable } from '@tanstack/react-table';
-import { TableProps } from '../../types';
+import { PageOptions, TableProps } from '../../types';
 
 export type Props = {
     tableProps: TableProps<any>;
@@ -11,6 +11,7 @@ export type TableRef = {
     getSelectedRows: <T>() => Array<T>;
     setColumnFilter: (name: string, value?: any) => void;
     table?: ReactTable<any>;
+    getPageOptions: () => PageOptions;
 };
 export declare const Table: import('../../../node_modules/react').ForwardRefExoticComponent<Props & import('../../../node_modules/react').RefAttributes<TableRef>>;
 export { TableToolbar } from './TableToolbar';
