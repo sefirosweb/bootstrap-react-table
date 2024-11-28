@@ -1,16 +1,18 @@
 export const inRangeNumber = (value?: number, min?: number, max?: number) => {
-  if (!min && !max) return true;
+  console.log(min, max, value)
+
+  if (min === null && max === null) return true;
   if (typeof value !== 'number') return false;
 
-  if (min && !max) {
+  if (min != null && max === null) {
     return value >= min;
   }
 
-  if (!min && max) {
+  if (min === null && max != null) {
     return value <= max;
   }
 
-  if (min && max) {
+  if (min != null && max != null) {
 
     if (min > max) {
       return value >= max && value <= min;
